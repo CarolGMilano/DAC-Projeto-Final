@@ -108,7 +108,7 @@
 
    **Total**: 4 telas
 
-* #### Dashboard do Gerente (R09, R10, R11)
+* #### Dashboard do Gerente (R09, R10, R11) 🟪
 
    * [ ] Criar layout da página 
    * [ ] Criar tabela de pedidos de autocadastro 
@@ -149,7 +149,7 @@
 
    **Total**: 3 telas
 
-* #### Dashboard do Administrador (R15)
+* #### Dashboard do Administrador (R15) 🟪
 
    * [ ] Criar layout da página 
    * [ ] Criar tabela de gerentes 
