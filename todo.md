@@ -173,29 +173,29 @@
    * [ ] Exibir nome do gerente 
    * [ ] Ordenar clientes por nome (crescente) 
 
-* #### CRUD de Gerentes (R17, R18, R19, R20)
+* #### CRUD de Gerentes (R17, R18, R19, R20) 🟦
 
-   * #### Listagem de Gerentes
-      * [ ] Criar tabela de gerentes 
-      * [ ] Exibir nome, CPF, e-mail e telefone 
-      * [ ] Ordenar por nome (crescente) 
+   * #### Listagem de Gerentes 🟦
+      * [ ] Criar tabela de gerentes 🟦
+      * [ ] Exibir nome, CPF, e-mail e telefone 🟦
+      * [ ] Ordenar por nome (crescente) 🟦
 
-   * #### Inserção de Gerente
-      * [ ] Criar formulário de cadastro 
-      * [ ] Campos: nome, CPF, e-mail, telefone e senha 
-      * [ ] Criar botão de salvar 
-      * [ ] Simular lógica de atribuição automática de contas 
+   * #### Inserção de Gerente 🟦
+      * [ ] Criar formulário de cadastro 🟦
+      * [ ] Campos: nome, CPF, e-mail, telefone e senha 🟦
+      * [ ] Criar botão de salvar 🟦
+      * [ ] Simular lógica de atribuição automática de contas 🟦
 
-   * #### Alteração de Gerente
-      * [ ] Permitir edição de nome 
-      * [ ] Permitir edição de e-mail 
-      * [ ] Permitir alteração de senha 
-      * [ ] Criar botão de salvar alterações 
+   * #### Alteração de Gerente 🟦
+      * [ ] Permitir edição de nome 🟦
+      * [ ] Permitir edição de e-mail 🟦
+      * [ ] Permitir alteração de senha 🟦
+      * [ ] Criar botão de salvar alterações 🟦
 
-   * #### Remoção de Gerente
-      * [ ] Criar botão de remover gerente 
-      * [ ] Redistribuir contas para gerente com menos contas 
-      * [ ] Impedir remoção do último gerente 
+   * #### Remoção de Gerente 🟦
+      * [ ] Criar botão de remover gerente 🟦
+      * [ ] Redistribuir contas para gerente com menos contas 🟦
+      * [ ] Impedir remoção do último gerente 🟦
 </details>
 
 ---
