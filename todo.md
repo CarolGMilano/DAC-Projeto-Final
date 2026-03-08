@@ -92,7 +92,7 @@
       * [ ] Botão de confirmar 
       * [ ] Simular envio 
 
-* #### Extrato (R08)
+* #### Extrato (R08)🟧
    * [ ] Criar tabela de transações 
    * [ ] Colunas: data, tipo, valor, saldo 
    * [ ] Criar dados mockados em JSON 
@@ -118,7 +118,7 @@
    * [ ] Criar modal/formulário para motivo de rejeição 
    * [ ] Simular envio das ações para backend 
 
-* #### Lista de Clientes (R12)
+* #### Lista de Clientes (R12)🟩
 
    * [ ] Criar tabela de clientes 
    * [ ] Exibir CPF, Nome, Cidade, Estado, Saldo e Limite 
@@ -126,14 +126,14 @@
    * [ ] Criar campo de busca por CPF ou Nome 
    * [ ] Criar link para visualizar detalhes do cliente 
 
-* #### Consultar Cliente por CPF (R13)
+* #### Consultar Cliente por CPF (R13)🟩
 
    * [ ] Criar campo de busca por CPF 
    * [ ] Criar botão de consulta 
    * [ ] Exibir dados completos do cliente 
    * [ ] Exibir dados da conta (saldo e limite) 
 
-* #### Top 3 Clientes por Saldo (R14)
+* #### Top 3 Clientes por Saldo (R14)🟧
 
    * [ ] Criar tabela de clientes 
    * [ ] Exibir CPF, Nome, Cidade, Estado e Saldo 
