@@ -15,7 +15,7 @@
 ### Etapa 01: Front-end 
    **Total**: 13 telas
 
-> 📅 Prazo para finalização da Etapa 01: **16/04**
+> 📅 Prazo para finalização da Etapa 01: **31/03**
 
 ---
 
