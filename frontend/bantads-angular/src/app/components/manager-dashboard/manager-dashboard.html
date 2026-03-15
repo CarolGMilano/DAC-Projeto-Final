@@ -1,0 +1,34 @@
+<!--
+R9: Tela Inicial do Gerente - Deve apresentar todos os pedidos de 
+autocadastro para aprovação, como uma tabela, contendo o CPF, Nome 
+e salário do cliente, junto com dois botões "Aprovar" e "Recusar".
+ -->
+
+<table>
+    <tbody>
+        <!-- Colunas -->
+        <tr>
+            <th scope="col">Nº</th>
+            <th scope="col">CPF</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Salario</th>
+        </tr>
+
+        <!-- Listagem de solicitações criadas pelo cliente -->
+        @for (s of exemplos; track s; let i = $index)
+        {
+            <tr>
+
+                <td>{{ i + 1 }}</td>
+                <td>{{ s.cpf }}</td>
+                <td>{{ s.name }}</td>
+                <td>{{ s.salary }}</td>
+
+                <!-- Botões -->
+                <button (click)="recusarAutoCadastro(s)">Recusar</button>
+                <button (click)="aprovarAutoCadastro(s)">Aprovar</button>
+
+            </tr>
+        }
+    </tbody>
+</table>
