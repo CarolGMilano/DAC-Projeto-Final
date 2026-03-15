@@ -42,10 +42,10 @@
 
    **Total**: 4 telas
 
-* #### Dashboard do Cliente (R03)
-   * [ ]  
+* #### Dashboard do Cliente (R03) 🟨
+   * [x]  
 
-* #### Perfil do Cliente (R04)
+* #### Perfil do Cliente (R04) 🟨
 
    * [ ]  
 
