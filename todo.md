@@ -25,11 +25,11 @@
 
    **Total**: 2 telas
 
-* #### Tela de Login (R02)
+* #### Tela de Login (R02) 🟦
 
    * [ ] 
 
-* #### Tela de Autocadastro (R01)
+* #### Tela de Autocadastro (R01) 🟦
 
    * [ ] 
 </details>
