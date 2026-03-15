@@ -104,7 +104,7 @@
 
    * [ ] 
 
-* #### Relatório de Clientes (R16)
+* #### Relatório de Clientes (R16) 🟪
 
    * [ ] 
 
