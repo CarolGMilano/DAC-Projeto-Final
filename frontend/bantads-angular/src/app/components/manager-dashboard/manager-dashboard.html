@@ -12,22 +12,22 @@ e salário do cliente, junto com dois botões "Aprovar" e "Recusar".
             <th scope="col">CPF</th>
             <th scope="col">Nome</th>
             <th scope="col">Salario</th>
+            <th scope="col">Ações</th>
         </tr>
 
-        <!-- Listagem de solicitações criadas pelo cliente -->
+        <!-- Listagem -->
         @for (s of exemplos; track s; let i = $index)
         {
             <tr>
-
                 <td>{{ i + 1 }}</td>
                 <td>{{ s.cpf }}</td>
                 <td>{{ s.name }}</td>
-                <td>{{ s.salary }}</td>
+                <td>{{ s.salario }}</td>
 
-                <!-- Botões -->
-                <button (click)="recusarAutoCadastro(s)">Recusar</button>
-                <button (click)="aprovarAutoCadastro(s)">Aprovar</button>
-
+                <td>
+                    <button (click)="recusarAutoCadastro(s)">Recusar</button>
+                    <button (click)="aprovarAutoCadastro(s)">Aprovar</button>
+                </td>
             </tr>
         }
     </tbody>

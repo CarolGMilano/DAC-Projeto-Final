@@ -15,10 +15,10 @@ e salário do cliente, junto com dois botões "Aprovar" e "Recusar".
 
 export class ManagerDashboard {
 
-exemplos: { cpf: number; name: string; salary: number }[] = [
-  { cpf: 1, name: 'John', salary: 10 },
-  { cpf: 2, name: 'Sarah', salary: 20 },
-  { cpf: 3, name: 'Sarah', salary: 20 }
+exemplos: { cpf: number; name: string; salario: number }[] = [
+  { cpf: 1, name: 'John', salario: 10 },
+  { cpf: 2, name: 'Sarah', salario: 20 },
+  { cpf: 3, name: 'Sarah', salario: 20 }
 ];
 
 recusarAutoCadastro(Cliente: any) {
