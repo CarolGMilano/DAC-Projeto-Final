@@ -19,24 +19,24 @@
       <span class="text-[10px] uppercase tracking-widest text-zinc-500 mb-1">Saldo Atual</span>
       
       <h2 id="balance" class="text-5xl font-bold text-white mb-8">
-        R$ 0,00
+        R$ {{saldo}}
       </h2>
 
       <div class="grid grid-cols-3 gap-3 w-full mb-6">
-        <button class="bg-zinc-700 p-3 rounded-lg hover:bg-zinc-600 text-[10px] text-zinc-200 transition-all font-bold uppercase tracking-tighter">
+        <button class="bg-zinc-700 p-3 rounded-lg hover:bg-zinc-600 text-[10px] text-zinc-200 transition-all font-bold uppercase tracking-tighter" (click)="depositar(1)">
           Depositar
         </button>
         
-        <button class="bg-zinc-700 p-3 rounded-lg hover:bg-zinc-600 text-[10px] text-zinc-200 transition-all font-bold uppercase tracking-tighter">
+        <button class="bg-zinc-700 p-3 rounded-lg hover:bg-zinc-600 text-[10px] text-zinc-200 transition-all font-bold uppercase tracking-tighter" (click)="transferir(1, 1)">
           Transferir
         </button>
 
-        <button class="bg-zinc-700 p-3 rounded-lg hover:bg-zinc-600 text-[10px] text-zinc-200 transition-all font-bold uppercase tracking-tighter">
+        <button class="bg-zinc-700 p-3 rounded-lg hover:bg-zinc-600 text-[10px] text-zinc-200 transition-all font-bold uppercase tracking-tighter" (click)="saque(1)">
           Saque
         </button>
       </div>
 
-      <button class="w-full bg-white text-black py-2.5 rounded-lg hover:bg-zinc-200 transition-colors font-bold text-[10px] uppercase tracking-widest shadow-md">
+      <button class="w-full bg-white text-black py-2.5 rounded-lg hover:bg-zinc-200 transition-colors font-bold text-[10px] uppercase tracking-widest shadow-md" (click)="visualizarExtrato()">
         Visualizar Extrato Completo
       </button>
 
