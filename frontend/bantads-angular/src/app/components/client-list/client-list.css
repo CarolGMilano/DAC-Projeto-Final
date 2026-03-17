@@ -3,7 +3,7 @@
 width:90%;
 margin:auto;
 margin-top:40px;
-background-color: #ffffff;
+background-color: #cad4e6;
 }
 
 .Pesquisar{
@@ -18,7 +18,6 @@ padding:10px;
 width: 220px;
 background-color: #e7e9e8;
 border-radius: 10px;
-
 }
 
 .Pesquisar button{
@@ -27,7 +26,6 @@ background:#2c7be5;
 color:white;
 border-radius:5px;
 cursor: pointer;
-
 }
 
 .cliente{
