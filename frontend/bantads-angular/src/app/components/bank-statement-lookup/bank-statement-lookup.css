@@ -1,3 +1,4 @@
+/* 
 .secao-transacoes {
     margin-left: 10vw;
     margin-right: 10vw
@@ -10,11 +11,6 @@
 }
 
 .transacao {
-    /* display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    border: 1px solid lightgray;
- */
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     border: 1px solid lightgray;
@@ -24,7 +20,7 @@
     min-width: 1fr;
     max-width: 1fr;
     padding: 2vh 3vw;
-    /* border: 1px solid red; */
     text-align: center;
     vertical-align: middle;
 }
+ */
