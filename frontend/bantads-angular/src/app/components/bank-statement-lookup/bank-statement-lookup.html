@@ -1,20 +1,76 @@
-<h1> Meu Extrato </h1>
+<div class="flex flex-col h-screen w-full bg-zinc-800 font-mono">
 
-<h2> Transações de (data-inicio) a (data-fim)</h2>
+    <!-- Cabeçalho -->
+     <div class="flex w-full items-center justify-between border-b border-zinc-700 bg-zinc-900 px-6 py-4 text-sm text-zinc-300">          
 
-<div class="secao-transacoes">
-    <div class="lista-transacoes">
-        @for (t of transacoesExemplo; track t; let i = $index) {
-        <div class="transacao">
-            <p class="header-transacao">{{t.data}}</p>
-            <p class="header-transacao">{{t.operacao}}</p>
-            @if(t.clienteOrigem != "") {
-            <p class="header-transacao">De {{t.clienteOrigem}} para {{t.clienteDestino}}</p>
-            } @else {
-            <p class="header-transação"></p>
-            }
-            <p class="header-transacao">{{t.valor}}</p>
+        <span class="tracking-widest uppercase text-xs"> BANTADS // STATEMENT</span>
+
+        <div class="flex items-center gap-8">
+            <button routerLink="/costumerDashboard" class="text-zinc-400 hover:text-white transition-colors text-xs border border-zinc-700 px-4 py-1 hover:bg-zinc-700">
+                VOLTAR [ESC]
+            </button>
         </div>
-    }
+
+     </div>
+    
+     <!-- Conteúdo da página -->
+    
+
+        <div class="max-w-6xl mx-auto px-6">
+            <header class="mb-12">
+                <h1 class="text-4xl font-bold text-white mb-2">Meu Extrato</h1>
+                <h2 class="text-md text-white"> Transações de (data-inicio) a (data-fim)</h2>
+            </header>
+
+    <div class="flex-1 flex overflow-hidden"></div>
+        <div class="overflow-x-auto">
+    <!-- Tabela -->
+            <table class="min-w-full border border-zinc-700 text-sm text-zinc-300 overflow-y-auto">
+
+                <thead class="bg-zinc-900">
+                    <tr>
+                        <th class="px-4 py-2 text-left border-b border-zinc-700">Data</th>
+                        <th class="px-4 py-2 text-left border-b border-zinc-700">Operação</th>
+                        <th class="px-4 py-2 text-left border-b border-zinc-700">Origem/Destino</th>
+                        <th class="px-4 py-2 text-left border-b border-zinc-700">Valor</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @for(t of transacoesExemplo; track t; let i = $index) {
+                    <tr class="hover:bg-zinc-700/30">
+                        <td class="px-4 py-2 border-b border-zinc-700">{{t.data}}</td>
+                        <td class="px-4 py-2 border-b border-zinc-700">{{t.operacao}}</td>
+                        <!-- Campo Origem/Destino -->
+                        @if(t.clienteDestino != "") {
+                            <td class="px-4 py-2 border-b border-zinc-700">De {{t.clienteOrigem}} para {{t.clienteDestino}}</td>
+                        } @else {
+                            <td class="px-4 py-2 border-b border-zinc-700">---</td>
+                        }
+                        <!-- Campo valor -->
+                         @switch (t.operacao) {
+                            @case("Transferência") {
+                                <td class="px-4 py-2 border-b border-zinc-700 text-yellow-400 font-bold">{{t.valor}}</td>
+                            }
+
+                            @case("Saque") {
+                                <td class="px-4 py-2 border-b border-zinc-700 text-red-400 font-bold">-{{t.valor}}</td>
+                            }
+
+                            @case("Depósito") {
+                                <td class="px-4 py-2 border-b border-zinc-700 text-green-400 font-bold">+{{t.valor}}</td>
+                            }
+                         }
+                        
+                    </tr>
+                    }                    
+                </tbody>
+                
+            </table>
+        </div>
+            
+            
+
+
+        </div>
     </div>
-</div>

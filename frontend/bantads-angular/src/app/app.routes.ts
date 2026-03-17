@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { Gerentes } from './pages';
 import { CustomerDashboard } from './components/customer-dashboard/customer-dashboard';
 import { ProfileChange } from './pages/cliente/profile-change/profile-change';
+import { BankStatementLookup } from './components/bank-statement-lookup/bank-statement-lookup';
 
 export const routes: Routes = [
     // Telas iniciais
@@ -21,5 +22,9 @@ export const routes: Routes = [
     },
 
     // Painel "Administrador"
-    { path: "admin/gerentes", component: Gerentes }
+    { path: "admin/gerentes", component: Gerentes },
+
+    {
+        path: "bankStatement", component: BankStatementLookup
+    }
 ];
