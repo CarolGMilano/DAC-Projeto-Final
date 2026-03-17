@@ -77,7 +77,7 @@
 
 * #### Dashboard do Gerente (R09, R10, R11) 🟪
 
-   * [ ]  
+   * [x]  
 
 * #### Lista de Clientes (R12) 🟩
 
@@ -102,7 +102,7 @@
 
 * #### Dashboard do Administrador (R15) 🟪
 
-   * [ ] 
+   * [x] 
 
 * #### Relatório de Clientes (R16) 🟪
 
