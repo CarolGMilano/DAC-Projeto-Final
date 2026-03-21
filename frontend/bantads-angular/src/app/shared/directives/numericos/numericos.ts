@@ -1,6 +1,6 @@
 import { Directive, HostListener, ElementRef, inject, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { removerNaoNumericos, mascaraCPF, mascaraTelefone, mascaraCEP } from '../../utils/index'
+import { removerNaoNumericos, mascaraCPF, mascaraTelefone, mascaraCEP, mascaraSalario } from '../../utils/index'
 
 @Directive({
   selector: '[numericos]',
@@ -13,7 +13,7 @@ import { removerNaoNumericos, mascaraCPF, mascaraTelefone, mascaraCEP } from '..
 })
 export class Numericos {
   //Qual o tipo de entrada
-  @Input('numericos') tipo: 'cpf' | 'cnpj' | 'telefone' | 'cep' | '' = '';
+  @Input('numericos') tipo: 'cpf' | 'cnpj' | 'telefone' | 'cep' | 'salario' | '' = '';
 
   private elemento = inject(ElementRef);
 
@@ -63,6 +63,7 @@ export class Numericos {
       case 'cpf': return mascaraCPF(valor);
       case 'telefone': return mascaraTelefone(valor);
       case 'cep': return mascaraCEP(valor);
+      case 'salario': return mascaraSalario(valor);
       default: return valor;
     }
   }
