@@ -1,0 +1,83 @@
+<div class="flex items-center justify-between mb-4 px-2">
+  <div class="flex-1 flex flex-col items-center px-2">
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      height="35px" 
+      viewBox="0 -960 960 960" 
+      width="35px" 
+      [ngClass]="{
+        'text-green-400': estaConcluida(EtapaCadastro.DADOS_PESSOAIS),
+        'text-blue-400': estaAtiva(EtapaCadastro.DADOS_PESSOAIS),
+        'text-gray-400': !estaAtiva(EtapaCadastro.DADOS_PESSOAIS) && !estaConcluida(EtapaCadastro.DADOS_PESSOAIS)
+      }"
+      fill="currentColor"
+    >
+      <path d="M560-440h200v-80H560v80Zm0-120h200v-80H560v80ZM200-320h320v-22q0-45-44-71.5T360-440q-72 0-116 26.5T200-342v22Zm216.5-183.5Q440-527 440-560t-23.5-56.5Q393-640 360-640t-56.5 23.5Q280-593 280-560t23.5 56.5Q327-480 360-480t56.5-23.5ZM160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-480H160v480Zm0 0v-480 480Z"/>
+    </svg>
+
+    <span class="text-xs text-gray-400 mt-1">Dados</span>
+  </div>
+
+  <div class="w-[40px] h-[1px] bg-gray-200"></div>
+
+  <div class="flex-1 flex flex-col items-center">
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      height="35px" 
+      viewBox="0 -960 960 960" 
+      width="35px" 
+      [ngClass]="{
+        'text-green-400': estaConcluida(EtapaCadastro.ENDERECO),
+        'text-blue-400': estaAtiva(EtapaCadastro.ENDERECO),
+        'text-gray-400': !estaAtiva(EtapaCadastro.ENDERECO) && !estaConcluida(EtapaCadastro.ENDERECO)
+      }"
+      fill="currentColor"
+    >
+      <path d="M536.5-503.5Q560-527 560-560t-23.5-56.5Q513-640 480-640t-56.5 23.5Q400-593 400-560t23.5 56.5Q447-480 480-480t56.5-23.5ZM480-186q122-112 181-203.5T720-552q0-109-69.5-178.5T480-800q-101 0-170.5 69.5T240-552q0 71 59 162.5T480-186Zm0 106Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Zm0-480Z"/>
+    </svg>
+
+    <span class="text-xs text-gray-400 mt-1">Endereço</span>
+  </div>
+
+  <div class="w-[40px] h-[1px] bg-gray-200"></div>
+
+  <div class="flex-1 flex flex-col items-center">
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      height="35px" 
+      viewBox="0 -960 960 960" 
+      width="35px" 
+      [ngClass]="{
+        'text-green-400': estaConcluida(EtapaCadastro.DADOS_FINANCEIROS),
+        'text-blue-400': estaAtiva(EtapaCadastro.DADOS_FINANCEIROS),
+        'text-gray-400': !estaAtiva(EtapaCadastro.DADOS_FINANCEIROS) && !estaConcluida(EtapaCadastro.DADOS_FINANCEIROS)
+      }"
+      fill="currentColor"
+    >
+      <path d="M444-200h70v-50q50-9 86-39t36-89q0-42-24-77t-96-61q-60-20-83-35t-23-41q0-26 18.5-41t53.5-15q32 0 50 15.5t26 38.5l64-26q-11-35-40.5-61T516-710v-50h-70v50q-50 11-78 44t-28 74q0 47 27.5 76t86.5 50q63 23 87.5 41t24.5 47q0 33-23.5 48.5T486-314q-33 0-58.5-20.5T390-396l-66 26q14 48 43.5 77.5T444-252v52Zm36 120q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
+    </svg>
+
+    <span class="text-xs text-gray-400 mt-1">Financeiro</span>
+  </div>
+
+  <div class="w-[40px] h-[1px] bg-gray-200"></div>
+
+  <div class="flex-1 flex flex-col items-center">
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      height="35px" 
+      viewBox="0 -960 960 960" 
+      width="35px" 
+      [ngClass]="{
+        'text-green-400': estaConcluida(EtapaCadastro.RESUMO),
+        'text-blue-400': estaAtiva(EtapaCadastro.RESUMO),
+        'text-gray-400': !estaAtiva(EtapaCadastro.RESUMO) && !estaConcluida(EtapaCadastro.RESUMO)
+      }"
+      fill="currentColor"
+    >
+      <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424ZM578.5-98Q520-156 520-240q0-83 58.5-141.5T720-440q83 0 141.5 58.5T920-240q0 84-58.5 142T720-40q-83 0-141.5-58ZM720-120q8 0 14-6t6-14q0-8-6-14t-14-6q-8 0-14 6t-6 14q0 8 6 14t14 6Zm-20-80h40v-160h-40v160Z"/>
+    </svg>
+
+    <span class="text-xs text-gray-400 mt-1">Resumo</span>
+  </div>
+</div>

@@ -1,0 +1,163 @@
+<div class="w-full h-full shadow-lg flex flex-col justify-between bg-zinc-800 text-gray-700 rounded-lg">
+  <div>
+    <div class="flex p-7 items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" class="mr-4" width="28px" fill="currentColor" 
+      [ngClass]="{
+        'text-blue-300': usuarioLogado === TipoUsuario.CLIENTE,
+        'text-green-300': usuarioLogado === TipoUsuario.GERENTE,
+        'text-purple-300': usuarioLogado === TipoUsuario.ADMINISTRADOR
+      }">
+          <path d="M470-320h29v-32q28-4 47.5-23t19.5-49q0-26-20-43.5T500-496v-74q10 3 16.5 10t9.5 17l36-15q-7-21-24-33.5T500-608v-32h-30v31q-28 3-47.5 20.5T403-542q0 27 20.5 45t46.5 29v79q-16-5-27-17t-15-28l-35 15q8 28 28 46t49 22v31Zm30-70v-66q11 5 19.5 12t8.5 21q0 16-8 22.5T500-390Zm-30-119q-11-5-20-12t-9-21q0-14 9-20.5t20-8.5v62ZM320-200q-117 0-198.5-81.5T40-480q0-117 81.5-198.5T320-760h320q117 0 198.5 81.5T920-480q0 117-81.5 198.5T640-200H320Zm0-80h320q83 0 141.5-58.5T840-480q0-83-58.5-141.5T640-680H320q-83 0-141.5 58.5T120-480q0 83 58.5 141.5T320-280Zm160-200Z" class="stroke-current" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+
+      <h2 class="text-gray-200 text-base font-normal">BanTADS</h2>
+    </div>
+  
+    <nav class="p-8 flex flex-col gap-8">
+      @if (usuarioLogado === TipoUsuario.CLIENTE) {
+        <div class="flex flex-col gap-1">
+          <h3 class="text-gray-200 text-xs font-semibold uppercase">Geral</h3>
+
+          <a [routerLink]="['/customerDashboard']" class="text-gray-300 text-sm hover:bg-blue-300 hover:text-black rounded px-2 py-1 flex items-center gap-2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="stroke-current">
+            <path d="M9 5H7C5.89543 5 5 5.89543 5 7V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V7C19 5.89543 18.1046 5 17 5H15M9 5C9 6.10457 9.89543 7 11 7H13C14.1046 7 15 6.10457 15 5M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>Dashboard</span>
+          </a>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <h3 class="text-gray-200 text-xs font-semibold uppercase">Operações</h3>
+
+          <div>
+            <a [routerLink]="['/cliente/depositar']" class="text-gray-300 text-sm hover:bg-blue-300 hover:text-black rounded px-2 py-1 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor" class="stroke-current"><path d="M336-120q-91 0-153.5-62.5T120-336q0-38 13-74t37-65l142-171-68-136q-10-20 1.5-39t34.5-19h400q23 0 34.5 19t1.5 39l-68 136 142 171q24 29 37 65t13 74q0 91-63 153.5T624-120H336Zm144-200q-33 0-56.5-23.5T400-400q0-33 23.5-56.5T480-480q33 0 56.5 23.5T560-400q0 33-23.5 56.5T480-320Zm-95-360h190l40-80H345l40 80Zm-49 480h288q57 0 96.5-39.5T760-336q0-24-8.5-46.5T728-423L581-600H380L232-424q-15 18-23.5 41t-8.5 47q0 57 39.5 96.5T336-200Z"/></svg>
+
+              <span>Depósito</span>
+            </a>
+
+            <a [routerLink]="['/cliente/sacar']" class="text-gray-300 text-sm hover:bg-blue-300 hover:text-black rounded px-2 py-1 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor" class="stroke-current"><path d="M480-520q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM200-400q-33 0-56.5-23.5T120-480v-320q0-33 23.5-56.5T200-880h560q33 0 56.5 23.5T840-800v320q0 33-23.5 56.5T760-400H200Zm80-80h400q0-33 23.5-56.5T760-560v-160q-33 0-56.5-23.5T680-800H280q0 33-23.5 56.5T200-720v160q33 0 56.5 23.5T280-480Zm-80 0v-320 320Zm240 248-36-36q-11-11-28-11t-28 11q-11 11-11 28t11 28l104 104q6 6 13 8.5t15 2.5q8 0 15-2.5t13-8.5l104-104q11-11 11-28t-11-28q-11-11-28-11t-28 11l-36 36v-88q0-17-11.5-28.5T480-360q-17 0-28.5 11.5T440-320v88Z"/></svg>
+
+              <span>Saque</span>
+            </a>
+
+            <a [routerLink]="['/cliente/transferir']" class="text-gray-300 text-sm hover:bg-blue-300 hover:text-black rounded px-2 py-1 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor" class="stroke-current"><path d="M367-320H120q-17 0-28.5-11.5T80-360q0-17 11.5-28.5T120-400h247l-75-75q-11-11-11-27.5t11-28.5q12-12 28.5-12t28.5 12l143 143q6 6 8.5 13t2.5 15q0 8-2.5 15t-8.5 13L348-188q-12 12-28 11.5T292-189q-11-12-11.5-28t11.5-28l75-75Zm226-240 75 75q11 11 11 27.5T668-429q-12 12-28.5 12T611-429L468-572q-6-6-8.5-13t-2.5-15q0-8 2.5-15t8.5-13l144-144q12-12 28-11.5t28 12.5q11 12 11.5 28T668-715l-75 75h247q17 0 28.5 11.5T880-600q0 17-11.5 28.5T840-560H593Z"/></svg>
+
+              <span>Transferência</span>
+            </a>
+
+            <a [routerLink]="['/cliente/extrato']" class="text-gray-300 text-sm hover:bg-blue-300 hover:text-black rounded px-2 py-1 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor" class="stroke-current"><path d="M200-120q-33 0-56.5-23.5T120-200v-640h80v640h640v80H200Zm40-120v-360h160v360H240Zm200 0v-560h160v560H440Zm200 0v-200h160v200H640Z"/></svg>
+
+              <span>Extrato bancário</span>
+            </a>
+          </div>
+        </div>
+      }
+  
+      @if (usuarioLogado === TipoUsuario.GERENTE) {
+        <div class="flex flex-col gap-1">
+          <h3 class="text-gray-200 text-xs font-semibold uppercase">Geral</h3>
+
+          <div>
+            <a [routerLink]="['/gerente']" class="text-gray-300 text-sm hover:bg-green-300 hover:text-black rounded px-2 py-1 flex items-center gap-2">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="stroke-current">
+              <path d="M9 5H7C5.89543 5 5 5.89543 5 7V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V7C19 5.89543 18.1046 5 17 5H15M9 5C9 6.10457 9.89543 7 11 7H13C14.1046 7 15 6.10457 15 5M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+  
+              <span>Dashboard</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <h3 class="text-gray-200 text-xs font-semibold uppercase">Clientes</h3>
+          
+          <div>
+            <a [routerLink]="['/gerente/clientes']" class="text-gray-300 text-sm hover:bg-green-300 hover:text-black rounded px-2 py-1 flex items-center gap-2">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="stroke-current">
+              <path d="M12 4.35418C12.7329 3.52375 13.8053 3 15 3C17.2091 3 19 4.79086 19 7C19 9.20914 17.2091 11 15 11C13.8053 11 12.7329 10.4762 12 9.64582M15 21H3V20C3 16.6863 5.68629 14 9 14C12.3137 14 15 16.6863 15 20V21ZM15 21H21V20C21 16.6863 18.3137 14 15 14C13.9071 14 12.8825 14.2922 12 14.8027M13 7C13 9.20914 11.2091 11 9 11C6.79086 11 5 9.20914 5 7C5 4.79086 6.79086 3 9 3C11.2091 3 13 4.79086 13 7Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+
+              <span>Todos</span>
+            </a>
+            
+            <a [routerLink]="['/gerente/clientes/buscar']" class="text-gray-300 text-sm hover:bg-green-300 hover:text-black rounded px-2 py-1 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor" class="stroke-current"><path d="M440-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47Zm0-80q33 0 56.5-23.5T520-640q0-33-23.5-56.5T440-720q-33 0-56.5 23.5T360-640q0 33 23.5 56.5T440-560ZM856-48 756-148q-21 12-45 20t-51 8q-75 0-127.5-52.5T480-300q0-75 52.5-127.5T660-480q75 0 127.5 52.5T840-300q0 27-8 51t-20 45l100 100q11 11 11 28t-11 28q-11 11-28 11t-28-11ZM731-229q29-29 29-71t-29-71q-29-29-71-29t-71 29q-29 29-29 71t29 71q29 29 71 29t71-29Zm-611-11v-31q0-34 17-63t47-44q42-22 93.5-38.5T383-438q17-2 29 10t12 29q0 17-12 29.5T383-355q-57 7-96 21t-66 28q-10 5-15.5 14.5T200-271v31h184q17 0 28.5 11.5T424-200q0 17-11.5 28.5T384-160H200q-33 0-56.5-23.5T120-240Zm320-400Zm-33 400Z"/></svg>
+
+              <span>Buscar</span>
+            </a>
+
+            <a [routerLink]="['/gerente/clientes/top3']" class="text-gray-300 text-sm hover:bg-green-300 hover:text-black rounded px-2 py-1 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor" class="stroke-current"><path d="m305-704 112-145q12-16 28.5-23.5T480-880q18 0 34.5 7.5T543-849l112 145 170 57q26 8 41 29.5t15 47.5q0 12-3.5 24T866-523L756-367l4 164q1 35-23 59t-56 24q-2 0-22-3l-179-50-179 50q-5 2-11 2.5t-11 .5q-32 0-56-24t-23-59l4-165L95-523q-8-11-11.5-23T80-570q0-25 14.5-46.5T135-647l170-57Zm49 69-194 64 124 179-4 191 200-55 200 56-4-192 124-177-194-66-126-165-126 165Zm126 135Z"/></svg>
+
+              <span>Ranking</span>
+            </a>
+          </div>
+        </div>
+      }
+
+      @if (usuarioLogado === TipoUsuario.ADMINISTRADOR) {
+        <div class="flex flex-col gap-1">
+          <h3 class="text-gray-200 text-xs font-semibold uppercase">Geral</h3>
+
+          <div>
+            <a [routerLink]="['/admin']" class="text-gray-300 text-sm hover:bg-purple-300 hover:text-black rounded px-2 py-1 flex items-center gap-2">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="stroke-current">
+              <path d="M9 5H7C5.89543 5 5 5.89543 5 7V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V7C19 5.89543 18.1046 5 17 5H15M9 5C9 6.10457 9.89543 7 11 7H13C14.1046 7 15 6.10457 15 5M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+  
+              <span>Dashboard</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <h3 class="text-gray-200 text-xs font-semibold uppercase">Gerentes</h3>
+
+          <div>
+            <a [routerLink]="['/admin/gerentes']" class="text-gray-300 text-sm hover:bg-purple-300 hover:text-black rounded px-2 py-1 flex items-center gap-2">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="stroke-current">
+              <path d="M12 4.35418C12.7329 3.52375 13.8053 3 15 3C17.2091 3 19 4.79086 19 7C19 9.20914 17.2091 11 15 11C13.8053 11 12.7329 10.4762 12 9.64582M15 21H3V20C3 16.6863 5.68629 14 9 14C12.3137 14 15 16.6863 15 20V21ZM15 21H21V20C21 16.6863 18.3137 14 15 14C13.9071 14 12.8825 14.2922 12 14.8027M13 7C13 9.20914 11.2091 11 9 11C6.79086 11 5 9.20914 5 7C5 4.79086 6.79086 3 9 3C11.2091 3 13 4.79086 13 7Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+
+              <span>Todos</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <h3 class="text-gray-200 text-xs font-semibold uppercase">Relatórios</h3>
+          <a [routerLink]="['/admin/relatorio']" class="text-gray-300 text-sm hover:bg-purple-300 hover:text-black rounded px-2 py-1 flex items-center gap-2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="stroke-current">
+            <path d="M9 19V13C9 11.8954 8.10457 11 7 11H5C3.89543 11 3 11.8954 3 13V19C3 20.1046 3.89543 21 5 21H7C8.10457 21 9 20.1046 9 19ZM9 19V9C9 7.89543 9.89543 7 11 7H13C14.1046 7 15 7.89543 15 9V19M9 19C9 20.1046 9.89543 21 11 21H13C14.1046 21 15 20.1046 15 19M15 19V5C15 3.89543 15.8954 3 17 3H19C20.1046 3 21 3.89543 21 5V19C21 20.1046 20.1046 21 19 21H17C15.8954 21 15 20.1046 15 19Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+
+            <span>Relatórios</span>
+          </a>
+        </div>
+      }
+    </nav>
+  </div>
+
+  <div class="flex p-7 items-center justify-between">      
+      <div class="flex flex-col">
+        <p class="text-gray-100 text-base font-medium">Nome</p>
+        <p class="text-gray-300 text-sm">E-mail</p>
+      </div>
+
+      <div class="flex gap-3">
+        <button class="text-gray-300 hover:text-gray-400 hover:cursor-pointer transition-colors duration-300" [routerLink]="['cliente/perfil']" >
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor" class="stroke-current"><path d="M433-80q-27 0-46.5-18T363-142l-9-66q-13-5-24.5-12T307-235l-62 26q-25 11-50 2t-39-32l-47-82q-14-23-8-49t27-43l53-40q-1-7-1-13.5v-27q0-6.5 1-13.5l-53-40q-21-17-27-43t8-49l47-82q14-23 39-32t50 2l62 26q11-8 23-15t24-12l9-66q4-26 23.5-44t46.5-18h94q27 0 46.5 18t23.5 44l9 66q13 5 24.5 12t22.5 15l62-26q25-11 50-2t39 32l47 82q14 23 8 49t-27 43l-53 40q1 7 1 13.5v27q0 6.5-2 13.5l53 40q21 17 27 43t-8 49l-48 82q-14 23-39 32t-50-2l-60-26q-11 8-23 15t-24 12l-9 66q-4 26-23.5 44T527-80h-94Zm7-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"/></svg>
+        </button>
+
+        <button class="text-gray-300 hover:text-gray-400 hover:cursor-pointer transition-colors duration-300" [routerLink]="['/']" >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="stroke-current">
+            <path d="M11 16L7 12M7 12L11 8M7 12L21 12M16 16V17C16 18.6569 14.6569 20 13 20H6C4.34315 20 3 18.6569 3 17V7C3 5.34315 4.34315 4 6 4H13C14.6569 4 16 5.34315 16 7V8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+  </div>
+</div>

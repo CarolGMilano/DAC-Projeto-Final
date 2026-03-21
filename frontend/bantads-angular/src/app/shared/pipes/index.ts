@@ -1,2 +1,5 @@
 export * from './cpfFormatador/cpf-formatador-pipe'
 export * from './telefoneFormatador/telefone-formatador-pipe'
+export * from './salarioFormatador/salario-formatador-pipe'
+export * from './enderecoFormatador/endereco-formatador-pipe'
+export * from './cepFormatador/cep-formatador-pipe'

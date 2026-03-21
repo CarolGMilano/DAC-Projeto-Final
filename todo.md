@@ -26,12 +26,16 @@
    **Total**: 2 telas
 
 * #### Tela de Login (R02) 🟦
-
-   * [ ] 
+   * [x] Layout finalizado com campos de usuário e senha simulados
+   * [x] Fluxo de navegação testado com dados mockados
+   * [x] Feedback visual de preenchimento e erro simulado
+   * [x] Botões e links funcionando no protótipo
 
 * #### Tela de Autocadastro (R01) 🟦
-
-   * [ ] 
+   * [x] Formulário completo com todos os campos simulados
+   * [x] Validações visuais de campos obrigatórios e formatos (mock)
+   * [x] Fluxo de cadastro testado com dados mockados
+   * [x] Feedback visual de sucesso e erro simulado
 </details>
 
 ---
