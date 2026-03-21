@@ -36,3 +36,16 @@ export function mascaraCEP(entrada: string): string {
 
   return `${entrada.substring(0,5)}-${entrada.substring(5)}`;
 }
+
+export function mascaraSalario(entrada: string): string {
+  entrada = removerNaoNumericos(entrada).substring(0, 9);
+
+  if (!entrada || Number(entrada) === 0) return '';
+
+  const numero = Number(entrada) / 100;
+
+  return numero.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  });
+}
