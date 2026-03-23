@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ClienteService } from "../../../services";
+import { ICliente } from '../../../shared';
 
 type DashboardView = 'SALDO' | 'DEPOSITO' | 'SAQUE' | 'TRANSFERENCIA';
 
@@ -12,13 +14,15 @@ type DashboardView = 'SALDO' | 'DEPOSITO' | 'SAQUE' | 'TRANSFERENCIA';
   styleUrl: './customer-dashboard.css',
 })
 export class CustomerDashboard {
-    saldo: number = 67.00;
-    limite: number = 200.00;
-   view: DashboardView = 'SALDO';
-   
+  idCliente: number = 1;
+  cliente!: ICliente;
+  limite: number = 200.00;
+  view: DashboardView = 'SALDO';
 
   valorInput: number | null = null;
   destinatarioInput: string = '';
+
+  constructor(private clienteService: ClienteService) {}
 
   mudarView(novaView: DashboardView) {
     this.view = novaView;
@@ -26,7 +30,10 @@ export class CustomerDashboard {
     this.destinatarioInput = '';
   }
 
- 
+  ngOnInit() {
+    // buscando o cliente de ID 2 por padrao
+    this.cliente = this.clienteService.getById(this.idCliente);
+  }
 
 
   depositar() {

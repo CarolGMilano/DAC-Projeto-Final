@@ -10,4 +10,9 @@ export interface ICliente {
   estadoCivil: string; //Conferir com o professor o que "Estado" nos dados do cliente significa.
   salario: number | null;
   endereco: IEndereco; //Referência ao endereço correspondente
+  saldo: number | null;
+  limite: number;
+  gerenteNome: string;
+  gerenteCpf: string;
+  numeroConta: string;
 }

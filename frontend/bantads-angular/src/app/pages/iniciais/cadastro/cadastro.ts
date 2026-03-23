@@ -40,7 +40,12 @@ export class Cadastro {
     email: '',
     estadoCivil: '',
     salario: null,
-    endereco: this.endereco
+    saldo: null,
+    limite: 0,
+    endereco: this.endereco,
+    gerenteNome: '',
+    gerenteCpf: '',
+    numeroConta: '',
   };
 
   salarioFormatado: string = '';
@@ -146,6 +151,11 @@ export class Cadastro {
       email: this.cliente.email,
       estadoCivil: this.cliente.estadoCivil,
       salario: this.salarioParaNumero(this.salarioFormatado),
+      saldo: this.cliente.saldo,
+      limite: this.cliente.limite,
+      gerenteNome: this.cliente.gerenteNome,
+      gerenteCpf: this.cliente.gerenteCpf,
+      numeroConta: this.cliente.numeroConta,
       endereco: {
         cep: this.endereco.cep,
         logradouro: this.cliente.endereco.logradouro,

@@ -3,7 +3,7 @@ import { Routes } from '@angular/router';
 import { Login, Cadastro, Gerentes } from './pages';
 import { MainLayout } from './layout';
 
-import { CustomerDashboard } from './components/customer-dashboard/customer-dashboard';
+import { CustomerDashboard } from './pages/cliente/customer-dashboard/customer-dashboard';
 import { ProfileChange } from './pages/cliente/profile-change/profile-change';
 import { BankStatementLookup } from './components/bank-statement-lookup/bank-statement-lookup';
 import { ClientSearch } from './components/client-search/client-search'; 
@@ -42,4 +42,4 @@ export const routes: Routes = [
             { path: "bankStatement", component: BankStatementLookup },
         ]
     }
-];]
+];

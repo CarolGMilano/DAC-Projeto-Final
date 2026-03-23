@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { ClienteService } from '../../services';
+import { ICliente } from '../../shared';
 
 @Component({
   selector: 'app-client-list',
@@ -9,5 +11,15 @@ import { Component } from '@angular/core';
 //R12: Consultar Todos os Clientes - Deve apresentar em uma tabela todos os seus clientes, contendo CPF, Nome, Cidade, Estado, Saldo da conta, Limite da conta. Deve ser ordenado de forma crescente por Nome. Deve ser disponibilizado um campo de texto onde o gerente pode pesquisar o cliente por CPF (ou parte dele) e Nome (ou parte dele). Cada cliente deve possuir um link que, ao ser pressionado, vai para uma tela contendo todos os dados do cliente e de sua conta;
 
 export class ClientList {
+  clientes!: ICliente[];
+
+  constructor(
+    private clienteService: ClienteService,
+  
+  ) {}
+
+  ngOnInit() {
+    this.clientes = this.clienteService.get();
+  }
 
 }
