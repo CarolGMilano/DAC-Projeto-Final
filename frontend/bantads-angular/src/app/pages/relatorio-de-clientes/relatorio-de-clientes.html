@@ -1,0 +1,39 @@
+<!--
+R16: Relatório de Clientes - Deve apresentar em tela uma lista com 
+todos os clientes do banco contendo: CPF do cliente, Nome do cliente, 
+E-mail do Cliente, Salário, Número da conta, Saldo, Limite do cliente, 
+CPF do gerente e Nome do gerente. Deve-se ordenar de forma crescente por 
+nome do cliente.
+-->
+
+<table>
+    <tbody>
+        <!-- Colunas -->
+        <tr>
+            <th scope="col">CPF</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Email</th>
+            <th scope="col">Salário</th>
+            <th scope="col">Conta</th>
+            <th scope="col">Saldo</th>
+            <th scope="col">Limite</th>
+            <th scope="col">CPF Gerente</th>
+            <th scope="col">Gerente</th>
+        </tr>
+
+        @for (c of clientes; track c.cpf)
+        {
+            <tr>
+                <td>{{ c.cpf }}</td>
+                <td>{{ c.nome }}</td>
+                <td>{{ c.email }}</td>
+                <td>{{ c.salario }}</td>
+                <td>{{ c.numeroConta }}</td>
+                <td>{{ c.saldo }}</td>
+                <td>{{ c.limite }}</td>
+                <td>{{ c.gerenteCpf }}</td>
+                <td>{{ c.gerenteNome }}</td>
+            </tr>
+        }
+    </tbody>
+</table>

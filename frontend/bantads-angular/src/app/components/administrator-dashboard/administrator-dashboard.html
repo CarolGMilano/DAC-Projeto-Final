@@ -1,0 +1,31 @@
+<!--
+R15: Tela Inicial Administrador - Apresenta uma tela (pode ser em estilo dashboard) 
+mostrando todos os gerentes do banco, para cada gerente apresenta: quantos clientes possui, 
+a totalização (soma) de saldos positivo (0.0 conta como positivo) e a totalização (soma) 
+de saldos negativos. Deve ser mostrado os gerentes com maiores saldos positivos primeiro;
+ -->
+
+<table>
+    <tbody>
+        <!-- Colunas -->
+        <tr>
+            <th>Nº</th>
+            <th>Gerente</th>
+            <th>Clientes</th>
+            <th>Saldos Positivos</th>
+            <th>Saldos Negativos</th>
+        </tr>
+
+        <!-- Listagem -->
+        @for (s of exemplos; track s; let i = $index)
+        {
+            <tr>
+                <td>{{ i + 1 }}</td>
+                <td>{{ s.name }}</td>
+                <td>{{ s.clientes }}</td>
+                <td>{{ s.saldoPositivo }}</td>
+                <td>{{ s.saldoNegativo }}</td>
+            </tr>
+        }
+    </tbody>
+</table>

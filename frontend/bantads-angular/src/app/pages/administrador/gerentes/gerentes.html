@@ -1,0 +1,287 @@
+<div class="flex flex-col gap-10 shadow-lg px-10 py-10 bg-zinc-800 rounded-lg h-full">
+  <div class="flex flex-col gap-10">
+    <h2 class="text-gray-200 font-bold text-2xl">Gerentes</h2>
+
+    <div class="flex min-w-2/3 place-content-between">
+      <div class="relative w-100">
+        <div class="absolute left-3 top-4.5 -translate-y-1/2 pointer-events-none">
+          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+              d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
+          </svg>
+        </div>
+
+        <input name="pesquisar" type="text" placeholder="Pesquisar por gerente" [(ngModel)]="pesquisa"
+        class="w-full rounded-md bg-zinc-700 px-10 py-1.5 text-sm font-light text-gray-200 placeholder:text-gray-400 border border-zinc-600 outline-none focus:border-zinc-500" />
+      </div>
+
+      <button type="button" alt="Adicionar"
+        class="py-1.5 px-2.5 rounded flex items-center justify-center group bg-zinc-700 text-white font-normal text-base hover:bg-gray-700 hover:cursor-pointer"
+        (click)="abrirAdicionar()">
+        <svg width="20" height="20" viewBox="0 0 10 10" fill="none" class="stroke-white mr-2 group-hover:stroke-white"
+          xmlns="http://www.w3.org/2000/svg">
+          <path d="M4.99999 1.66667V8.33334M8.33332 5.00001L1.66666 5.00001" stroke-width="0.8" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+
+        Adicionar Gerente
+      </button>
+    </div>
+  </div>
+
+  <div class=" overflow-x-auto max-h-100 overflow-y-auto">
+    <table class="w-full table-fixed">
+      <thead class=" border-b border-gray-200">
+        <tr>
+          <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">
+            <span
+              class="bg-white border-none text-zinc-800 text-xs font-medium pl-2 pr-1 py-0.3 rounded-full mr-1">
+              {{this.gerentes.length}}
+            </span>
+            C.P.F
+          </th>
+          <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Nome</th>
+          <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">E-mail</th>
+          <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-1/6">Telefone</th>
+          <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-r-lg w-1/6"></th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y divide-gray-200">
+        @for (gerente of gerentesFiltrados; track gerente.cpf){
+          <tr class="hover:bg-gray-50 transition-colors">
+            <td class="px-12 py-2 text-sm text-gray-300">{{ gerente.cpf | cpfFormatador }}</td>
+            <td class="px-4 py-2 text-sm text-gray-300">{{ gerente.nome }}</td>
+            <td class="px-4 py-2 text-sm text-gray-300">{{ gerente.email }}</td>
+            <td class="px-4 py-2 text-sm text-gray-300">{{ gerente.telefone | telefoneFormatador }}</td>
+            <td class="px-12 py-2 space-x-4">
+              <button type="button" class="px-1 py-1 text-white rounded-full group hover:bg-gray-100 hover:cursor-pointer"
+                (click)="abrirEditar(gerente)">
+                <svg width="20" height="20" viewBox="0 0 8 8" fill="none"
+                  class="stroke-gray-500 group-hover:stroke-gray-700" xmlns="http://www.w3.org/2000/svg">
+                  <g clip-path="url(#clip0_294_1596)">
+                    <path
+                      d="M5.07736 1.74408L6.25587 2.92259M5.57736 1.24408C5.9028 0.918641 6.43044 0.918641 6.75587 1.24408C7.08131 1.56951 7.08131 2.09715 6.75587 2.42259L2.16664 7.01183H0.999969V5.82147L5.57736 1.24408Z"
+                      stroke-width="0.3" stroke-linecap="round" stroke-linejoin="round" />
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_294_1596">
+                      <rect width="8" height="8" fill="white" />
+                    </clipPath>
+                  </defs>
+                </svg>
+              </button>
+            
+              @if(gerentes.length > 1){
+                <button type="button" class="px-1 py-1 text-white rounded-full group hover:bg-red-100 hover:cursor-pointer"
+                  (click)="abrirExcluir(gerente)">
+                  <svg width="20" height="20" viewBox="0 0 8 8" fill="none" class="stroke-[#C70003]"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M6.33334 2.33333L6.04424 6.38083C6.01932 6.7297 5.72902 7 5.37926 7H2.62076C2.271 7 1.9807 6.7297 1.95578 6.38083L1.66668 2.33333M3.33334 3.66667V5.66667M4.66668 3.66667V5.66667M5.00001 2.33333V1.33333C5.00001 1.14924 4.85077 1 4.66668 1H3.33334C3.14925 1 3.00001 1.14924 3.00001 1.33333V2.33333M1.33334 2.33333H6.66668"
+                      stroke-width="0.4" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </button>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="px-4 py-2 text-center text-gray-500">Nenhum gerente encontrado.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (mostrarFormulario) {
+    <div class="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
+      <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+        <form #formGerentes="ngForm" (ngSubmit)="salvar()">
+          <div class="flex flex-col gap-5">
+            <h2 class="text-lg font-semibold text-gray-900">{{ modoFormulario === 'adicionar' ? 'Cadastrar gerente' :
+              'Editar gerente' }}</h2>
+
+            <div class="flex flex-col gap-2">
+              <div class="col-span-6 mt-1.5">
+                <input id="nome" placeholder="Nome" type="text" name="nome" [(ngModel)]="gerente.nome" #nome="ngModel"
+                  required
+                  class="w-full rounded-md bg-white pl-4 py-2 pr-3 text-sm font-light text-gray-900 placeholder:text-gray-600 border border-gray-400 outline-none focus:border-gray-800"
+                  [ngClass]="{
+                  'border-red-500': nome.errors?.['required'] && (nome.touched || formGerentes.submitted),
+                  'border-green-500': nome.valid && nome.touched,
+                  'border-gray-300': nome.pristine
+                  }" />
+
+                @if (nome.errors?.['required'] && (nome.touched || formGerentes.submitted)) {
+                <span class="pl-2 text-red-600 text-xs">O nome é obrigatório</span>
+                }
+              </div>
+
+              @if(modoFormulario == 'adicionar'){
+                <div class="col-span-3 mt-1.5">
+                  <!-- Dentro dos () vai o evento que você quer "escutar" pra executar a função escolhida. -->  
+                  <input 
+                    id="cpf" 
+                    type="text" 
+                    name="cpf" 
+                    maxlength="14" 
+                    autocomplete="family-name"
+                    #cpf="ngModel" 
+                    required 
+                    [(ngModel)]="gerente.cpf" 
+                    placeholder="000.000.000-00" 
+                    CpfValidator
+                    [numericos]="'cpf'" 
+                    class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-400 sm:text-sm/6 border border-1 outline-none focus:border-gray-400"
+                    [ngClass]="{
+                      'border-red-500': cpf.errors?.['required'] && (cpf.touched || cpf.dirty),
+                      'border-yellow-500': cpf.errors?.['cpfIncompleto'] && (cpf.touched || cpf.dirty),
+                      'border-green-500': cpf.valid && cpf.touched,
+                      'border-gray-300': cpf.pristine
+                    }" />
+
+                  @if (cpf.errors?.['required'] && (cpf.touched || cpf.dirty)) {
+                    <span class="pl-2 text-red-600 text-xs">O CPF é obrigatório</span>
+                  } @else if (cpf.errors?.['cpfIncompleto'] && (cpf.touched || cpf.dirty)) {
+                    <span class="pl-2 text-yellow-600 text-xs">O CPF está incompleto ou inválido</span>
+                  }
+                </div>
+              }
+
+              <div class="col-span-6 mt-1.5">
+                <input id="email" placeholder="E-mail" autocomplete="email" type="email" name="email"
+                  [(ngModel)]="gerente.email" #email="ngModel" email required
+                  class="w-full rounded-md bg-white pl-4 py-2 pr-3 text-sm font-light text-gray-900 placeholder:text-gray-600 border border-gray-400 outline-none focus:border-gray-800"
+                  [ngClass]="{
+                  'border-red-500': (email.invalid && (email.touched || formGerentes.submitted)),
+                  'border-yellow-500': (email.errors?.['email']),
+                  'border-green-500': email.valid && email.touched,
+                  'border-gray-300': email.pristine
+                    }" />
+
+                @if (email.invalid && (email.touched || formGerentes.submitted)) {
+                  @if (email.errors?.['required']) {
+                    <span class="pl-2 text-red-600 text-xs">O email é obrigatório</span>
+                  } @else if (email.errors?.['email']) {
+                    <span class="pl-2 text-yellow-600 text-xs">O email não é válido</span>
+                  }
+                }
+              </div>
+
+              @if(modoFormulario == 'adicionar'){
+                <div class="col-span-3 mt-1.5">
+                  <input 
+                    id="telefone" 
+                    placeholder="(00) 90000-0000" 
+                    type="text" 
+                    maxlength="15" 
+                    name="telefone" 
+                    autocomplete="tel" 
+                    [numericos]="'telefone'"
+                    TelefoneValidator
+                    [(ngModel)]="gerente.telefone" 
+                    #telefone="ngModel" 
+                    required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-400 sm:text-sm/6 border border-1 outline-none focus:border-gray-400"
+                    [ngClass]="{
+                      'border-red-500': telefone.errors?.['vazio'] && (telefone.touched || telefone.dirty),
+                      'border-yellow-500': telefone.errors?.['telefoneIncompleto'] && (telefone.touched || telefone.dirty),
+                      'border-green-500': telefone.valid && telefone.touched,
+                      'border-gray-300': telefone.pristine
+                    }" />
+
+                  @if (telefone.errors?.['vazio'] && (telefone.touched || telefone.dirty)) {
+                    <span class="pl-2 text-red-600 text-xs">O telefone é obrigatório</span>
+                  } @else if (telefone.errors?.['telefoneIncompleto']) {
+                    <span class="pl-2 text-yellow-600 text-xs">O telefone está inválido ou incompleto</span>
+                  }
+                </div>
+              
+                <div class="col-span-6 mt-1.5">
+                  <input id="senha" placeholder="Senha" type="password" name="senha"
+                    [(ngModel)]="gerente.senhaAtual" #senha="ngModel" required minlength="4"
+                    class="w-full rounded-md bg-white pl-4 py-2 pr-3 text-sm font-light text-gray-900 placeholder:text-gray-600 border border-gray-400 outline-none focus:border-gray-800"
+                    [ngClass]="{
+                      'border-yellow-500': senha.errors?.['minlength'] && (senha.touched || formGerentes.submitted),
+                      'border-green-500': senha.valid && senha.touched,
+                      'border-gray-300': senha.pristine
+                    }" />
+
+                  @if (senha.invalid && (senha.touched || formGerentes.submitted)) {
+                    @if (senha.errors?.['required']) {
+                      <span class="pl-2 text-red-600 text-xs">Digite uma senha</span>
+                    } @else if (senha.errors?.['minlength']) {
+                      <span class="pl-2 text-yellow-600 text-xs">A senha deve ter pelo menos 4 dígitos</span>
+                    }
+                  }
+                </div>
+              }
+
+              @if(modoFormulario == 'editar'){
+                <div class="col-span-6 mt-1.5">
+                  <input id="senhaAtual" placeholder="Senha atual" type="password" name="senhaAtual"
+                    [(ngModel)]="gerente.senhaAtual"
+                    #senhaAtual="ngModel"
+                    [required]="!!gerente.novaSenha"
+                    minlength="4"
+                    class="w-full rounded-md bg-white pl-4 py-2 pr-3 text-sm font-light text-gray-900 placeholder:text-gray-600 border border-gray-400 outline-none focus:border-gray-800" />
+                </div>
+
+                <div class="col-span-6 mt-1.5">
+                  <input id="novaSenha" placeholder="Nova senha" type="password" name="novaSenha"
+                    [(ngModel)]="gerente.novaSenha"
+                    #novaSenha="ngModel"
+                    minlength="4"
+                    class="w-full rounded-md bg-white pl-4 py-2 pr-3 text-sm font-light text-gray-900 placeholder:text-gray-600 border border-gray-400 outline-none focus:border-gray-800" />
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="mt-6 flex items-center justify-end gap-x-6">
+            <button type="button" (click)="cancelar()"
+              class="py-1.5 px-4 rounded-md flex items-center justify-center group bg-white text-black font-normal text-base hover:bg-gray-200 hover:text-gray-800 hover:cursor-pointer">Cancelar</button>
+
+            <div class="relative group inline-block">
+              <button type="submit"
+                [disabled]="modoFormulario === 'adicionar' ? !formGerentes.valid : false"
+                class="py-1.5 px-4 rounded-md flex items-center justify-center group bg-gray-800 text-white font-normal text-base hover:bg-gray-700 hover:cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed">Salvar</button>
+
+              @if (!formGerentes.valid) {
+              <div
+                class="absolute left-2 translate-x-1/2 bottom-full mb-2 z-10 pointer-events-none opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 bg-black text-white text-xs rounded py-3 px-2 transition-all duration-300 ease-out bg-indigo-400">
+                Preencha o formulário corretamente
+              </div>
+              }
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  @if(mostrarPopupExclusao) {
+    <div class="fixed inset-0 flex items-center justify-center bg-black/60 z-50">  
+      <div class="flex flex-col gap-6 items-center p-5 bg-white rounded-lg shadow-xl w-full max-w-md">
+              
+        <svg xmlns="http://www.w3.org/2000/svg" height="50px" viewBox="0 -960 960 960" width="50px" fill="#C70003"><path d="M536.46-536.46Zm-84.77 84.77ZM480-160q55.62 0 107.62-18.19 52-18.19 93.76-54.12-43.3-33.61-94.55-50.65Q535.59-300 479.99-300q-55.61 0-107.61 16.27t-93.76 51.42q41.76 35.93 93.76 54.12Q424.38-160 480-160Zm90.62-341.08-28.54-28.54q8.84-10.3 13.38-23.66Q560-566.64 560-580q0-32.69-23.65-56.35Q512.69-660 480-660q-13.36 0-26.72 4.54t-23.66 13.38l-28.54-28.54q16.37-14.69 36.61-22.03 20.25-7.35 42.65-7.35 49.97 0 84.81 34.85Q600-630.31 600-580.34q0 22.4-7.35 42.65-7.34 20.24-22.03 36.61Zm214.15 214.16-29.54-29.54q22-37.77 33.39-78.77Q800-436.23 800-480q0-134-93-227t-227-93q-43.77 0-84.77 11.38-41 11.39-78.77 33.39l-29.54-29.54q43.62-27.38 92.56-41.31Q428.43-840 480-840q74.7 0 140.4 28.35t114.3 76.95q48.6 48.6 76.95 114.3Q840-554.7 840-480q0 51.57-13.92 100.52-13.93 48.94-41.31 92.56ZM479.7-120q-74.52 0-140.07-28.42-65.55-28.43-114.21-77-48.66-48.58-77.04-114.25Q120-405.34 120-480q0-61.31 19.58-118.85 19.57-57.53 58.5-105.23L75.46-827.69 104-856.23 872.92-87.31l-28.54 28.54-617.3-616.31q-32.77 42.39-49.93 91.85Q160-533.77 160-480q0 61.9 22.46 118.37 22.46 56.48 65.39 101.01Q299.54-297 358.28-318.5 417.03-340 480-340q53.38 0 104.08 16.46 50.69 16.46 95.92 44.31l54.54 54.54q-50.85 51.61-116.92 78.15Q551.54-120 479.7-120Z"/></svg>
+    
+        <div class="flex flex-col gap-2 text-center">
+          <p class="text-base font-bold text-gray-900">Tem certeza de que deseja excluir?</p>
+          <p class="text-sm text-gray-900">Esta ação é <span class="font-bold">permanente</span> e <span
+              class="font-bold">não poderá ser desfeita</span>. Todas as informações do gerente serão removidas do
+            sistema.</p>
+  
+          <div class="flex gap-10 justify-center items-center mt-4">
+            <button type="button"
+              class="rounded-md px-8 py-2 text-sm font-base bg-[#C70003] text-white hover:bg-red-400 hover:cursor-pointer"
+              (click)="excluir()">Excluir</button>
+            <button type="button"
+              class="rounded-md px-8 py-2 text-sm font-base text-black hover:bg-gray-100 hover:cursor-pointer hover:text-gray-600"
+              (click)="cancelar()">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

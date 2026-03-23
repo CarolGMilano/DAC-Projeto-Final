@@ -1,0 +1,487 @@
+<div class="flex h-screen bg-zinc-900">
+  <div class="w-2/5 flex items-center justify-center h-full bg-zinc-950">
+    <h1 class="text-white">BANDTADS</h1>
+  </div>
+
+  <div class="flex justify-center items-center w-3/5 px-10">
+    <form #formCadastro="ngForm" (ngSubmit)="salvar()" class="w-full max-w-2xl bg-zinc-800 p-8 rounded-xl shadow-2xl ">
+      @if (!cadastroConcluido) {
+        <h2 class="text-xl font-bold text-white mb-8">Cadastro</h2>
+      }
+
+      <div class="grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-6">
+        @if (!cadastroConcluido) {
+          <app-indicador-etapas [etapaAtual]=etapa class="col-span-4 col-start-2 mb-2"></app-indicador-etapas>
+  
+          @if(etapa === EtapaCadastro.DADOS_PESSOAIS) {
+            <p class="col-span-6 text-base text-gray-100">
+              Boas-vindas
+            </p>
+  
+            <p class="col-span-6 text-sm text-gray-400 mb-3">
+              Precisamos de alguns dados pessoais para efetuar seu cadastro
+            </p>
+  
+            <div class="col-span-4 mt-1.5">
+              <label 
+                for="nome"
+                class="block text-sm text-gray-100 mb-1"
+                >Nome</label>
+              <input 
+                id="nome"
+                name="nome"  
+                #nome="ngModel"
+                placeholder="Maria da Silva"
+                [(ngModel)]="cliente.nome" 
+                required
+                class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 outline-none focus:border-gray-400" 
+                [ngClass]="{
+                    'border-red-500': nome.errors?.['required'] && (nome.touched || formCadastro.submitted),
+                    'border-green-500': nome.valid && nome.touched,
+                    'border-neutral-700': nome.pristine
+                }" />
+    
+                @if (nome.errors?.['required'] && (nome.touched || formCadastro.submitted)) {
+                  <span class="pl-2 text-red-600 text-xs">O nome é obrigatório</span>
+                } 
+            </div>
+  
+            <!-- Confirmar com o professor o que é "Estado" nos dados pessoais do cliente. -->
+            <div class="col-span-2 mt-1.5">
+              <label 
+                for="estadoCivil"
+                class="block text-sm text-gray-100 mb-1"
+                >Estado Civil</label>
+              <input 
+                id="estadoCivil"
+                name="estadoCivil" 
+                [(ngModel)]="cliente.estadoCivil" 
+                placeholder="Estado Civil"
+                #estadoCivil="ngModel"
+                required
+                class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 outline-none focus:border-gray-400" [ngClass]="{
+                    'border-red-500': estadoCivil.errors?.['required'] && (estadoCivil.touched || formCadastro.submitted),
+                    'border-green-500': estadoCivil.valid && estadoCivil.touched,
+                    'border-neutral-700': estadoCivil.pristine
+                }" />
+    
+                @if (estadoCivil.errors?.['required'] && (estadoCivil.touched || formCadastro.submitted)) {
+                  <span class="pl-2 text-red-600 text-xs">O estado civil é obrigatório</span>
+                } 
+            </div>
+  
+            <div class="col-span-3 mt-1.5">
+              <label 
+                for="cpf"
+                class="block text-sm text-gray-100 mb-1"
+                >C.P.F</label>
+              <input 
+                id="cpf"
+                name="cpf" 
+                [(ngModel)]="cliente.cpf" 
+                [numericos]="'cpf'" 
+                maxlength="14" 
+                #cpf="ngModel"
+                CpfValidator placeholder="123.456.789-10"
+                class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 outline-none focus:border-gray-400" 
+                required 
+                [ngClass]="{
+                      'border-red-500': cpf.errors?.['required'] && (cpf.touched || cpf.dirty),
+                      'border-yellow-500': cpf.errors?.['cpfIncompleto'] && (cpf.touched || cpf.dirty),
+                      'border-green-500': cpf.valid && cpf.touched,
+                      'border-neutral-700': cpf.pristine
+                }" />
+    
+                @if (cpf.errors?.['required'] && (cpf.touched || cpf.dirty)) {
+                  <span class="pl-2 text-red-600 text-xs">O CPF é obrigatório</span>
+                } @else if (cpf.errors?.['cpfIncompleto'] && (cpf.touched || cpf.dirty)) {
+                  <span class="pl-2 text-yellow-600 text-xs">O CPF está incompleto ou inválido</span>
+                }
+            </div>
+    
+            <div class="col-span-3 mt-1.5">
+              <label 
+                for="telefone"
+                class="block text-sm text-gray-100 mb-1"
+                >Telefone</label>
+              <input 
+                id="telefone"
+                name="telefone" 
+                [(ngModel)]="cliente.telefone" 
+                [numericos]="'telefone'" 
+                TelefoneValidator 
+                placeholder="(41) 99999-9999"
+                maxlength="15" 
+                #telefone="ngModel"
+                required
+                class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 outline-none focus:border-gray-400"  
+                [ngClass]="{
+                    'border-red-500': telefone.errors?.['vazio'] && (telefone.touched || telefone.dirty),
+                    'border-yellow-500': telefone.errors?.['telefoneIncompleto'] && (telefone.touched || telefone.dirty),
+                    'border-green-500': telefone.valid && telefone.touched,
+                    'border-neutral-700': telefone.pristine
+                  }" />
+  
+                @if (telefone.errors?.['vazio'] && (telefone.touched || telefone.dirty)) {
+                  <span class="pl-2 text-red-600 text-xs">O telefone é obrigatório</span>
+                } @else if (telefone.errors?.['telefoneIncompleto']) {
+                  <span class="pl-2 text-yellow-600 text-xs">O telefone está inválido ou incompleto</span>
+                }
+            </div>
+    
+            <div class="col-span-6 mt-1.5">
+              <label 
+                for="email"
+                class="block text-sm text-gray-100 mb-1"
+                >E-mail</label>
+              <input 
+                id="email"
+                name="email" 
+                placeholder="maria@email.com"
+                #email="ngModel"
+                email
+                [(ngModel)]="cliente.email" 
+                required
+                class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 outline-none focus:border-gray-400" [ngClass]="{
+                  'border-red-500': (email.invalid && (email.touched || formCadastro.submitted)),
+                  'border-yellow-500': (email.errors?.['email']),
+                  'border-green-500': email.valid && email.touched,
+                  'border-neutral-700': email.pristine
+                }"
+                />
+  
+                @if (email.invalid && (email.touched || formCadastro.submitted)) {
+                  @if (email.errors?.['required']) {
+                    <span class="pl-2 text-red-600 text-xs">O e-mail é obrigatório</span>
+                  } @else if (email.errors?.['email']) {
+                    <span class="pl-2 text-yellow-600 text-xs">O e-mail não é válido</span>
+                  }
+                } 
+            </div>
+  
+            <div class="col-span-6 mt-8 flex justify-end">
+              <button 
+                type="button"
+                (click)="proximaEtapa()"
+                [disabled]="!validarEtapaAtual()"
+                class="px-4 py-2 text-sm rounded-lg bg-blue-500 text-white hover:bg-blue-400 hover:cursor-pointer transition disabled:bg-gray-400 disabled:cursor-not-allowed">
+                Próximo
+              </button>
+            </div>
+          }
+  
+          @if(etapa === EtapaCadastro.ENDERECO){
+            <p class="col-span-6 text-base text-gray-100">
+              Quase lá!
+            </p>
+  
+            <p class="col-span-6 text-sm text-gray-400 mb-3">
+              Seu endereço é necessário para entregas ou correspondência
+            </p>
+  
+            <div class="col-span-6 mt-1.5 mb-5">
+              <label 
+                for="cep"
+                class="block text-sm text-gray-100 mb-1"
+                >CEP</label>
+              <input 
+                name="cep" 
+                [(ngModel)]="cliente.endereco.cep"
+                (ngModelChange)="validaCEP($event)"
+                placeholder="80000-000"
+                [numericos]="'cep'"
+                #cep="ngModel"
+                required
+                class="block w-50 rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 outline-none focus:border-gray-400" 
+                [ngClass]="{
+                    'border-purple-500': cepStatus == status.ProblemaAPI && (cep.touched || formCadastro.submitted),
+                    'border-red-500': (cepStatus == status.Invalido && (cep.touched || formCadastro.submitted)) || (cepStatus == status.Vazio && (cep.touched || formCadastro.submitted)),
+                    'border-yellow-500': cepStatus == status.Incompleto && (cep.touched || formCadastro.submitted),
+                    'border-green-500': cepStatus == status.Valido,
+                    'border-neutral-700': cep.pristine
+                  }" />
+  
+                @if(cepStatus === status.Incompleto && (cep.touched || formCadastro.submitted)) {
+                  <span class="pl-2 text-yellow-600 text-xs">O CEP está incompleto</span>
+                }
+  
+                @if (cepStatus === status.Invalido && (cep.touched || formCadastro.submitted)) {
+                  <span class="pl-2 text-red-600 text-xs">O CEP não encontrado</span>
+                }
+  
+                @if (cep.invalid && (cep.touched || formCadastro.submitted)) {              
+                  @if(cep.errors?.['required']) {
+                    <span class="pl-2 text-red-600 text-xs">O CEP é obrigatório</span>
+                  } 
+                }
+  
+                @if (cepStatus === status.ProblemaAPI && (cep.touched || formCadastro.submitted)) {
+                  <span class="pl-2 text-purple-600 text-xs">Tivemos um problema com a API. Por favor, recarregue a página.</span>
+                }
+            </div>
+  
+            <div class="col-span-5 mt-1.5">
+              <label 
+                for="logradouro"
+                class="block text-sm text-gray-100 mb-1"
+                >Logradouro</label>
+              <input 
+                id="logradouro"
+                name="logradouro" 
+                [(ngModel)]="cliente.endereco.logradouro"
+                placeholder=""
+                class="block w-full rounded-md bg-zinc-800 text-gray-300 px-3 py-1.5 text-base placeholder:text-gray-500 sm:text-sm/6 border border-zinc-600 cursor-not-allowed" readonly />
+            </div>
+  
+            <div class="col-span-1 mt-1.5">
+              <label 
+                for="numero"
+                class="block text-sm text-gray-100 mb-1"
+                >Nº <span class="text-xs">(Opcional)</span></label>
+              <input 
+                id="numero"
+                name="numero" 
+                [(ngModel)]="cliente.endereco.numero"
+                placeholder="100"
+                numericos
+                class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 border-neutral-700 outline-none focus:border-gray-400" />
+            </div>
+            
+            <div class="col-span-6 mt-1.5">
+              <label 
+                for="complemento"
+                class="block text-sm text-gray-100 mb-1"
+                >Complemento <span class="text-xs">(Opcional)</span></label>
+              <input 
+                id="complemento"
+                name="complemento" 
+                [(ngModel)]="cliente.endereco.complemento"
+                placeholder="Ex: Apto 101"
+                class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 border-neutral-700 outline-none focus:border-gray-400" />
+            </div>
+  
+            <div class="col-span-3 mt-1.5">
+              <label 
+                for="cidade"
+                class="block text-sm text-gray-100 mb-1"
+                >Cidade</label>
+              <input 
+                id="cidade" 
+                name="cidade" 
+                [(ngModel)]="cliente.endereco.cidade"
+                class="block w-full rounded-md bg-zinc-800 text-gray-300 px-3 py-1.5 text-base placeholder:text-gray-500 sm:text-sm/6 border border-zinc-600 cursor-not-allowed" readonly />
+            </div>
+  
+            <div class="col-span-3 mt-1.5">
+              <label 
+                for="cidade"
+                class="block text-sm text-gray-100 mb-1"
+                >Estado</label>
+              <input 
+                id="estado"
+                name="estado" 
+                [(ngModel)]="cliente.endereco.estado"
+                class="block w-full rounded-md bg-zinc-800 text-gray-300 px-3 py-1.5 text-base placeholder:text-gray-500 sm:text-sm/6 border border-zinc-600 cursor-not-allowed" readonly />
+            </div>
+  
+            <div class="col-span-6 flex justify-between mt-8">
+              <button 
+                type="button" 
+                (click)="voltarEtapa()"
+                class="px-4 py-2 text-sm rounded-lg border border-gray-500 text-gray-300 hover:bg-gray-700 hover:cursor-pointer transition">
+                Voltar
+              </button>
+  
+              <button 
+                type="button"
+                (click)="proximaEtapa()"
+                [disabled]="!validarEtapaAtual()"
+                class="px-4 py-2 text-sm rounded-lg bg-blue-500 text-white hover:bg-blue-400 hover:cursor-pointer transition disabled:bg-gray-400 disabled:cursor-not-allowed">
+                Próximo
+              </button>
+            </div>
+          }
+  
+          @if(etapa === EtapaCadastro.DADOS_FINANCEIROS){
+            <p class="col-span-6 text-base text-gray-100">
+              Qual é a sua renda mensal?
+            </p>
+  
+            <p class="col-span-6 text-sm text-gray-400 mb-3">
+              Isso nos ajuda a oferecer uma conta mais adequada ao seu perfil
+            </p>
+  
+            <div class="col-span-3 mt-1.5">
+              <label 
+                for="salario"
+                class="block text-sm text-gray-100 mb-1"
+                >Salário</label>
+              <input 
+                id="salario"
+                name="salario" 
+                [(ngModel)]="salarioFormatado" 
+                placeholder="R$ 5.000,00" 
+                [numericos]="'salario'" 
+                maxlength="15" 
+                #salario="ngModel"
+                required
+                class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 outline-none focus:border-gray-400" 
+                [ngClass]="{
+                    'border-red-500': salario.errors?.['required'] && (salario.touched || formCadastro.submitted),
+                    'border-green-500': salario.valid && salario.touched,
+                    'border-neutral-700': salario.pristine
+                }" />
+    
+                @if (salario.errors?.['required'] && (salario.touched || formCadastro.submitted)) {
+                  <span class="pl-2 text-red-600 text-xs">O salário é obrigatório</span>
+                }
+            </div>
+  
+            <div class="col-span-6 flex justify-between mt-8">
+              <button 
+                type="button" 
+                (click)="voltarEtapa()"
+                class="px-4 py-2 text-sm rounded-lg border border-gray-500 text-gray-300 hover:bg-gray-700 hover:cursor-pointer transition">
+                Voltar
+              </button>
+  
+              <button 
+                type="button"
+                (click)="proximaEtapa()"
+                [disabled]="!validarEtapaAtual()"
+                class="px-4 py-2 text-sm rounded-lg bg-blue-500 text-white hover:bg-blue-400 hover:cursor-pointer transition disabled:bg-gray-400 disabled:cursor-not-allowed">
+                Próximo
+              </button>
+            </div>
+          }
+  
+          @if (etapa === EtapaCadastro.RESUMO) {
+            <p class="col-span-6 text-base text-gray-100">
+              Última conferida nos seus dados
+            </p>
+    
+            <p class="col-span-6 text-sm text-gray-400 mb-3">
+              Confira se todas as informações estão corretas antes de concluir
+            </p>
+    
+            <div class="h-75 col-span-6 bg-zinc-700 p-4 rounded-lg overflow-auto">
+              <div class="border border-1 rounded-lg grid grid-cols-3 gap-4 border-zinc-600 p-2 mb-2">
+                <div class="col-span-3 mb-1">
+                  <p class="text-base text-gray-100 font-semibold">Dados Pessoais</p>
+                </div>
+      
+                <div class="col-span-3 flex flex-col">
+                  <span class="font-medium text-xs text-gray-200">Nome</span>
+                  <p class="text-white font-thin text-base">{{ cliente.nome }}</p>
+                </div>
+      
+                <div class="col-span-2 flex flex-col">
+                  <span class="font-medium text-xs text-gray-200">E-mail</span>
+                  <p class="text-white font-thin text-base">{{ cliente.email }}</p>
+                </div>
+      
+                <div class="col-span-1 flex flex-col">
+                  <span class="font-medium text-xs text-gray-200">CPF</span>
+                  <p class="text-white font-thin text-base">{{ cliente.cpf | cpfFormatador }}</p>
+                </div>
+      
+                <div class="col-span-1 flex flex-col">
+                  <span class="font-medium text-xs text-gray-200">Telefone</span>
+                  <p class="text-white font-thin text-base">{{ cliente.telefone | telefoneFormatador }}</p>
+                </div>
+  
+                <div class="col-span-1 flex flex-col">
+                  <span class="font-medium text-xs text-gray-200">Estado civil</span>
+                  <p class="text-white font-thin text-base">{{ cliente.estadoCivil }}</p>
+                </div>
+              </div>
+    
+              <div class="border border-1 rounded-lg grid grid-cols-1 gap-4 border-zinc-600 p-2 mb-2">
+                <div class="col-span-1 mb-1">
+                  <p class="text-base text-gray-100 font-semibold">Dados Financeiros</p>
+                </div>
+      
+                <div class="flex flex-col">
+                  <span class="font-medium text-xs text-gray-200">Salário</span>
+                  <p class="text-white font-thin text-base">{{ salarioFormatado | salarioFormatador }}</p>
+                </div>
+              </div>
+  
+              <div class="border border-1 rounded-lg grid grid-cols-4 gap-4 border-zinc-600 p-2">
+                <div class="col-span-4 mb-1">
+                  <p class="text-base text-gray-100 font-semibold">Endereço</p>
+                </div>
+      
+                <div class="col-span-4 flex flex-col">
+                  <span class="font-medium text-xs text-gray-200">CEP</span>
+                  <p class="text-white font-thin text-base">{{ cliente.endereco.cep | cepFormatador }}</p>
+                </div>
+      
+                <div class="col-span-3 flex flex-col">
+                  <span class="font-medium text-xs text-gray-200">Logradouro</span>
+                  <p class="text-white font-thin text-base">{{ cliente.endereco.logradouro }}</p>
+                </div>
+      
+                <div class="col-span-1 flex flex-col">
+                  <span class="font-medium text-xs text-gray-200">Número</span>
+                  <p class="text-white font-thin text-base">{{ cliente.endereco.numero || '—' }}</p>
+                </div>
+      
+                <div class="col-span-4 flex flex-col">
+                  <span class="font-medium text-xs text-gray-200">Complemento</span>
+                  <p class="text-white font-thin text-base">{{ cliente.endereco.complemento || '—' }}</p>
+                </div>
+  
+                <div class="col-span-2 flex flex-col">
+                  <span class="font-medium text-xs text-gray-200">Cidade</span>
+                  <p class="text-white font-thin text-base">{{ cliente.endereco.cidade }}</p>
+                </div>
+  
+                <div class="col-span-2 flex flex-col">
+                  <span class="font-medium text-xs text-gray-200">Estado</span>
+                  <p class="text-white font-thin text-base">{{ cliente.endereco.estado }}</p>
+                </div>
+              </div>
+            </div>
+    
+            <div class="col-span-6 flex justify-between mt-8">
+              <button 
+                type="button" 
+                (click)="voltarEtapa()"
+                class="px-4 py-2 text-sm rounded-lg border border-gray-500 text-gray-300 hover:bg-gray-700 hover:cursor-pointer transition">
+                Voltar
+              </button>
+      
+              <button type="submit"
+                [disabled]="!formCadastro.valid"
+                class="px-4 py-2 text-sm rounded-lg bg-green-700 text-white hover:bg-green-600 font-semibold hover:cursor-pointer transition disabled:bg-gray-400 disabled:cursor-not-allowed">
+                Cadastrar
+              </button>
+            </div>
+          }
+        } @else {
+          <div class="flex flex-col items-center justify-center p-6 rounded-lg col-span-6">
+            <svg xmlns="http://www.w3.org/2000/svg" height="70px" viewBox="0 -960 960 960" width="70px" fill="#16a34a">
+              <path d="m212-212 282-100-182-182-100 282Zm709-467q-9 9-21 9t-21-9l-3-3q-14-14-35-14t-35 14L603-479q-9 9-21 9t-21-9q-9-9-9-21t9-21l203-203q32-32 77-32t77 32l3 3q9 9 9 21t-9 21ZM399-799q9-9 21-9t21 9l5 5q32 32 32 76t-32 76l-3 3q-9 9-21 9t-21-9q-9-9-9-21t9-21l3-3q14-14 14-34t-14-34l-5-5q-9-9-9-21t9-21Zm162-80q9-9 21-9t21 9l43 43q32 32 32 77t-32 77L523-559q-9 9-21 9t-21-9q-9-9-9-21t9-21l123-123q14-14 14-35t-14-35l-43-43q-9-9-9-21t9-21Zm320 480q-9 9-21 9t-21-9l-43-43q-14-14-35-14t-35 14l-43 43q-9 9-21 9t-21-9q-9-9-9-21t9-21l43-43q32-32 77-32t77 32l43 43q9 9 9 21t-9 21ZM212-212Zm-104 52 151-420q5-13 15.5-20t22.5-7q8 0 15 3t13 9l270 270q6 6 9 13t3 15q0 12-7 22.5T580-259L160-108q-12 5-23 1.5T118-118q-8-8-11.5-19t1.5-23Z"/>
+            </svg>
+
+            <div class="text-center mt-10">
+              <h3 class="text-gray-200 font-semibold text-lg">Cadastro realizado com sucesso!</h3>
+              <p class="text-white mt-4 font-thin text-base">
+                Recebemos seu cadastro e já estamos analisando seus dados. Fique tranquila(o), você vai receber um e-mail assim que sua conta for aprovada. Obrigada por se cadastrar!
+              </p>
+            </div>
+          </div>
+        }
+      </div>
+    
+      <p class="mt-4 text-center text-sm text-zinc-400">
+        Já tem uma conta?
+        <a [routerLink]="['/']"
+          class="text-blue-400 font-semibold hover:text-blue-300">
+          Fazer login
+        </a>
+      </p>
+    </form>
+  </div>
+</div>
