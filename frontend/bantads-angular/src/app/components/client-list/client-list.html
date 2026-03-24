@@ -1,38 +1,35 @@
-
 <link href="client-list.css">
 <div class="container">
-<div class="Pesquisar">
-<input type="text" placeholder="Busque por Nome ou CPF">
-<button>Pesquisar</button>
-</div>
+  <div class="Pesquisar">
+    <input type="text" [(ngModel)]="filtro" placeholder="Busque por Nome ou CPF">
+    <button (click)="buscar()">Pesquisar</button>
+  </div>
 
-<table class="cliente">
+  <table class="cliente">
+    <thead>
+      <tr>
+        <th>CPF</th>
+        <th>Nome</th>
+        <th>Cidade</th>
+        <th>Estado</th>
+        <th>Saldo da conta</th>
+        <th>Limite da conta</th>
+        <th>Detalhes</th>
+      </tr>
+    </thead>
 
-<thead>
-<tr>
-<th>CPF</th>
-<th>Nome</th>
-<th>Cidade</th>
-<th>Estado</th>
-<th>Saldo da conta</th>
-<th>Limite da conta</th>
-<th>Detalhes</th>
-</tr>
-</thead>
-
-<tbody>
-    @for (s of clientes; track s; let i = $index){
-    <tr>
-    <td>{{s.cpf}}</td>
-    <td>{{s.nome}}</td>
-    <td>{{s.endereco.cidade}}</td>
-    <td>{{s.endereco.estado}}</td>
-    <td>R${{s.saldo}}</td>
-    <td>R${{s.limite}}</td>
-    <td><a>VER</a></td>
-    </tr>
-    }
-
-</tbody>
-</table>
+    <tbody>
+      @for (s of clientes; track s; let i = $index) {
+        <tr>
+          <td>{{s.cpf}}</td>
+          <td>{{s.nome}}</td>
+          <td>{{s.endereco.cidade}}</td>
+          <td>{{s.endereco.estado}}</td>
+          <td>R${{s.saldo}}</td>
+          <td>R${{s.limite}}</td>
+          <td><a (click)="verDetalhes(s)">VER</a></td>
+        </tr>
+      }
+    </tbody>
+  </table>
 </div>

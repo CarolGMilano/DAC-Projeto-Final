@@ -1,40 +1,43 @@
-
 <link href="client-search.css">
 <div class="container">
-<div class="Pesquisar">
-<input type="text" placeholder="Busque usando o CPF">
-<button>Pesquisar</button>
-</div>
+  <div class="Pesquisar">
+    <input type="text" [(ngModel)]="cpf" placeholder="Busque usando o CPF">
+    <button (click)="buscar()">Pesquisar</button>
+  </div>
 
-<table class="cliente">
+  @if (cliente) {
+    <table class="cliente">
+      <thead>
+        <tr>
+          <th>CPF</th>
+          <th>Nome</th>
+          <th>Cidade</th>
+          <th>Estado</th>
+          <th>Numero da conta</th>
+          <th>Saldo da conta</th>
+          <th>Limite da conta</th>
+          <th>Gerente</th>
+          <th>Data criação</th>
+        </tr>
+      </thead>
 
-<thead>
-<tr>
-<th>CPF</th>
-<th>Nome</th>
-<th>Cidade</th>
-<th>Estado</th>
-<th>Numero da conta</th>
-<th>Saldo da conta</th>
-<th>Limite da conta</th>
-<th>Gerente</th>
-<th>Data criação</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>{{cliente.cpf}}</td>
-<td>{{cliente.nome}}</td>
-<td>{{cliente.endereco.cidade}}</td>
-<td>{{cliente.endereco.estado}}</td>
-<td>{{cliente.numeroConta}}</td>
-<td>R${{cliente.saldo}}</td>
-<td>R${{cliente.limite}}</td>
-<td>{{cliente.gerenteNome}}</td>
-<td>01/01/2000</td>
-</tr>
-
-</tbody>
-</table>
+      <tbody>
+        <tr>
+          <td>{{cliente.cpf}}</td>
+          <td>{{cliente.nome}}</td>
+          <td>{{cliente.endereco.cidade}}</td>
+          <td>{{cliente.endereco.estado}}</td>
+          <td>{{cliente.numeroConta}}</td>
+          <td>R${{cliente.saldo}}</td>
+          <td>R${{cliente.limite}}</td>
+          <td>{{cliente.gerenteNome}}</td>
+          <td>01/01/2000</td>
+        </tr>
+      </tbody>
+    </table>
+  } @else if (cpf) {
+    <div>
+      <p>Cliente não encontrado para o CPF informado.</p>
+    </div>
+  }
 </div>

@@ -1,25 +1,37 @@
 import { Component } from '@angular/core';
 import { ClienteService } from '../../services';
 import { ICliente } from '../../shared';
-
+import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-client-list',
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './client-list.html',
   styleUrl: './client-list.css',
 })
-//R12: Consultar Todos os Clientes - Deve apresentar em uma tabela todos os seus clientes, contendo CPF, Nome, Cidade, Estado, Saldo da conta, Limite da conta. Deve ser ordenado de forma crescente por Nome. Deve ser disponibilizado um campo de texto onde o gerente pode pesquisar o cliente por CPF (ou parte dele) e Nome (ou parte dele). Cada cliente deve possuir um link que, ao ser pressionado, vai para uma tela contendo todos os dados do cliente e de sua conta;
-
+ //R12: Consultar Todos os Clientes - Deve apresentar em uma tabela todos os seus clientes, contendo CPF, Nome, Cidade, Estado, Saldo da conta, Limite da conta. Deve ser ordenado de forma crescente por Nome. Deve ser disponibilizado um campo de texto onde o gerente pode pesquisar o cliente por CPF (ou parte dele) e Nome (ou parte dele). Cada cliente deve possuir um link que, ao ser pressionado, vai para uma tela contendo todos os dados do cliente e de sua conta;
 export class ClientList {
-  clientes!: ICliente[];
+  clientes: ICliente[] = [];
+  filtro: string = '';
 
-  constructor(
-    private clienteService: ClienteService,
-  
-  ) {}
+  constructor(private clienteService: ClienteService) {}
 
   ngOnInit() {
-    this.clientes = this.clienteService.get();
+    this.clientes = this.clienteService.get()
+      .sort((a, b) => a.nome.localeCompare(b.nome));
   }
 
+  buscar() {
+    const todos = this.clienteService.get()
+      .sort((a, b) => a.nome.localeCompare(b.nome));
+
+    this.clientes = todos.filter(c =>
+      c.nome.toLowerCase().includes(this.filtro.toLowerCase()) ||
+      c.cpf.includes(this.filtro)
+    );
+  }
+
+  verDetalhes(cliente: ICliente) {
+    console.log('Detalhes do cliente, implimentar depois', cliente);
+
+  }
 }
