@@ -3,7 +3,6 @@ import { ClienteService } from '../../services';
 import { ICliente, SharedModule } from '../../shared';
 import { PrimeiroNomePipe } from '../../shared/pipes/primeiroNome/primeiro-nome-pipe';
 import { MoedaBrPipe } from '../../shared/pipes/moedaBr/moeda-br-pipe';
-import { CpfFormatadorPipe } from '../../shared/pipes';
 
 @Component({
   selector: 'app-top3-clients',
