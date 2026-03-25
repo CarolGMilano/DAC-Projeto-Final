@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { ClienteService } from '../../services';
-import { ICliente } from '../../shared';
+import { ICliente, SharedModule } from '../../shared';
+import { PrimeiroNomePipe } from '../../shared/pipes/primeiroNome/primeiro-nome-pipe';
+import { MoedaBrPipe } from '../../shared/pipes/moedaBr/moeda-br-pipe';
 
 @Component({
   selector: 'app-top3-clients',
-  imports: [],
+  imports: [PrimeiroNomePipe, MoedaBrPipe, SharedModule ],
   templateUrl: './top3-clients.html',
   styleUrl: './top3-clients.css',
 })
@@ -24,7 +26,7 @@ export class Top3Clients {
   ) {}
 
   ngOnInit() {
-   /* this.clientes = this.clienteService.getTop3(); */
+   this.clientes = this.clienteService.getTop3BySaldo();
     console.log(this.clientes);
         
   }

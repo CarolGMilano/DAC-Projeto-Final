@@ -167,6 +167,14 @@ export class ClienteService {
     return clientes.find(c => c.cpf === cpf);
   }
 
+  getTop3BySaldo(): any[] {
+  const clientes = this.getData();
+
+  return [...clientes]
+    .sort((a, b) => (b.saldo ?? 0) - (a.saldo ?? 0))
+    .slice(0, 3);
+}
+
   // POST
   post(cliente: ICliente): void {
     const clientes = this.getData();
