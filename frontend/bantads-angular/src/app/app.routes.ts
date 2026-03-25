@@ -11,6 +11,7 @@ import { ClientList } from './components/client-list/client-list'
 import { AdministratorDashboard } from './components/administrator-dashboard/administrator-dashboard';
 import { ManagerDashboard } from './components/manager-dashboard/manager-dashboard';
 import { RelatorioDeClientes } from './pages/relatorio-de-clientes/relatorio-de-clientes';
+import { Top3Clients } from './components/top3-clients/top3-clients';
 export const routes: Routes = [
     //Telas iniciais
     { path: "", component: Login },
@@ -32,7 +33,7 @@ export const routes: Routes = [
             { path: "gerente", component: ManagerDashboard },
             { path: "gerente/clientes", component: ClientList },
             { path: "gerente/clientes/buscar", component: ClientSearch },
-            { path: "gerente/clientes/top3", component: ClientSearch },
+            { path: "gerente/clientes/top3", component: Top3Clients },
 
             //Painel "Administrador"
             { path: "admin", component: AdministratorDashboard },

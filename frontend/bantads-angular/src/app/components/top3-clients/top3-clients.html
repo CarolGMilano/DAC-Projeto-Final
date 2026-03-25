@@ -14,15 +14,15 @@
         <!-- PÓDIO DE MAIORES SALDOS -->
         <div class="flex flex-row gap-2">
             <div class="flex flex-col text-yellow-400 font-bold basis-1fr border border-solid justify-center py-6 px-5 border-ra rounded-md mt-3 min-w-1fr">
-                <h1 class="text-center">Marlon</h1>
+                <h1 class="text-center">{{clientes[0].nome | primeiroNome }}</h1>
                 <p class="text-center">#1</p>
             </div>
             <div class="flex flex-col text-stone-300 font-bold basis-1fr border border-solid justify-center py-6 px-5 border-ra rounded-md mt-9 min-w-1fr">
-                <h1 class="text-center">João</h1>
+                <h1 class="text-center">{{clientes[1].nome | primeiroNome }}</h1>
                 <p class="text-center">#2</p>
             </div>
             <div class="flex flex-col text-amber-600 font-bold basis-1fr border border-solid justify-center py-6 px-5 border-ra rounded-md mt-15 min-w-1fr">
-                <h1 class="text-center">José</h1>
+                <h1 class="text-center">{{clientes[2].nome | primeiroNome }}</h1>
                 <p class="text-center">#3</p>
             </div>
         </div>
@@ -34,13 +34,13 @@
                 <p class="text-yellow-400 text-center mt-10 font-bold text-4xl">#1</p>
 
                 <div>
-                    <h1 class="text-center mt-6 text-neutral-50">Marlon</h1>
-                    <h1 class="text-center text-neutral-50">123.567.890-10</h1>
-                    <h1 class="text-center text-neutral-50">Curitiba - PR</h1>
+                    <h1 class="text-center mt-6 text-neutral-50">{{clientes[0].nome}}</h1>
+                    <h1 class="text-center text-neutral-50">{{clientes[0].cpf | cpfFormatador}}</h1>
+                    <h1 class="text-center text-neutral-50">{{clientes[0].endereco.cidade}} - {{clientes[0].endereco.estado}}</h1>
                 </div>
                 
                 <div>
-                    <h1 class="text-center text-neutral-50 mb-20">Saldo da conta: R$: 1.000.000.000,00</h1>
+                    <h1 class="text-center text-neutral-50 mb-20">Saldo da conta: {{clientes[0].saldo | moedaBr}}</h1>
                 </div>
             </div>
 
@@ -48,13 +48,13 @@
                 <p class="text-stone-300 text-center mt-10 font-bold text-4xl">#2</p>
 
                 <div>
-                    <h1 class="text-center mt-6 text-neutral-50">João</h1>
-                    <h1 class="text-center text-neutral-50">987.654.321-0</h1>
-                    <h1 class="text-center text-neutral-50">Jundiaí - SP</h1>
+                    <h1 class="text-center mt-6 text-neutral-50">{{clientes[1].nome}}</h1>
+                    <h1 class="text-center text-neutral-50">{{clientes[1].cpf | cpfFormatador}}</h1>
+                    <h1 class="text-center text-neutral-50">{{clientes[1].endereco.cidade}} - {{clientes[1].endereco.estado}}</h1>
                 </div>
                 
                 <div>
-                    <h1 class="text-center text-neutral-50 mb-20">Saldo da conta: R$: 1.000.000,00</h1>
+                    <h1 class="text-center text-neutral-50 mb-20">Saldo da conta: {{clientes[1].saldo | moedaBr}}</h1>
                 </div>
             </div>
 
@@ -62,13 +62,13 @@
                 <p class="text-amber-600 text-center mt-10 font-bold text-4xl">#3</p>
 
                 <div>
-                    <h1 class="text-center mt-6 text-neutral-50">José</h1>
-                    <h1 class="text-center text-neutral-50">481.281.489-48</h1>
-                    <h1 class="text-center text-neutral-50">Itajaí - RS</h1>
+                    <h1 class="text-center mt-6 text-neutral-50">{{clientes[2].nome}}</h1>
+                    <h1 class="text-center text-neutral-50">{{clientes[2].cpf | cpfFormatador}}</h1>
+                    <h1 class="text-center text-neutral-50">{{clientes[2].endereco.cidade}} - {{clientes[2].endereco.estado}}</h1>
                 </div>
                 
                 <div>
-                    <h1 class="text-center text-neutral-50 mb-20">Saldo da conta: R$: 1,00</h1>
+                    <h1 class="text-center text-neutral-50 mb-20">Saldo da conta: {{clientes[2].saldo | moedaBr}}</h1>
                 </div>
             </div>
 
