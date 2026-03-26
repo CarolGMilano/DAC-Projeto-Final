@@ -37,14 +37,14 @@ nome do cliente.
                         @for (c of clientes; track c.cpf)
                         {
                             <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="px-4 py-2 text-sm text-gray-300">{{ c.cpf }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-300">{{ c.cpf | cpfFormatador }}</td>
                                 <td class="px-4 py-2 text-sm text-gray-300">{{ c.nome }}</td>
                                 <td class="px-4 py-2 text-sm text-gray-300">{{ c.email }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-300">{{ c.salario }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-300">R${{ c.salario | moedaBr }}</td>
                                 <td class="px-4 py-2 text-sm text-gray-300">{{ c.numeroConta }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-300">{{ c.saldo }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-300">{{ c.limite }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-300">{{ c.gerenteCpf }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-300">R${{ c.saldo | moedaBr }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-300">R${{ c.limite | moedaBr }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-300">{{ c.gerenteCpf | cpfFormatador }}</td>
                                 <td class="px-4 py-2 text-sm text-gray-300">{{ c.gerenteNome }}</td>
                             </tr>
                         }

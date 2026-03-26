@@ -4,31 +4,49 @@ autocadastro para aprovação, como uma tabela, contendo o CPF, Nome
 e salário do cliente, junto com dois botões "Aprovar" e "Recusar".
  -->
 
-<table>
-    <tbody>
-        <!-- Colunas -->
-        <tr>
-            <th scope="col">Nº</th>
-            <th scope="col">CPF</th>
-            <th scope="col">Nome</th>
-            <th scope="col">Salario</th>
-            <th scope="col">Ações</th>
-        </tr>
+<div class="flex flex-col gap-10 shadow-lg px-10 py-10 bg-zinc-800 rounded-lg h-full">
+    <div class="flex flex-col gap-10">
+        <h2 class="text-gray-200 font-bold text-2xl">Clientes</h2>
+        <div class="flex min-w-2/3 place-content-between">
+            <div class="overflow-x-auto max-h-100 overflow-y-auto">
+                <table class="w-full table-fixed">
+                    <!-- Colunas -->
+                     <thead class="border-b border-gray-200">
+  <tr>
+    <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">
+      <span class="bg-white border-none text-zinc-800 text-xs font-medium pl-2 pr-1 py-0.3 rounded-full mr-1">
+        {{this.exemplos.length}}
+      </span>
+      CPF
+    </th>
+    <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Nome</th>
+    <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Salário</th>
+    <th class="w-2/6"></th>
+  </tr>
+</thead>
 
-        <!-- Listagem -->
-        @for (s of exemplos; track s; let i = $index)
-        {
-            <tr>
-                <td>{{ i + 1 }}</td>
-                <td>{{ s.cpf }}</td>
-                <td>{{ s.name }}</td>
-                <td>{{ s.salario }}</td>
-
-                <td>
-                    <button (click)="recusarAutoCadastro(s)">Recusar</button>
-                    <button (click)="aprovarAutoCadastro(s)">Aprovar</button>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<tbody class="divide-y divide-gray-200">
+  @for (c of exemplos; track c.id)
+  {
+    <tr class="hover:bg-gray-700 transition-colors">
+      <td class="px-4 py-2 text-sm text-gray-300">{{ c.cpf | cpfFormatador }}</td>
+      <td class="px-4 py-2 text-sm text-gray-300">{{ c.nome }}</td>
+      <td class="px-4 py-2 text-sm text-gray-300">R${{ c.salario | moedaBr }}</td>
+      <td class="px-4 py-2 text-sm text-gray-300">
+        <div class="flex gap-2">
+          <button class="bg-green-500 hover:bg-green-500 text-white text-xs font-semibold px-3 py-1 rounded-md transition hover:cursor-pointer" (click)="aprovar(c.id)">
+            Aprovar
+          </button>
+          <button class="bg-gray-400 hover:bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-md transition hover:cursor-pointer" (click)="recusar(c.id)">
+            Recusar
+          </button>
+        </div>
+      </td>
+    </tr>
+  }
+</tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+ </div>
