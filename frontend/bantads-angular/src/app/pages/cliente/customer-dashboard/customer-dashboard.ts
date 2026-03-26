@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ClienteService } from "../../../services";
 import { ICliente } from '../../../shared';
+import { MoedaBrPipe } from '../../../shared/pipes/moedaBr/moeda-br-pipe';
 
 type DashboardView = 'SALDO' | 'DEPOSITO' | 'SAQUE' | 'TRANSFERENCIA';
 
 @Component({
   selector: 'app-customer-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule], 
+  imports: [CommonModule, FormsModule, MoedaBrPipe], 
   templateUrl: './customer-dashboard.html',
   styleUrl: './customer-dashboard.css',
 })
