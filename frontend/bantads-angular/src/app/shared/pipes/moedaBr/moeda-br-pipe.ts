@@ -5,13 +5,13 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class MoedaBrPipe implements PipeTransform {
 
-  transform(valor: number | null | undefined): string {
-    if (valor == null) return '';
+transform(valor: number | null | undefined): string {
+  if (valor == null) return '';
 
-    return valor.toLocaleString('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    });
-  }
+  return valor.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
 
 }
