@@ -12,12 +12,14 @@ import { FormsModule } from '@angular/forms';
   imports: [FormsModule] 
 })
 export class ClientSearch {
-  cliente?: ICliente;
   cpf: string = '';
+  cliente: ICliente | null = null;
+  pesquisado: boolean = false; 
 
   constructor(private clienteService: ClienteService) {}
 
   buscar() {
-    this.cliente = this.clienteService.getByCPF(this.cpf);
+    this.pesquisado = true;
+    this.cliente = this.clienteService.getByCPF(this.cpf) || null;
   }
 }

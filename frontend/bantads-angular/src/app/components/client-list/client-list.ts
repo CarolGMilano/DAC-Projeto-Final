@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { ClienteService } from '../../services';
-import { ICliente } from '../../shared';
+import { ICliente, SharedModule } from '../../shared';
 import { FormsModule } from '@angular/forms';
+import { MoedaBrPipe } from '../../shared/pipes/moedaBr/moeda-br-pipe';
+
 @Component({
   selector: 'app-client-list',
-  imports: [FormsModule],
+  imports: [FormsModule, MoedaBrPipe, SharedModule],
   templateUrl: './client-list.html',
   styleUrl: './client-list.css',
 })
@@ -12,6 +14,9 @@ import { FormsModule } from '@angular/forms';
 export class ClientList {
   clientes: ICliente[] = [];
   filtro: string = '';
+
+  mostrarModal: boolean = false;
+  clienteSelecionado?: ICliente;
 
   constructor(private clienteService: ClienteService) {}
 
@@ -31,7 +36,12 @@ export class ClientList {
   }
 
   verDetalhes(cliente: ICliente) {
-    console.log('Detalhes do cliente, implimentar depois', cliente);
+    this.clienteSelecionado = cliente;
+    this.mostrarModal = true;
+  }
 
+  fecharModal() {
+    this.mostrarModal = false;
+    this.clienteSelecionado = undefined;
   }
 }
