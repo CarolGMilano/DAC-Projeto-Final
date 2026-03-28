@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { SharedModule } from '../../shared';
-import { MoedaBrPipe } from '../../shared/pipes/moedaBr/moeda-br-pipe';
+import { SharedModule } from '../../../shared';
+import { MoedaBrPipe } from '../../../shared/pipes/moedaBr/moeda-br-pipe';
 
 @Component({
   selector: 'app-manager-dashboard',
