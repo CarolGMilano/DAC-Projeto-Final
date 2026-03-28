@@ -76,11 +76,7 @@ export class CustomerDashboard implements OnInit {
   }
 
   voltar() {
-    if (this.view !== 'SALDO') {
-      this.mudarView('SALDO');
-    } else {
-      this.router.navigate(['/login']); 
-    }
+   
   }
 
   visualizarExtrato() {
