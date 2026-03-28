@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { ClienteService } from '../../services';
-import { ICliente, SharedModule } from '../../shared';
+import { ClienteService } from '../../../services';
+import { ICliente, SharedModule } from '../../../shared';
 import { FormsModule } from '@angular/forms';
-import { MoedaBrPipe } from '../../shared/pipes/moedaBr/moeda-br-pipe';
+import { MoedaBrPipe } from '../../../shared/pipes/moedaBr/moeda-br-pipe';
 
 @Component({
   selector: 'app-client-list',

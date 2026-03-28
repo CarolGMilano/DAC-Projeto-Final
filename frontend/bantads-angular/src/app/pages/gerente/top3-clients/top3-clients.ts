@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { ClienteService } from '../../services';
-import { ICliente, SharedModule } from '../../shared';
-import { PrimeiroNomePipe } from '../../shared/pipes/primeiroNome/primeiro-nome-pipe';
-import { MoedaBrPipe } from '../../shared/pipes/moedaBr/moeda-br-pipe';
+import { ClienteService } from '../../../services';
+import { ICliente, SharedModule } from '../../../shared';
+import { PrimeiroNomePipe } from '../../../shared/pipes/primeiroNome/primeiro-nome-pipe';
+import { MoedaBrPipe } from '../../../shared/pipes/moedaBr/moeda-br-pipe';
 
 @Component({
   selector: 'app-top3-clients',

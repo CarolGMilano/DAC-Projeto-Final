@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { GerenteService } from '../../services/gerente/gerente';
-import { Gerente } from '../../shared';
-import { MoedaBrPipe } from '../../shared/pipes/moedaBr/moeda-br-pipe';
+import { GerenteService } from '../../../services';
+import { Gerente } from '../../../shared';
+import { MoedaBrPipe } from '../../../shared/pipes/moedaBr/moeda-br-pipe';
 
 @Component({
   selector: 'app-administrator-dashboard',
