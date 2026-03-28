@@ -1,0 +1,113 @@
+<div class="flex flex-col w-full h-full bg-zinc-800 font-mono rounded-lg border border-zinc-700 overflow-hidden shadow-2xl">
+
+  <div class="flex w-full items-center justify-between border-b border-zinc-700 bg-zinc-900 px-6 py-4 text-sm text-zinc-300 flex-none">
+    <div class="flex items-center gap-3">
+      <span class="text-blue-500 font-bold animate-pulse">●</span>
+      <span class="tracking-widest uppercase text-xs">BANTADS // DASHBOARD</span>
+    </div>
+    <div class="flex items-center gap-8">
+      @if (view !== 'SALDO') {
+        <button (click)="mudarView('SALDO')" class="text-zinc-400 hover:text-white transition-colors text-xs border border-zinc-700 px-4 py-1 hover:bg-zinc-700">
+          VOLTAR [ESC]
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="flex-1 flex flex-col items-center p-8 md:p-12 bg-zinc-900/30 overflow-y-auto" *ngIf="cliente">
+    <div class="w-full max-w-2xl flex flex-col items-center">
+      
+      <div class="w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 border-b border-zinc-800 pb-6">
+        <div class="flex flex-col">
+          <span class="text-[9px] text-zinc-600 uppercase font-bold tracking-tighter">Conta Ativa</span>
+          <h2 class="text-white text-xs font-bold uppercase tracking-tight">{{cliente.nome}}</h2>
+          <span class="text-zinc-500 text-[9px]">{{cliente.email}}</span>
+        </div>
+        <div class="flex flex-col md:text-right">
+          <span class="text-[9px] text-zinc-600 uppercase font-bold tracking-tighter">Gerente Responsável </span>
+          <span class="text-blue-500 text-xs font-bold uppercase">{{cliente.gerenteNome}}</span>
+          <span class="text-zinc-500 text-[8px]">Agência: {{cliente.numeroConta}}</span>
+        </div>
+      </div>
+
+      <section class="flex flex-col items-center mb-10 w-full animate-in fade-in duration-700">
+        <span class="text-[10px] uppercase tracking-[0.3em] text-zinc-500 mb-4">Saldo Disponível</span>
+        <div class="flex items-baseline gap-4">
+          <span class="text-xl text-zinc-600 font-bold">R$</span>
+          <h1 class="text-7xl font-bold text-white tracking-tighter">
+            {{cliente.saldo | moedaBr}}
+          </h1>
+        </div>
+        <div class="mt-4 px-3 py-1 bg-zinc-900/80 border border-zinc-700 rounded-sm text-[9px] text-zinc-500 uppercase tracking-widest">
+          Limite de Crédito Atual: <span class="text-blue-400 font-bold">{{cliente.limite | moedaBr}}</span>
+        </div>
+      </section>
+
+      @if (view === 'SALDO') {
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full mb-8 animate-in zoom-in-95 duration-300">
+          <button (click)="mudarView('DEPOSITO')" class="bg-zinc-800 border border-zinc-700 p-4 rounded-sm hover:border-blue-500 hover:bg-zinc-700 text-[11px] text-zinc-200 transition-all font-bold uppercase tracking-widest">
+            Depositar
+          </button>
+          <button (click)="mudarView('TRANSFERENCIA')" class="bg-zinc-800 border border-zinc-700 p-4 rounded-sm hover:border-blue-500 hover:bg-zinc-700 text-[11px] text-zinc-200 transition-all font-bold uppercase tracking-widest">
+            Transferir
+          </button>
+          <button (click)="mudarView('SAQUE')" class="bg-zinc-800 border border-zinc-700 p-4 rounded-sm hover:border-blue-500 hover:bg-zinc-700 text-[11px] text-zinc-200 transition-all font-bold uppercase tracking-widest">
+             Saque
+          </button>
+        </div>
+
+        <button class="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-sm font-bold text-xs uppercase tracking-[0.5em] transition-colors" (click)="visualizarExtrato()">
+          VISUALIZAR EXTRATO 
+        </button>
+      }
+
+      @if (view === 'DEPOSITO' || view === 'SAQUE') {
+        <div class="flex flex-col gap-6 w-full animate-in slide-in-from-bottom-4 duration-300">
+          <div class="border-l-2 border-blue-500 pl-4">
+            <h2 class="text-white text-sm font-bold uppercase tracking-widest">
+              {{ view === 'DEPOSITO' ? 'Efetuar Depósito ' : 'Efetuar Saque ' }}
+            </h2>
+            <p class="text-zinc-500 text-[10px]">Insira o valor abaixo para confirmar a operação.</p>
+          </div>
+
+          <div class="bg-zinc-900 border border-zinc-700 p-8 rounded-sm">
+            <label class="text-[9px] text-zinc-500 uppercase mb-2 block">Valor da Transação</label>
+            <div class="flex items-center gap-4">
+               <span class="text-2xl text-zinc-700 font-bold">R$</span>
+               <input type="number" [(ngModel)]="valorInput" name="valorInput" class="bg-transparent text-5xl text-white outline-none w-full font-bold" placeholder="0.00" autofocus>
+            </div>
+          </div>
+
+          <button (click)="view === 'DEPOSITO' ? depositar() : saque()" class="bg-white text-black hover:bg-zinc-200 py-5 rounded-sm font-bold text-xs uppercase tracking-[0.4em] transition-all">
+            CONFIRMAR {{ view }}
+          </button>
+        </div>
+      }
+
+      @if (view === 'TRANSFERENCIA') {
+        <div class="flex flex-col gap-6 w-full animate-in slide-in-from-bottom-4 duration-300">
+          <div class="border-l-2 border-blue-500 pl-4">
+            <h2 class="text-white text-sm font-bold uppercase tracking-widest">Transferência </h2>
+          </div>
+
+          <div class="space-y-4">
+            <div class="bg-zinc-900 border border-zinc-700 p-4 rounded-sm">
+              <label class="text-[9px] text-zinc-500 uppercase mb-1 block">Conta de Destino</label>
+              <input type="text" [(ngModel)]="destinatarioInput" name="destinatario" placeholder="Digite o número da conta" class="w-full bg-transparent text-xl text-white outline-none font-bold">
+            </div>
+
+            <div class="bg-zinc-900 border border-zinc-700 p-4 rounded-sm">
+              <label class="text-[9px] text-zinc-500 uppercase mb-1 block">Valor a enviar</label>
+              <input type="number" [(ngModel)]="valorInput" name="valorInput" placeholder="0.00" class="w-full bg-transparent text-xl text-white outline-none font-bold">
+            </div>
+          </div>
+
+          <button (click)="transferir()" class="bg-white text-black hover:bg-zinc-200 py-5 rounded-sm font-bold text-xs uppercase tracking-[0.4em] transition-all">
+            EXECUTAR TRANSFERÊNCIA
+          </button>
+        </div>
+      }
+
+    </div> 
+  </div> 
+</div>
