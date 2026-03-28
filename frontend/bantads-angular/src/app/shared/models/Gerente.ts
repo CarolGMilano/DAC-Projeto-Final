@@ -6,4 +6,7 @@ export interface Gerente {
   telefone: string;
   senhaAtual?: string;
   novaSenha?: string;
+  saldoPositivo: number;
+  saldoNegativo: number;
+  numClientes: number;
 }

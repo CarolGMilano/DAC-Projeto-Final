@@ -1,0 +1,57 @@
+<!--
+R16: Relatório de Clientes - Deve apresentar em tela uma lista com 
+todos os clientes do banco contendo: CPF do cliente, Nome do cliente, 
+E-mail do Cliente, Salário, Número da conta, Saldo, Limite do cliente, 
+CPF do gerente e Nome do gerente. Deve-se ordenar de forma crescente por 
+nome do cliente.
+-->
+
+ <div class="flex flex-col gap-10 shadow-lg px-10 py-10 bg-zinc-800 rounded-lg h-full">
+    <div class="flex flex-col gap-10">
+        <h2 class="text-gray-200 font-bold text-2xl">Clientes</h2>
+        <div class="flex min-w-2/3 place-content-between">
+            <div class="overflow-x-auto max-h-100 overflow-y-auto">
+                <table class="w-full table-fixed">
+                    <!-- Colunas -->
+                     <thead class="border-b border-gray-200">
+                        <tr>
+                            <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">
+                                <span class="bg-white border-none text-zinc-800 text-xs font-medium pl-2 pr-1 py-0.3 rounded-full mr-1">
+                                    {{this.clientes.length}}
+                                </span>
+                                CPF
+                            </th>
+                            <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">Nome</th>
+                            <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">Email</th>
+                            <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">Salário</th>
+                            <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">Conta</th>
+                            <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">Saldo</th>
+                            <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">Limite</th>
+                            <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">CPF Gerente</th>
+                            <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">Gerente</th>
+                        </tr>
+                    </thead>
+                    
+                        <tbody class="divide-y divide-gray-200">
+                        <!-- Listagem -->
+                        @for (c of clientes; track c.cpf)
+                        {
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-4 py-2 text-sm text-gray-300">{{ c.cpf | cpfFormatador }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-300">{{ c.nome }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-300">{{ c.email }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-300">R${{ c.salario | moedaBr }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-300">{{ c.numeroConta }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-300">R${{ c.saldo | moedaBr }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-300">R${{ c.limite | moedaBr }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-300">{{ c.gerenteCpf | cpfFormatador }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-300">{{ c.gerenteNome }}</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+ </div>
+

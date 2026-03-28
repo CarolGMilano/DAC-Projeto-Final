@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { Numericos, CpfValidator, TelefoneValidator } from './directives';
-import { CpfFormatadorPipe, TelefoneFormatadorPipe } from './pipes';
+import { CepFormatadorPipe, CpfFormatadorPipe, EnderecoFormatadorPipe, SalarioFormatadorPipe, TelefoneFormatadorPipe } from './pipes';
 
 @NgModule({
   declarations: [
@@ -11,7 +11,10 @@ import { CpfFormatadorPipe, TelefoneFormatadorPipe } from './pipes';
     TelefoneValidator,
 
     CpfFormatadorPipe,
-    TelefoneFormatadorPipe
+    TelefoneFormatadorPipe,
+    SalarioFormatadorPipe,
+    EnderecoFormatadorPipe,
+    CepFormatadorPipe
   ],
   exports: [
     Numericos,
@@ -19,7 +22,10 @@ import { CpfFormatadorPipe, TelefoneFormatadorPipe } from './pipes';
     TelefoneValidator,
 
     CpfFormatadorPipe,
-    TelefoneFormatadorPipe
+    TelefoneFormatadorPipe,
+    SalarioFormatadorPipe,
+    EnderecoFormatadorPipe,
+    CepFormatadorPipe
   ],
   imports: [
     CommonModule

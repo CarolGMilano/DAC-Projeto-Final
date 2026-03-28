@@ -1,0 +1,50 @@
+<!--
+R15: Tela Inicial Administrador - Apresenta uma tela (pode ser em estilo dashboard) 
+mostrando todos os gerentes do banco, para cada gerente apresenta: quantos clientes possui, 
+a totalização (soma) de saldos positivo (0.0 conta como positivo) e a totalização (soma) 
+de saldos negativos. Deve ser mostrado os gerentes com maiores saldos positivos primeiro;
+ -->
+
+ <div class="flex flex-col gap-10 shadow-lg px-10 py-10 bg-zinc-800 rounded-lg h-full">
+    <div class="flex flex-col gap-10">
+        <h2 class="text-gray-200 font-bold text-2xl">Gerentes</h2>
+            <div class="flex min-w-2/3 place-content-between">
+                <div class="overflow-x-auto max-h-100 overflow-y-auto">
+                    <table class="w-full table-fixed">
+                        <thead class="border-b border-gray-200">
+                                <!-- Colunas -->
+                            <tr>
+                                <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">
+                                    <span class="bg-white border-none text-zinc-800 text-xs font-medium pl-2 pr-1 py-0.3 rounded-full mr-1">
+                                        {{this.gerentes.length}}
+                                    </span>
+                                    Nº
+                                </th>
+                                <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">Gerente</th>
+                                <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">Clientes</th>
+                                <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">Saldos Positivos</th>
+                                <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">Saldos Negativos</th>
+                            </tr>
+                        </thead>
+                            <tbody class="divide-y divide-gray-200">
+                            <!-- Listagem -->
+                                @for (s of gerentes; track s; let i = $index)
+                            {
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-12 py-2 text-sm text-gray-300">{{ i + 1 }}</td>
+                                    <td class="px-4 py-2 text-sm text-gray-300">{{ s.nome }}</td>
+                                    <td class="px-4 py-2 text-sm text-gray-300">{{ s.numClientes }}</td>
+                                    <td class="px-4 py-2 text-sm text-green-400">R$ {{ s.saldoPositivo | moedaBr}}</td>
+                                    <td class="px-4 py-2 text-sm text-red-400">R$ {{ s.saldoNegativo | moedaBr }}</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                
+                    
+            </div>
+        
+    </div>
+    
+ </div>

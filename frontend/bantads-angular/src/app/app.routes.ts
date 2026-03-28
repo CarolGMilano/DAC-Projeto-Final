@@ -1,25 +1,41 @@
 import { Routes } from '@angular/router';
-import { Gerentes } from './pages';
-import { CustomerDashboard } from './components/customer-dashboard/customer-dashboard';
-import { ProfileChange } from './pages/cliente/profile-change/profile-change';
+
+import { 
+    Login, Cadastro, 
+    CustomerDashboard, ProfileChange, BankStatementLookup,
+    ManagerDashboard, ClientList, ClientSearch, Top3Clients,
+    AdministratorDashboard, Gerentes, RelatorioDeClientes
+} from './pages';
+
+import { MainLayout } from './layout';
 
 export const routes: Routes = [
-    // Telas iniciais
-    { path: "", component: Gerentes },
-    { path: "cadastrar", component: Gerentes },
-    
-    // Painel "Cliente"
+    //Telas iniciais
+    { path: "", component: Login },
+    { path: "cadastro", component: Cadastro },
+
     {
-        path: "customerDashboard", 
-        component: CustomerDashboard
-    },
+        path: '',
+        component: MainLayout,
+        children: [
+            //Painel "Cliente"
+            { path: "customerDashboard", component: CustomerDashboard },
+            { path: "cliente/perfil", component: ProfileChange },
+            { path: "cliente/depositar", component: CustomerDashboard },
+            { path: "cliente/sacar", component: CustomerDashboard },
+            { path: "cliente/transferir", component: CustomerDashboard },
+            { path: "cliente/extrato", component: BankStatementLookup },
 
-    // R4: Alteração de Perfil
-    { 
-        path: 'profileChange', 
-        component: ProfileChange 
-    },
+            //Painel "Gerente"
+            { path: "gerente", component: ManagerDashboard },
+            { path: "gerente/clientes", component: ClientList },
+            { path: "gerente/clientes/buscar", component: ClientSearch },
+            { path: "gerente/clientes/top3", component: Top3Clients },
 
-    // Painel "Administrador"
-    { path: "admin/gerentes", component: Gerentes }
+            //Painel "Administrador"
+            { path: "admin", component: AdministratorDashboard },
+            { path: "admin/gerentes", component: Gerentes },
+            { path: "admin/relatorio", component: RelatorioDeClientes }
+        ]
+    }
 ];
