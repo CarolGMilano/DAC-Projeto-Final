@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core'; // Adicionei OnInit aqui
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ClienteService } from "../../../services";
@@ -14,10 +14,10 @@ type DashboardView = 'SALDO' | 'DEPOSITO' | 'SAQUE' | 'TRANSFERENCIA';
   templateUrl: './customer-dashboard.html',
   styleUrl: './customer-dashboard.css',
 })
-export class CustomerDashboard {
-  idCliente: number = 1;
+export class CustomerDashboard implements OnInit { // Adicione o 'implements OnInit'
+
+  idCliente: number = 3; 
   cliente!: ICliente;
-  limite: number = 200.00;
   view: DashboardView = 'SALDO';
 
   valorInput: number | null = null;
@@ -29,23 +29,26 @@ export class CustomerDashboard {
     this.view = novaView;
     this.valorInput = null;
     this.destinatarioInput = '';
+    
+
+    if (novaView === 'SALDO') {
+      this.cliente = this.clienteService.getById(this.idCliente);
+    }
   }
 
   ngOnInit() {
-    // buscando o cliente de ID 2 por padrao
+    // APAGUEI a linha do conflito que estava aqui
     this.cliente = this.clienteService.getById(this.idCliente);
   }
 
-
+  // Métodos de Logística (Ainda apenas com console.log)
   depositar() {
       console.log('Depositando:', this.valorInput);
   }
 
-
   saque() {
     console.log('Sacando:', this.valorInput);
   }
-
 
   transferir() {
     console.log('Transferindo:', this.valorInput, 'Para:', this.destinatarioInput);
@@ -55,4 +58,3 @@ export class CustomerDashboard {
     console.log('Extrato...');
   }
 }
-
