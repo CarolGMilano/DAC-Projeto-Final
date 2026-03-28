@@ -9,7 +9,7 @@ A cada dia, desde a data inicial, deve-se mostrar o saldo consolidado naquele di
 
 /*
 Anotações:
-1. Imagino a parte da data de início/fim sendo puxado do vetor transaçõesExemplo, que pega a data da transação mais recente como fim e da mais antiga do vetor como data de fim.
+1. Imagino a parte da data de início/fim sendo puxado do vetor de transações, cujo dados serão puxados do back, que pega a data da transação mais recente como fim e da mais antiga do vetor como data de início.
 */
 
 import { Component } from '@angular/core';
@@ -28,6 +28,7 @@ export class BankStatementLookup {
     {id: 0, data: "05/03/2026", operacao: "Transferência", clienteOrigem: "JOÃO EUCLIDES DA CUNHA", clienteDestino: "MÁRIO QUINTANA", valor: "30,00 R$"},
     {id: 1, data: "08/03/2026", operacao: "Saque", clienteOrigem: "", clienteDestino: "", valor: "200,00 R$"},
     {id: 2, data: "09/03/2026", operacao: "Depósito", clienteOrigem: "", clienteDestino: "", valor: "500,00 R$"},
+    {id: 3, data: "11/03/2026", operacao: "Transferência", clienteOrigem: "DALTON TREVISAN", clienteDestino: "JOÃO EUCLIDES DA CUNHA", valor: "1212,24 R$"}
   ]
 
 }
