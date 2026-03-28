@@ -13,7 +13,7 @@ import { ICliente } from '../../../shared';
   styleUrl: './profile-change.css',
 })
 export class ProfileChange implements OnInit {
-  idCliente: number = 1; 
+  idCliente: number = 3; 
   cliente!: ICliente;
 
   constructor(
