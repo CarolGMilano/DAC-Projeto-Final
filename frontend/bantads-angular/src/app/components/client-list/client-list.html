@@ -62,7 +62,7 @@
         <p><strong>Nome:</strong> {{ clienteSelecionado.nome }}</p>
         <p><strong>CPF:</strong> {{ clienteSelecionado.cpf | cpfFormatador }}</p>
         <p><strong>Email:</strong> {{ clienteSelecionado.email }}</p>
-        <p><strong>Telefone:</strong> {{ clienteSelecionado.telefone }}</p>
+        <p><strong>Telefone:</strong> {{ clienteSelecionado.telefone |telefoneFormatador }}</p>
         <p><strong>Estado Civil:</strong> {{ clienteSelecionado.estadoCivil }}</p>
         <p><strong>Salário:</strong> R${{ clienteSelecionado.salario | moedaBr }}</p>
         <p><strong>Número da Conta:</strong> {{ clienteSelecionado.numeroConta }}</p>
