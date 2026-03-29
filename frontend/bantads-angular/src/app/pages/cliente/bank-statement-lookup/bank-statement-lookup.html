@@ -19,7 +19,7 @@
         <div class="max-w-6xl mx-auto px-6">
             <header class="mb-12">
                 <h1 class="text-4xl font-bold text-white mb-2">Meu Extrato</h1>
-                <h2 class="text-md text-white"> Transações de (data-inicio) a (data-fim)</h2>
+                <h2 class="text-md text-white"> Transações de {{date.toLocaleDateString()}} a {{date2.toLocaleDateString()}}</h2>
             </header>
 
     <div class="flex-1 flex overflow-hidden"></div>
@@ -30,6 +30,7 @@
                 <thead class="bg-zinc-900">
                     <tr>
                         <th class="px-4 py-2 text-left border-b border-zinc-700">Data</th>
+                        <th class="px-4 py-2 text-left border-b border-zinc-700">Hora</th>
                         <th class="px-4 py-2 text-left border-b border-zinc-700">Operação</th>
                         <th class="px-4 py-2 text-left border-b border-zinc-700">Origem/Destino</th>
                         <th class="px-4 py-2 text-left border-b border-zinc-700">Valor</th>
@@ -37,36 +38,42 @@
                 </thead>
 
                 <tbody>
-                    @for(t of transacoesExemplo; track t; let i = $index) {
+                    @for(t of transactionsArray; track t; let i = $index) {
+                        @for(tDia of t.transacoes; track tDia; let j = $index) {                        
                     <tr class="hover:bg-zinc-700/30">
-                        <td class="px-4 py-2 border-b border-zinc-700">{{t.data}}</td>
-                        <td class="px-4 py-2 border-b border-zinc-700">{{t.operacao}}</td>
+                        <td class="px-4 py-2 border-b border-zinc-700">{{tDia.data}}</td>
+                        <td class="px-4 py-2 border-b border-zinc-700">{{tDia.hora}}</td>
+                        <td class="px-4 py-2 border-b border-zinc-700">{{tDia.operacao}}</td>
                         <!-- Campo Origem/Destino -->
-                        @if(t.clienteDestino != "") {
-                            <td class="px-4 py-2 border-b border-zinc-700">De {{t.clienteOrigem}} para {{t.clienteDestino}}</td>
+                        @if(tDia.clienteDestino != "") {
+                            <td class="px-4 py-2 border-b border-zinc-700">De {{tDia.clienteOrigem}} para {{tDia.clienteDestino}}</td>
                         } @else {
                             <td class="px-4 py-2 border-b border-zinc-700">---</td>
                         }
                         <!-- Campo valor -->
-                         @switch (t.operacao) {
+                         @switch (tDia.operacao) {
                             @case("Transferência") {
-                                @if(t.clienteDestino === "JOÃO EUCLIDES DA CUNHA"){ <!-- Se clienteDestino === nome do login atual, Azul. Caso contrário, vermelho. -->
-                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-sky-300 font-bold">+{{t.valor}}</td>    
+                                @if(tDia.clienteDestino === "JOÃO EUCLIDES DA CUNHA"){ <!-- Se clienteDestino === nome do login atual, Azul. Caso contrário, vermelho. -->
+                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-sky-500 font-bold">+{{tDia.valor}}</td>    
                                 } @else {
-                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-red-400 font-bold"> +{{t.valor}}</td>
+                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-red-400 font-bold"> +{{tDia.valor}}</td>
                                 }
                             }
 
                             @case("Saque") {
-                                <td class="px-4 py-2 text-lg border-b border-zinc-700 text-red-500 font-bold">-{{t.valor}}</td>
+                                <td class="px-4 py-2 text-lg border-b border-zinc-700 text-red-500 font-bold">-{{tDia.valor}}</td>
                             }
 
                             @case("Depósito") {
-                                <td class="px-4 py-2 text-lg border-b border-zinc-700 text-blue-300 font-bold">+{{t.valor}}</td>
+                                <td class="px-4 py-2 text-lg border-b border-zinc-700 text-blue-300 font-bold">+{{tDia.valor}}</td>
+                            }
+                            @default {
+                                <td class="px-4 py-2 text-lg border-b border-zinc-700 text-blue-300 font-bold"></td>
                             }
                          }
                         
                     </tr>
+                    }
                     }                    
                 </tbody>
                 
