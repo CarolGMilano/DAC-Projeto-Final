@@ -23,6 +23,8 @@ export class Login {
     senha: ''
   }
 
+  mostrarSenha: boolean = true;
+
   logar() {
     if (!this.formLogin.form.valid) return;
 
