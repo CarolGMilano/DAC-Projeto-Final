@@ -24,8 +24,19 @@
 
     <div class="flex-1 flex overflow-hidden"></div>
         <div class="overflow-x-auto">
+
+            <!-- Botões Próximo e Anterior -->
+            <div class="text-xl flex px-6 py-2 border-t border-zinc-700 bg-zinc-900 text-white place-content-between">
+                <button (click)="paginaAnterior()" class="text-zinc-400 hover:text-white transition-colors text-xs border border-zinc-700 px-4 py-1 hover:bg-zinc-700">
+                    ← Anterior
+                </button>
+                <button (click)="proximaPagina()" class="text-zinc-400 hover:text-white transition-colors text-xs border border-zinc-700 px-4 py-1 hover:bg-zinc-700">
+                    Próximo →
+                </button>
+            </div>
+
     <!-- Tabela -->
-            <table class="min-w-full border border-zinc-700 text-sm text-zinc-300 overflow-y-auto">
+            <table class="min-w-5xl border border-zinc-700 text-sm text-zinc-300 overflow-y-auto">
 
                 <thead class="bg-zinc-900">
                     <tr>
@@ -34,11 +45,12 @@
                         <th class="px-4 py-2 text-left border-b border-zinc-700">Operação</th>
                         <th class="px-4 py-2 text-left border-b border-zinc-700">Origem/Destino</th>
                         <th class="px-4 py-2 text-left border-b border-zinc-700">Valor</th>
+                        <th class="px-4 py-2 text-left border-b border-zinc-700">Saldo</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    @for(t of transactionsArray; track t; let i = $index) {
+                    @for(t of paginatedTransactions; track t; let i = $index) {
                         @for(tDia of t.transacoes; track tDia; let j = $index) {                        
                     <tr class="hover:bg-zinc-700/30">
                         <td class="px-4 py-2 border-b border-zinc-700">{{tDia.data}}</td>
@@ -54,30 +66,64 @@
                          @switch (tDia.operacao) {
                             @case("Transferência") {
                                 @if(tDia.clienteDestino === "JOÃO EUCLIDES DA CUNHA"){ <!-- Se clienteDestino === nome do login atual, Azul. Caso contrário, vermelho. -->
-                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-sky-500 font-bold">+{{tDia.valor}}</td>    
+                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-sky-500 font-bold">+{{tDia.valor | moedaBr}} R$</td>    
                                 } @else {
-                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-red-400 font-bold"> +{{tDia.valor}}</td>
+                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-red-400 font-bold"> {{tDia.valor | moedaBr}} R$</td>
                                 }
                             }
 
                             @case("Saque") {
-                                <td class="px-4 py-2 text-lg border-b border-zinc-700 text-red-500 font-bold">-{{tDia.valor}}</td>
+                                <td class="px-4 py-2 text-lg border-b border-zinc-700 text-red-500 font-bold">{{tDia.valor | moedaBr}} R$</td>
                             }
 
                             @case("Depósito") {
-                                <td class="px-4 py-2 text-lg border-b border-zinc-700 text-blue-300 font-bold">+{{tDia.valor}}</td>
+                                <td class="px-4 py-2 text-lg border-b border-zinc-700 text-blue-300 font-bold">+{{tDia.valor | moedaBr}} R$</td>
                             }
                             @default {
                                 <td class="px-4 py-2 text-lg border-b border-zinc-700 text-blue-300 font-bold"></td>
                             }
                          }
+                         <!-- Coluna do saldo atual -->
+                         @if(tDia.operacao == "") {
+                            <td class="px-4 py-2 text-lg border-b border-zinc-700 text-white-300 font-bold">{{tDia.saldoNoMomento | moedaBr}} R$</td>
+                         } @else {
+                            @switch (tDia.operacao) {
+                                @case("Transferência") {
+                                    @if(tDia.clienteDestino === "JOÃO EUCLIDES DA CUNHA"){ <!-- Se clienteDestino === nome do login atual, Azul. Caso contrário, vermelho. -->
+                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-sky-500 font-bold">{{tDia.saldoNoMomento | moedaBr}} R$</td>    
+                                } @else {
+                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-red-400 font-bold"> {{tDia.saldoNoMomento | moedaBr}} R$</td>
+                                }
+
+                                }
+                                @case("Saque"){
+                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-red-500 font-bold">{{tDia.saldoNoMomento | moedaBr}} R$</td>
+                                }
+                                @case("Depósito"){
+                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-blue-300 font-bold">{{tDia.saldoNoMomento | moedaBr}} R$</td>
+                                }
+                                @default {
+                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-white-300 font-bold">{{tDia.saldoNoMomento | moedaBr}} R$</td>
+                                }
+                            }
+                            
+                         }
                         
                     </tr>
                     }
-                    }                    
+                }                    
                 </tbody>
-                
             </table>
+
+            <!-- Botões Próximo e Anterior -->
+            <div class="text-xl flex px-6 py-2 border-t border-zinc-700 bg-zinc-900 text-white place-content-between">
+                <button (click)="paginaAnterior()" class="text-zinc-400 hover:text-white transition-colors text-xs border border-zinc-700 px-4 py-1 hover:bg-zinc-700">
+                    ← Anterior
+                </button>
+                <button (click)="proximaPagina()" class="text-zinc-400 hover:text-white transition-colors text-xs border border-zinc-700 px-4 py-1 hover:bg-zinc-700">
+                    Próximo →
+                </button>
+            </div>
         </div>
             
             
