@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { TipoUsuario } from '../../shared';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -13,6 +13,8 @@ import { FormsModule } from '@angular/forms';
 export class Navbar {
   usuarioLogado: TipoUsuario | null = null;
   TipoUsuario = TipoUsuario;
+
+  router = inject(Router);
 
   ngOnInit() {
     const tipo = localStorage.getItem('tipoUsuario');
