@@ -31,7 +31,7 @@
 
   <div class=" overflow-x-auto max-h-120 overflow-y-auto">
     <table class="w-full table-fixed">
-      <thead class=" border-b border-gray-200">
+      <thead class="border-b border-gray-400">
         <tr>
           <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">
             <span
@@ -47,18 +47,18 @@
         </tr>
       </thead>
 
-      <tbody class="divide-y divide-gray-200">
+      <tbody class="divide-y divide-zinc-700">
         @for (gerente of gerentesFiltrados; track gerente.cpf){
-          <tr class="hover:bg-gray-50 transition-colors">
-            <td class="px-12 py-2 text-sm text-gray-300">{{ gerente.cpf | cpfFormatador }}</td>
-            <td class="px-4 py-2 text-sm text-gray-300">{{ gerente.nome }}</td>
-            <td class="px-4 py-2 text-sm text-gray-300">{{ gerente.email }}</td>
-            <td class="px-4 py-2 text-sm text-gray-300">{{ gerente.telefone | telefoneFormatador }}</td>
+          <tr class="hover:bg-[#313133] transition-colors">
+            <td class="px-12 py-2 text-sm text-gray-100">{{ gerente.cpf | cpfFormatador }}</td>
+            <td class="px-4 py-2 text-sm text-gray-100">{{ gerente.nome }}</td>
+            <td class="px-4 py-2 text-sm text-gray-100">{{ gerente.email }}</td>
+            <td class="px-4 py-2 text-sm text-gray-100">{{ gerente.telefone | telefoneFormatador }}</td>
             <td class="px-12 py-2 flex gap-2">
-              <button type="button" class="px-1 py-1 text-white rounded-full group hover:bg-gray-100 hover:cursor-pointer"
+              <button type="button" class="px-1 py-1 text-white rounded-full group hover:bg-zinc-700 hover:cursor-pointer"
                 (click)="abrirEditar(gerente)">
                 <svg width="20" height="20" viewBox="0 0 8 8" fill="none"
-                  class="stroke-gray-500 group-hover:stroke-gray-700" xmlns="http://www.w3.org/2000/svg">
+                  class="stroke-gray-100 group-hover:stroke-gray-200" xmlns="http://www.w3.org/2000/svg">
                   <g clip-path="url(#clip0_294_1596)">
                     <path
                       d="M5.07736 1.74408L6.25587 2.92259M5.57736 1.24408C5.9028 0.918641 6.43044 0.918641 6.75587 1.24408C7.08131 1.56951 7.08131 2.09715 6.75587 2.42259L2.16664 7.01183H0.999969V5.82147L5.57736 1.24408Z"
@@ -73,9 +73,9 @@
               </button>
             
               @if(gerentes.length > 1){
-                <button type="button" class="px-1 py-1 text-white rounded-full group hover:bg-red-100 hover:cursor-pointer"
+                <button type="button" class="px-1 py-1 text-white rounded-full group hover:bg-zinc-700 hover:cursor-pointer"
                   (click)="abrirExcluir(gerente)">
-                  <svg width="20" height="20" viewBox="0 0 8 8" fill="none" class="stroke-[#C70003]"
+                  <svg width="20" height="20" viewBox="0 0 8 8" fill="none" class="stroke-red-400"
                     xmlns="http://www.w3.org/2000/svg">
                     <path
                       d="M6.33334 2.33333L6.04424 6.38083C6.01932 6.7297 5.72902 7 5.37926 7H2.62076C2.271 7 1.9807 6.7297 1.95578 6.38083L1.66668 2.33333M3.33334 3.66667V5.66667M4.66668 3.66667V5.66667M5.00001 2.33333V1.33333C5.00001 1.14924 4.85077 1 4.66668 1H3.33334C3.14925 1 3.00001 1.14924 3.00001 1.33333V2.33333M1.33334 2.33333H6.66668"
@@ -87,7 +87,7 @@
           </tr>
         } @empty {
           <tr>
-            <td colspan="5" class="px-4 py-2 text-center text-gray-500">Nenhum gerente encontrado.</td>
+            <td colspan="5" class="px-4 py-2 text-center text-sm text-white">Nenhum gerente encontrado.</td>
           </tr>
         }
       </tbody>
@@ -96,21 +96,25 @@
 
   @if (mostrarFormulario) {
     <div class="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
-      <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+      <div class="bg-zinc-800 rounded-lg shadow-xl p-6 w-full max-w-md">
         <form #formGerentes="ngForm" (ngSubmit)="salvar()">
           <div class="flex flex-col gap-5">
-            <h2 class="text-lg font-semibold text-gray-900">{{ modoFormulario === 'adicionar' ? 'Cadastrar gerente' :
+            <h2 class="text-lg font-semibold text-white">{{ modoFormulario === 'adicionar' ? 'Cadastrar gerente' :
               'Editar gerente' }}</h2>
 
             <div class="flex flex-col gap-2">
               <div class="col-span-6 mt-1.5">
-                <input id="nome" placeholder="Nome" type="text" name="nome" [(ngModel)]="gerente.nome" #nome="ngModel"
+                <label 
+                for="nome"
+                class="block text-sm text-gray-100 mb-1"
+                >Nome</label>
+                <input id="nome" placeholder="Maria da Silva" type="text" name="nome" [(ngModel)]="gerente.nome" #nome="ngModel"
                   required
-                  class="w-full rounded-md bg-white pl-4 py-2 pr-3 text-sm font-light text-gray-900 placeholder:text-gray-600 border border-gray-400 outline-none focus:border-gray-800"
+                  class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 outline-none focus:border-gray-400"
                   [ngClass]="{
                   'border-red-500': nome.errors?.['required'] && (nome.touched || formGerentes.submitted),
                   'border-green-500': nome.valid && nome.touched,
-                  'border-gray-300': nome.pristine
+                  'border-neutral-700': nome.pristine
                   }" />
 
                 @if (nome.errors?.['required'] && (nome.touched || formGerentes.submitted)) {
@@ -120,7 +124,10 @@
 
               @if(modoFormulario == 'adicionar'){
                 <div class="col-span-3 mt-1.5">
-                  <!-- Dentro dos () vai o evento que você quer "escutar" pra executar a função escolhida. -->  
+                  <label 
+                    for="cpf"
+                    class="block text-sm text-gray-100 mb-1"
+                    >C.P.F</label> 
                   <input 
                     id="cpf" 
                     type="text" 
@@ -130,15 +137,15 @@
                     #cpf="ngModel" 
                     required 
                     [(ngModel)]="gerente.cpf" 
-                    placeholder="000.000.000-00" 
+                    placeholder="123.456.789-10" 
                     CpfValidator
                     [numericos]="'cpf'" 
-                    class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-400 sm:text-sm/6 border border-1 outline-none focus:border-gray-400"
+                    class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 outline-none focus:border-gray-400"
                     [ngClass]="{
                       'border-red-500': cpf.errors?.['required'] && (cpf.touched || cpf.dirty),
                       'border-yellow-500': cpf.errors?.['cpfIncompleto'] && (cpf.touched || cpf.dirty),
                       'border-green-500': cpf.valid && cpf.touched,
-                      'border-gray-300': cpf.pristine
+                      'border-neutral-700': cpf.pristine
                     }" />
 
                   @if (cpf.errors?.['required'] && (cpf.touched || cpf.dirty)) {
@@ -150,14 +157,18 @@
               }
 
               <div class="col-span-6 mt-1.5">
-                <input id="email" placeholder="E-mail" autocomplete="email" type="email" name="email"
+                <label 
+                  for="email"
+                  class="block text-sm text-gray-100 mb-1"
+                  >E-mail</label>
+                <input id="email" placeholder="maria@email.com" autocomplete="email" type="email" name="email"
                   [(ngModel)]="gerente.email" #email="ngModel" email required
-                  class="w-full rounded-md bg-white pl-4 py-2 pr-3 text-sm font-light text-gray-900 placeholder:text-gray-600 border border-gray-400 outline-none focus:border-gray-800"
+                  class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 outline-none focus:border-gray-400"
                   [ngClass]="{
                   'border-red-500': (email.invalid && (email.touched || formGerentes.submitted)),
                   'border-yellow-500': (email.errors?.['email']),
                   'border-green-500': email.valid && email.touched,
-                  'border-gray-300': email.pristine
+                  'border-neutral-700': email.pristine
                     }" />
 
                 @if (email.invalid && (email.touched || formGerentes.submitted)) {
@@ -171,9 +182,13 @@
 
               @if(modoFormulario == 'adicionar'){
                 <div class="col-span-3 mt-1.5">
+                  <label 
+                    for="telefone"
+                    class="block text-sm text-gray-100 mb-1"
+                    >Telefone</label>
                   <input 
                     id="telefone" 
-                    placeholder="(00) 90000-0000" 
+                    placeholder="(41) 99999-9999" 
                     type="text" 
                     maxlength="15" 
                     name="telefone" 
@@ -182,12 +197,12 @@
                     TelefoneValidator
                     [(ngModel)]="gerente.telefone" 
                     #telefone="ngModel" 
-                    required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-400 sm:text-sm/6 border border-1 outline-none focus:border-gray-400"
+                    required class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 outline-none focus:border-gray-400"
                     [ngClass]="{
                       'border-red-500': telefone.errors?.['vazio'] && (telefone.touched || telefone.dirty),
                       'border-yellow-500': telefone.errors?.['telefoneIncompleto'] && (telefone.touched || telefone.dirty),
                       'border-green-500': telefone.valid && telefone.touched,
-                      'border-gray-300': telefone.pristine
+                      'border-neutral-700': telefone.pristine
                     }" />
 
                   @if (telefone.errors?.['vazio'] && (telefone.touched || telefone.dirty)) {
@@ -197,15 +212,39 @@
                   }
                 </div>
               
-                <div class="col-span-6 mt-1.5">
-                  <input id="senha" placeholder="Senha" type="password" name="senha"
-                    [(ngModel)]="gerente.senhaAtual" #senha="ngModel" required minlength="4"
-                    class="w-full rounded-md bg-white pl-4 py-2 pr-3 text-sm font-light text-gray-900 placeholder:text-gray-600 border border-gray-400 outline-none focus:border-gray-800"
+                <div class="col-span-6 mt-1.5 relative">
+                  <label 
+                    for="senha"
+                    class="block text-sm text-gray-100 mb-1"
+                    >Senha</label>
+                  <input 
+                    [type]="mostrarSenha ? 'password' : 'text'"
+                    id="senha"
+                    placeholder="Senha"
+                    name="senha"
+                    [(ngModel)]="gerente.senhaAtual" 
+                    #senha="ngModel"
+                    required
+                    minlength="4"
+                    class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 outline-none focus:border-gray-400 pr-10"
                     [ngClass]="{
                       'border-yellow-500': senha.errors?.['minlength'] && (senha.touched || formGerentes.submitted),
                       'border-green-500': senha.valid && senha.touched,
-                      'border-gray-300': senha.pristine
-                    }" />
+                      'border-neutral-700': senha.pristine
+                    }"
+                  />
+
+                  <button 
+                    type="button"
+                    class="absolute right-2 top-11 -translate-y-1/2 text-gray-400 hover:text-gray-100"
+                    (click)="mostrarSenha = !mostrarSenha"
+                  >
+                    @if(!mostrarSenha){
+                      <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3"><path d="M607.5-372.5Q660-425 660-500t-52.5-127.5Q555-680 480-680t-127.5 52.5Q300-575 300-500t52.5 127.5Q405-320 480-320t127.5-52.5Zm-204-51Q372-455 372-500t31.5-76.5Q435-608 480-608t76.5 31.5Q588-545 588-500t-31.5 76.5Q525-392 480-392t-76.5-31.5ZM235.5-272Q125-344 61-462q-5-9-7.5-18.5T51-500q0-10 2.5-19.5T61-538q64-118 174.5-190T480-800q134 0 244.5 72T899-538q5 9 7.5 18.5T909-500q0 10-2.5 19.5T899-462q-64 118-174.5 190T480-200q-134 0-244.5-72ZM480-500Zm207.5 160.5Q782-399 832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280q113 0 207.5-59.5Z"/></svg>
+                    } @else if(mostrarSenha) {
+                      <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3"><path d="M607-627q29 29 42.5 66t9.5 76q0 15-11 25.5T622-449q-15 0-25.5-10.5T586-485q5-26-3-50t-25-41q-17-17-41-26t-51-4q-15 0-25.5-11T430-643q0-15 10.5-25.5T466-679q38-4 75 9.5t66 42.5Zm-127-93q-19 0-37 1.5t-36 5.5q-17 3-30.5-5T358-742q-5-16 3.5-31t24.5-18q23-5 46.5-7t47.5-2q137 0 250.5 72T904-534q4 8 6 16.5t2 17.5q0 9-1.5 17.5T905-466q-18 40-44.5 75T802-327q-12 11-28 9t-26-16q-10-14-8.5-30.5T753-392q24-23 44-50t35-58q-50-101-144.5-160.5T480-720Zm0 520q-134 0-245-72.5T60-463q-5-8-7.5-17.5T50-500q0-10 2-19t7-18q20-40 46.5-76.5T166-680l-83-84q-11-12-10.5-28.5T84-820q11-11 28-11t28 11l680 680q11 11 11.5 27.5T820-84q-11 11-28 11t-28-11L624-222q-35 11-71 16.5t-73 5.5ZM222-624q-29 26-53 57t-41 67q50 101 144.5 160.5T480-280q20 0 39-2.5t39-5.5l-36-38q-11 3-21 4.5t-21 1.5q-75 0-127.5-52.5T300-500q0-11 1.5-21t4.5-21l-84-82Zm319 93Zm-151 75Z"/></svg>
+                    }
+                  </button>
 
                   @if (senha.invalid && (senha.touched || formGerentes.submitted)) {
                     @if (senha.errors?.['required']) {
@@ -218,21 +257,61 @@
               }
 
               @if(modoFormulario == 'editar'){
-                <div class="col-span-6 mt-1.5">
-                  <input id="senhaAtual" placeholder="Senha atual" type="password" name="senhaAtual"
+                <div class="col-span-6 mt-1.5 relative">
+                  <label 
+                    for="senhaAtual"
+                    class="block text-sm text-gray-100 mb-1"
+                    >Senha atual</label>
+                  <input 
+                    id="senhaAtual" 
+                    [type]="mostrarSenha ? 'password' : 'text'"
+                    placeholder="Senha atual" 
+                    name="senhaAtual"
                     [(ngModel)]="gerente.senhaAtual"
                     #senhaAtual="ngModel"
                     [required]="!!gerente.novaSenha"
                     minlength="4"
-                    class="w-full rounded-md bg-white pl-4 py-2 pr-3 text-sm font-light text-gray-900 placeholder:text-gray-600 border border-gray-400 outline-none focus:border-gray-800" />
+                    class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 outline-none focus:border-gray-400 pr-10 border-neutral-700" />
+
+                  <button 
+                    type="button"
+                    class="absolute right-2 top-11 -translate-y-1/2 text-gray-400 hover:text-gray-100"
+                    (click)="mostrarSenha = !mostrarSenha"
+                  >
+                    @if(!mostrarSenha){
+                      <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3"><path d="M607.5-372.5Q660-425 660-500t-52.5-127.5Q555-680 480-680t-127.5 52.5Q300-575 300-500t52.5 127.5Q405-320 480-320t127.5-52.5Zm-204-51Q372-455 372-500t31.5-76.5Q435-608 480-608t76.5 31.5Q588-545 588-500t-31.5 76.5Q525-392 480-392t-76.5-31.5ZM235.5-272Q125-344 61-462q-5-9-7.5-18.5T51-500q0-10 2.5-19.5T61-538q64-118 174.5-190T480-800q134 0 244.5 72T899-538q5 9 7.5 18.5T909-500q0 10-2.5 19.5T899-462q-64 118-174.5 190T480-200q-134 0-244.5-72ZM480-500Zm207.5 160.5Q782-399 832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280q113 0 207.5-59.5Z"/></svg>
+                    } @else if(mostrarSenha) {
+                      <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3"><path d="M607-627q29 29 42.5 66t9.5 76q0 15-11 25.5T622-449q-15 0-25.5-10.5T586-485q5-26-3-50t-25-41q-17-17-41-26t-51-4q-15 0-25.5-11T430-643q0-15 10.5-25.5T466-679q38-4 75 9.5t66 42.5Zm-127-93q-19 0-37 1.5t-36 5.5q-17 3-30.5-5T358-742q-5-16 3.5-31t24.5-18q23-5 46.5-7t47.5-2q137 0 250.5 72T904-534q4 8 6 16.5t2 17.5q0 9-1.5 17.5T905-466q-18 40-44.5 75T802-327q-12 11-28 9t-26-16q-10-14-8.5-30.5T753-392q24-23 44-50t35-58q-50-101-144.5-160.5T480-720Zm0 520q-134 0-245-72.5T60-463q-5-8-7.5-17.5T50-500q0-10 2-19t7-18q20-40 46.5-76.5T166-680l-83-84q-11-12-10.5-28.5T84-820q11-11 28-11t28 11l680 680q11 11 11.5 27.5T820-84q-11 11-28 11t-28-11L624-222q-35 11-71 16.5t-73 5.5ZM222-624q-29 26-53 57t-41 67q50 101 144.5 160.5T480-280q20 0 39-2.5t39-5.5l-36-38q-11 3-21 4.5t-21 1.5q-75 0-127.5-52.5T300-500q0-11 1.5-21t4.5-21l-84-82Zm319 93Zm-151 75Z"/></svg>
+                    }
+                  </button>
                 </div>
 
-                <div class="col-span-6 mt-1.5">
-                  <input id="novaSenha" placeholder="Nova senha" type="password" name="novaSenha"
+                <div class="col-span-6 mt-1.5 relative">
+                  <label 
+                    for="novaSenha"
+                    class="block text-sm text-gray-100 mb-1"
+                    >Nova senha</label>
+                  <input 
+                    id="novaSenha" 
+                    placeholder="Nova senha" 
+                    [type]="mostrarNovaSenha ? 'password' : 'text'"
+                    name="novaSenha"
                     [(ngModel)]="gerente.novaSenha"
                     #novaSenha="ngModel"
                     minlength="4"
-                    class="w-full rounded-md bg-white pl-4 py-2 pr-3 text-sm font-light text-gray-900 placeholder:text-gray-600 border border-gray-400 outline-none focus:border-gray-800" />
+                    class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 outline-none focus:border-gray-400 pr-10 border-neutral-700" />
+
+                    <button 
+                    type="button"
+                    class="absolute right-2 top-11 -translate-y-1/2 text-gray-400 hover:text-gray-100"
+                    (click)="mostrarNovaSenha = !mostrarNovaSenha"
+                  >
+                    @if(!mostrarNovaSenha){
+                      <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3"><path d="M607.5-372.5Q660-425 660-500t-52.5-127.5Q555-680 480-680t-127.5 52.5Q300-575 300-500t52.5 127.5Q405-320 480-320t127.5-52.5Zm-204-51Q372-455 372-500t31.5-76.5Q435-608 480-608t76.5 31.5Q588-545 588-500t-31.5 76.5Q525-392 480-392t-76.5-31.5ZM235.5-272Q125-344 61-462q-5-9-7.5-18.5T51-500q0-10 2.5-19.5T61-538q64-118 174.5-190T480-800q134 0 244.5 72T899-538q5 9 7.5 18.5T909-500q0 10-2.5 19.5T899-462q-64 118-174.5 190T480-200q-134 0-244.5-72ZM480-500Zm207.5 160.5Q782-399 832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280q113 0 207.5-59.5Z"/></svg>
+                    } @else if(mostrarNovaSenha) {
+                      <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3"><path d="M607-627q29 29 42.5 66t9.5 76q0 15-11 25.5T622-449q-15 0-25.5-10.5T586-485q5-26-3-50t-25-41q-17-17-41-26t-51-4q-15 0-25.5-11T430-643q0-15 10.5-25.5T466-679q38-4 75 9.5t66 42.5Zm-127-93q-19 0-37 1.5t-36 5.5q-17 3-30.5-5T358-742q-5-16 3.5-31t24.5-18q23-5 46.5-7t47.5-2q137 0 250.5 72T904-534q4 8 6 16.5t2 17.5q0 9-1.5 17.5T905-466q-18 40-44.5 75T802-327q-12 11-28 9t-26-16q-10-14-8.5-30.5T753-392q24-23 44-50t35-58q-50-101-144.5-160.5T480-720Zm0 520q-134 0-245-72.5T60-463q-5-8-7.5-17.5T50-500q0-10 2-19t7-18q20-40 46.5-76.5T166-680l-83-84q-11-12-10.5-28.5T84-820q11-11 28-11t28 11l680 680q11 11 11.5 27.5T820-84q-11 11-28 11t-28-11L624-222q-35 11-71 16.5t-73 5.5ZM222-624q-29 26-53 57t-41 67q50 101 144.5 160.5T480-280q20 0 39-2.5t39-5.5l-36-38q-11 3-21 4.5t-21 1.5q-75 0-127.5-52.5T300-500q0-11 1.5-21t4.5-21l-84-82Zm319 93Zm-151 75Z"/></svg>
+                    }
+                    </button>
                 </div>
               }
             </div>
@@ -240,16 +319,16 @@
 
           <div class="mt-6 flex items-center justify-end gap-x-6">
             <button type="button" (click)="cancelar()"
-              class="py-1.5 px-4 rounded-md flex items-center justify-center group bg-white text-black font-normal text-base hover:bg-gray-200 hover:text-gray-800 hover:cursor-pointer">Cancelar</button>
+              class="px-4 py-2 text-sm rounded-lg border border-gray-500 text-gray-300 hover:bg-[#313133] hover:cursor-pointer transition">Cancelar</button>
 
             <div class="relative group inline-block">
               <button type="submit"
                 [disabled]="modoFormulario === 'adicionar' ? !formGerentes.valid : false"
-                class="py-1.5 px-4 rounded-md flex items-center justify-center group bg-gray-800 text-white font-normal text-base hover:bg-gray-700 hover:cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed">Salvar</button>
+                class="px-4 py-2 text-sm rounded-lg flex items-center justify-center group bg-purple-300 text-black font-normal text-base hover:bg-purple-200 hover:cursor-pointer disabled:text-gray-100 disabled:bg-gray-400 disabled:font-semibold disabled:cursor-not-allowed">Salvar</button>
 
               @if (!formGerentes.valid) {
               <div
-                class="absolute left-2 translate-x-1/2 bottom-full mb-2 z-10 pointer-events-none opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 bg-black text-white text-xs rounded py-3 px-2 transition-all duration-300 ease-out bg-indigo-400">
+                class="absolute left-2 translate-x-1/2 bottom-full mb-2 z-10 pointer-events-none opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 bg-black text-black text-xs rounded py-3 px-2 transition-all duration-300 ease-out bg-purple-300">
                 Preencha o formulário corretamente
               </div>
               }
@@ -262,22 +341,22 @@
 
   @if(mostrarPopupExclusao) {
     <div class="fixed inset-0 flex items-center justify-center bg-black/60 z-50">  
-      <div class="flex flex-col gap-6 items-center p-5 bg-white rounded-lg shadow-xl w-full max-w-md">
+      <div class="flex flex-col gap-6 items-center p-5 bg-zinc-800 rounded-lg shadow-xl w-full max-w-md">
               
         <svg xmlns="http://www.w3.org/2000/svg" height="50px" viewBox="0 -960 960 960" width="50px" fill="#C70003"><path d="M536.46-536.46Zm-84.77 84.77ZM480-160q55.62 0 107.62-18.19 52-18.19 93.76-54.12-43.3-33.61-94.55-50.65Q535.59-300 479.99-300q-55.61 0-107.61 16.27t-93.76 51.42q41.76 35.93 93.76 54.12Q424.38-160 480-160Zm90.62-341.08-28.54-28.54q8.84-10.3 13.38-23.66Q560-566.64 560-580q0-32.69-23.65-56.35Q512.69-660 480-660q-13.36 0-26.72 4.54t-23.66 13.38l-28.54-28.54q16.37-14.69 36.61-22.03 20.25-7.35 42.65-7.35 49.97 0 84.81 34.85Q600-630.31 600-580.34q0 22.4-7.35 42.65-7.34 20.24-22.03 36.61Zm214.15 214.16-29.54-29.54q22-37.77 33.39-78.77Q800-436.23 800-480q0-134-93-227t-227-93q-43.77 0-84.77 11.38-41 11.39-78.77 33.39l-29.54-29.54q43.62-27.38 92.56-41.31Q428.43-840 480-840q74.7 0 140.4 28.35t114.3 76.95q48.6 48.6 76.95 114.3Q840-554.7 840-480q0 51.57-13.92 100.52-13.93 48.94-41.31 92.56ZM479.7-120q-74.52 0-140.07-28.42-65.55-28.43-114.21-77-48.66-48.58-77.04-114.25Q120-405.34 120-480q0-61.31 19.58-118.85 19.57-57.53 58.5-105.23L75.46-827.69 104-856.23 872.92-87.31l-28.54 28.54-617.3-616.31q-32.77 42.39-49.93 91.85Q160-533.77 160-480q0 61.9 22.46 118.37 22.46 56.48 65.39 101.01Q299.54-297 358.28-318.5 417.03-340 480-340q53.38 0 104.08 16.46 50.69 16.46 95.92 44.31l54.54 54.54q-50.85 51.61-116.92 78.15Q551.54-120 479.7-120Z"/></svg>
     
         <div class="flex flex-col gap-2 text-center">
-          <p class="text-base font-bold text-gray-900">Tem certeza de que deseja excluir?</p>
-          <p class="text-sm text-gray-900">Esta ação é <span class="font-bold">permanente</span> e <span
+          <p class="text-base font-bold text-white">Tem certeza de que deseja excluir?</p>
+          <p class="text-sm text-white">Esta ação é <span class="font-bold">permanente</span> e <span
               class="font-bold">não poderá ser desfeita</span>. Todas as informações do gerente serão removidas do
             sistema.</p>
   
           <div class="flex gap-10 justify-center items-center mt-4">
             <button type="button"
-              class="rounded-md px-8 py-2 text-sm font-base bg-[#C70003] text-white hover:bg-red-400 hover:cursor-pointer"
+              class="rounded-md px-5 py-2 text-sm font-base bg-[#C70003] text-white hover:bg-red-400 hover:cursor-pointer"
               (click)="excluir()">Excluir</button>
             <button type="button"
-              class="rounded-md px-8 py-2 text-sm font-base text-black hover:bg-gray-100 hover:cursor-pointer hover:text-gray-600"
+              class="px-4 py-2 text-sm rounded-lg border border-gray-500 text-gray-300 hover:bg-[#313133] hover:cursor-pointer transition"
               (click)="cancelar()">Cancelar</button>
           </div>
         </div>
