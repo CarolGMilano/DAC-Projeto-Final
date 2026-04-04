@@ -160,6 +160,4 @@ export class GerenteService {
     const filtrados = gerentes.filter(a => a.id !== id);
     this.setData(filtrados);
   }
-
-
 }
