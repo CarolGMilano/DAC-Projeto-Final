@@ -33,15 +33,137 @@ export class BankStatementLookup implements OnInit{
   saldoInicial: number = 3289;
 
   // Transações de exemplo;
-    transacoesExemplo = [
-    {id: 0, data: "02/02/2026", hora: "12:00", operacao: "Transferência", clienteOrigem: "JOÃO EUCLIDES DA CUNHA", clienteDestino: "MÁRIO QUINTANA", valor: -30, saldoNoMomento: 0},
-    {id: 1, data: "08/02/2026", hora: "09:23", operacao: "Saque", clienteOrigem: "", clienteDestino: "", valor: -200, saldoNoMomento: 0},
-    {id: 2, data: "09/02/2026", hora: "10:43", operacao: "Depósito", clienteOrigem: "", clienteDestino: "", valor: 500, saldoNoMomento: 0},
-    {id: 3, data: "11/02/2026", hora: "01:20", operacao: "Transferência", clienteOrigem: "DALTON TREVISAN", clienteDestino: "JOÃO EUCLIDES DA CUNHA", valor: 1212, saldoNoMomento: 0},
-    {id: 4, data: "14/02/2026", hora: "01:20", operacao: "Transferência", clienteOrigem: "DALTON TREVISAN", clienteDestino: "JOÃO EUCLIDES DA CUNHA", valor: 500, saldoNoMomento: 0},
-    {id: 5, data: "14/02/2026", hora: "02:20", operacao: "Transferência", clienteOrigem: "DALTON TREVISAN", clienteDestino: "JOÃO EUCLIDES DA CUNHA", valor: 200, saldoNoMomento: 0},
-    {id: 6, data: "21/02/2026", hora: "15:16", operacao: "Saque", clienteOrigem: "", clienteDestino: "", valor: -800, saldoNoMomento: 0},
-  ]
+     transacoesExemplo =
+  //   {id: 0, data: "02/02/2026", hora: "12:00", operacao: "Transferência", clienteOrigem: "JOÃO EUCLIDES DA CUNHA", clienteDestino: "MÁRIO QUINTANA", valor: -30, saldoNoMomento: 0},
+  //   {id: 1, data: "08/02/2026", hora: "09:23", operacao: "Saque", clienteOrigem: "", clienteDestino: "", valor: -200, saldoNoMomento: 0},
+  //   {id: 2, data: "09/02/2026", hora: "10:43", operacao: "Depósito", clienteOrigem: "", clienteDestino: "", valor: 500, saldoNoMomento: 0},
+  //   {id: 3, data: "11/02/2026", hora: "01:20", operacao: "Transferência", clienteOrigem: "DALTON TREVISAN", clienteDestino: "JOÃO EUCLIDES DA CUNHA", valor: 1212, saldoNoMomento: 0},
+  //   {id: 4, data: "14/02/2026", hora: "01:20", operacao: "Transferência", clienteOrigem: "DALTON TREVISAN", clienteDestino: "JOÃO EUCLIDES DA CUNHA", valor: 500, saldoNoMomento: 0},
+  //   {id: 5, data: "14/02/2026", hora: "02:20", operacao: "Transferência", clienteOrigem: "DALTON TREVISAN", clienteDestino: "JOÃO EUCLIDES DA CUNHA", valor: 200, saldoNoMomento: 0},
+  //   {id: 6, data: "21/02/2026", hora: "15:16", operacao: "Saque", clienteOrigem: "", clienteDestino: "", valor: -800, saldoNoMomento: 0},
+  // ]
+  [
+  {
+    "id": 0,
+    "data": "02/02/2026",
+    "hora": "12:00",
+    "operacao": "Transferência",
+    "clienteOrigem": "JOÃO EUCLIDES DA CUNHA",
+    "clienteDestino": "MÁRIO QUINTANA",
+    "valor": -30,
+    "saldoNoMomento": 0
+  },
+  {
+    "id": 1,
+    "data": "08/02/2026",
+    "hora": "09:23",
+    "operacao": "Saque",
+    "clienteOrigem": "",
+    "clienteDestino": "",
+    "valor": -200,
+    "saldoNoMomento": 0
+  },
+  {
+    "id": 2,
+    "data": "09/02/2026",
+    "hora": "10:43",
+    "operacao": "Depósito",
+    "clienteOrigem": "",
+    "clienteDestino": "",
+    "valor": 500,
+    "saldoNoMomento": 0
+  },
+  {
+    "id": 3,
+    "data": "11/02/2026",
+    "hora": "01:20",
+    "operacao": "Transferência",
+    "clienteOrigem": "DALTON TREVISAN",
+    "clienteDestino": "JOÃO EUCLIDES DA CUNHA",
+    "valor": 1212,
+    "saldoNoMomento": 0
+  },
+  {
+    "id": 4,
+    "data": "14/02/2026",
+    "hora": "01:20",
+    "operacao": "Transferência",
+    "clienteOrigem": "DALTON TREVISAN",
+    "clienteDestino": "JOÃO EUCLIDES DA CUNHA",
+    "valor": 500,
+    "saldoNoMomento": 0
+  },
+  {
+    "id": 5,
+    "data": "14/02/2026",
+    "hora": "02:20",
+    "operacao": "Transferência",
+    "clienteOrigem": "DALTON TREVISAN",
+    "clienteDestino": "JOÃO EUCLIDES DA CUNHA",
+    "valor": 200,
+    "saldoNoMomento": 0
+  },
+  {
+    "id": 6,
+    "data": "21/02/2026",
+    "hora": "15:16",
+    "operacao": "Saque",
+    "clienteOrigem": "",
+    "clienteDestino": "",
+    "valor": -800,
+    "saldoNoMomento": 0
+  },
+  {
+    "id": 7,
+    "data": "22/02/2026",
+    "hora": "08:11",
+    "operacao": "Depósito",
+    "clienteOrigem": "",
+    "clienteDestino": "",
+    "valor": 300,
+    "saldoNoMomento": 0
+  },
+  {
+    "id": 8,
+    "data": "24/02/2026",
+    "hora": "18:45",
+    "operacao": "Transferência",
+    "clienteOrigem": "JOÃO EUCLIDES DA CUNHA",
+    "clienteDestino": "CARLOS DRUMMOND DE ANDRADE",
+    "valor": -150,
+    "saldoNoMomento": 0
+  },
+  {
+    "id": 9,
+    "data": "26/02/2026",
+    "hora": "11:03",
+    "operacao": "Depósito",
+    "clienteOrigem": "",
+    "clienteDestino": "",
+    "valor": 700,
+    "saldoNoMomento": 0
+  },
+  {
+    "id": 10,
+    "data": "27/02/2026",
+    "hora": "16:32",
+    "operacao": "Saque",
+    "clienteOrigem": "",
+    "clienteDestino": "",
+    "valor": -120,
+    "saldoNoMomento": 0
+  },
+  {
+    "id": 11,
+    "data": "28/02/2026",
+    "hora": "20:15",
+    "operacao": "Transferência",
+    "clienteOrigem": "CLARICE LISPECTOR",
+    "clienteDestino": "JOÃO EUCLIDES DA CUNHA",
+    "valor": 450,
+    "saldoNoMomento": 0
+  }
+]
   // TRANSACTIONS ARRAY: Vetor contendo TODAS as transações de tal período, independente de página
   transactionsArray: any[] = [];
 
