@@ -1,0 +1,16 @@
+DROP TABLE IF EXISTS gerente;
+
+CREATE TABLE gerente (
+  id SERIAL PRIMARY KEY,
+  idUsuario INT NOT NULL,
+  cpf VARCHAR(14) UNIQUE NOT NULL,
+  nome VARCHAR(100) NOT NULL,
+  telefone VARCHAR(14) NOT NULL,
+  ativo BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+INSERT INTO gerente (idUsuario, cpf, nome, telefone) VALUES
+(6, '98574307084', 'Geniéve', '41952648745'),
+(7, '64065268052', 'Godophredo', '41999886655'),
+(8, '23862179060', 'Gyândula', '41999995547'),
+(9, '40501740066', 'Adamântio', '41987548754');
