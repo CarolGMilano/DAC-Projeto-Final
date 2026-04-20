@@ -1,38 +1,20 @@
-package br.net.dac.msconta.model;
+package br.net.dac.msconta.model.dto;
 
 import java.sql.Date;
 
-@Entity
-@Table(name = "gerente")
-public class Conta {
-    @Id
-  //Isso é pra dizer que o id vai ser gerado pelo banco automaticamente
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "limite")
+public class ContaDTO {
     private long id;
-
-    @Column(name = "idGerente")
     private long idGerente;
-
-    @Column(name = "idCliente")
     private long idCliente;
-
-    @Column(name = "numeroConta")
     private String numeroConta;
-
-    @Column(name = "dataCriacao")
     private Date dataCriacao;
-
-    @Column(name = "saldo")
     private double saldo;
-
-    @Column(name = "limite")
     private double limite;
 
-    public Conta() {
+    public ContaDTO() {
     }
 
-    public Conta(int id, String numeroConta, Date dataCriacao, double saldo, double limite) {
+    public ContaDTO(int id, String numeroConta, Date dataCriacao, double saldo, double limite) {
         this.id = id;
         this.numeroConta = numeroConta;
         this.dataCriacao = dataCriacao;
