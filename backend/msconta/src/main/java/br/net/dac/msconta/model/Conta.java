@@ -1,14 +1,19 @@
 package br.net.dac.msconta.model;
 
 import java.sql.Date;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+
 
 @Entity
-@Table(name = "gerente")
+@Table(name = "conta")
 public class Conta {
     @Id
-  //Isso é pra dizer que o id vai ser gerado pelo banco automaticamente
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "limite")
+    @GeneratedValue(strategy=GenerationType.IDENTITY) //Isso é pra dizer que o id vai ser gerado pelo banco automaticamente
     private long id;
 
     @Column(name = "idGerente")
