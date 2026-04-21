@@ -95,4 +95,20 @@ public class ContaCommandService {
             contaAtualizada.getLimite()
         );
     }
+
+    //MÉTODO DELETE
+    public void desativarConta (Long idConta) {
+        
+        // VALIDAÇÃO
+            // BUSCA CONTA SE EXISTE
+                Conta contaEncontrada = contaRepository
+                                            .findById(idConta)
+                                            .orElseThrow(ContaNaoEncontradaException::new);
+            
+            // CHECK SE INATIVO
+                if(!contaEncontrada.isAtivo()) throw new ContaInativaException();
+          
+        // DESATIVA CONTA
+        contaEncontrada.setAtivo(false);
+        contaRepository.save(contaEncontrada);
 }
