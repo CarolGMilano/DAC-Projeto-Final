@@ -14,13 +14,16 @@ import jakarta.persistence.GenerationType;
 public class Conta {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY) //Isso é pra dizer que o id vai ser gerado pelo banco automaticamente
-    private long id;
+    private Long id;
 
+    @Column(name= "ativo")
+    private boolean ativo;
+    
     @Column(name = "idGerente")
-    private long idGerente;
+    private Long idGerente;
 
     @Column(name = "idCliente")
-    private long idCliente;
+    private Long idCliente;
 
     @Column(name = "numeroConta")
     private String numeroConta;
@@ -37,7 +40,8 @@ public class Conta {
     public Conta() {
     }
 
-    public Conta(int id, String numeroConta, Date dataCriacao, double saldo, double limite) {
+    public Conta(boolean ativo, Long id, String numeroConta, Date dataCriacao, double saldo, double limite) {
+        this.ativo = ativo;
         this.id = id;
         this.numeroConta = numeroConta;
         this.dataCriacao = dataCriacao;
@@ -47,14 +51,17 @@ public class Conta {
 
     // Getters e Setters
 
-    public long getId() {return id;}
-    public void setId(long id) {this.id = id;}
+    public boolean getAtivo() {return ativo;}
+    public void setAtivo(boolean ativo) {this.ativo = ativo;};
+    
+    public Long getId() {return id;}
+    public void setId(Long id) {this.id = id;}
 
-    public long getIdGerente() {return idGerente;}
-    public void setIdGerente(long idGerente) {this.idGerente = idGerente;}
+    public Long getIdGerente() {return idGerente;}
+    public void setIdGerente(Long idGerente) {this.idGerente = idGerente;}
 
-    public long getIdCliente() {return idCliente;}
-    public void setIdCliente(long idCliente) {this.idCliente = idCliente;}
+    public Long getIdCliente() {return idCliente;}
+    public void setIdCliente(Long idCliente) {this.idCliente = idCliente;}
 
     public String getNumeroConta() {return numeroConta;}
     public void setNumeroConta(String numeroConta) {this.numeroConta = numeroConta;}
