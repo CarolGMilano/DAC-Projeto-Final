@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 @Entity
 @Table(name = "conta")
 public class Conta {
+
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY) //Isso é pra dizer que o id vai ser gerado pelo banco automaticamente
     private Long id;
@@ -40,9 +41,11 @@ public class Conta {
     public Conta() {
     }
 
-    public Conta(boolean ativo, Long id, String numeroConta, Date dataCriacao, double saldo, double limite) {
+    public Conta(boolean ativo, Long id, Long idGerente, Long idCliente, String numeroConta, Date dataCriacao, double saldo, double limite) {
         this.ativo = ativo;
         this.id = id;
+        this.idGerente = idGerente;
+        this.idCliente = idCliente;
         this.numeroConta = numeroConta;
         this.dataCriacao = dataCriacao;
         this.saldo = saldo;
@@ -51,27 +54,67 @@ public class Conta {
 
     // Getters e Setters
 
-    public boolean getAtivo() {return ativo;}
-    public void setAtivo(boolean ativo) {this.ativo = ativo;};
-    
-    public Long getId() {return id;}
-    public void setId(Long id) {this.id = id;}
+    public boolean isAtivo() {
+        return ativo;
+    }
 
-    public Long getIdGerente() {return idGerente;}
-    public void setIdGerente(Long idGerente) {this.idGerente = idGerente;}
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
+    }
 
-    public Long getIdCliente() {return idCliente;}
-    public void setIdCliente(Long idCliente) {this.idCliente = idCliente;}
+    public Long getId() {
+        return id;
+    }
 
-    public String getNumeroConta() {return numeroConta;}
-    public void setNumeroConta(String numeroConta) {this.numeroConta = numeroConta;}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Date getDataCriacao() {return dataCriacao;}
-    public void setDataCriacao(Date dataCriacao) {this.dataCriacao = dataCriacao;}
+    public Long getIdGerente() {
+        return idGerente;
+    }
 
-    public double getSaldo() {return saldo;}
-    public void setSaldo(double saldo) {this.saldo = saldo;}
+    public void setIdGerente(Long idGerente) {
+        this.idGerente = idGerente;
+    }
 
-    public double getLimite() {return limite;}
-    public void setLimite(double limite) {this.limite = limite;}
+    public Long getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(Long idCliente) {
+        this.idCliente = idCliente;
+    }
+
+    public String getNumeroConta() {
+        return numeroConta;
+    }
+
+    public void setNumeroConta(String numeroConta) {
+        this.numeroConta = numeroConta;
+    }
+
+    public Date getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public void setDataCriacao(Date dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
+    public double getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(double saldo) {
+        this.saldo = saldo;
+    }
+
+    public double getLimite() {
+        return limite;
+    }
+
+    public void setLimite(double limite) {
+        this.limite = limite;
+    }
 }
