@@ -36,7 +36,7 @@
       </thead>
 
       <tbody class="divide-y divide-zinc-700">
-        @for (gerente of gerentesFiltrados; track gerente.cpf){
+        @for (gerente of gerentes; track gerente.cpf){
           <tr class="hover:bg-[#313133] transition-colors">
             <td class="px-12 py-2 text-sm text-gray-100">{{ gerente.cpf | cpfFormatador }}</td>
             <td class="px-4 py-2 text-sm text-gray-100">{{ gerente.nome }}</td>
@@ -130,7 +130,7 @@
                     [numericos]="'cpf'" 
                     class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 outline-none focus:border-gray-400"
                     [ngClass]="{
-                      'border-red-500': cpf.errors?.['required'] && (cpf.touched || cpf.dirty),
+                      'border-red-500': (cpf.errors?.['required'] && (cpf.touched || cpf.dirty)) || (cpf.errors?.['cpfConflito'] && (cpf.touched || cpf.dirty)),
                       'border-yellow-500': cpf.errors?.['cpfIncompleto'] && (cpf.touched || cpf.dirty),
                       'border-green-500': cpf.valid && cpf.touched,
                       'border-neutral-700': cpf.pristine
@@ -140,6 +140,8 @@
                     <span class="pl-2 text-red-600 text-xs">O CPF é obrigatório</span>
                   } @else if (cpf.errors?.['cpfIncompleto'] && (cpf.touched || cpf.dirty)) {
                     <span class="pl-2 text-yellow-600 text-xs">O CPF está incompleto ou inválido</span>
+                  } @else if (cpf.errors?.['cpfConflito'] && (cpf.touched || cpf.dirty)) {
+                    <span class="pl-2 text-red-600 text-xs"> CPF já cadastrado </span>
                   }
                 </div>
               }
@@ -150,10 +152,10 @@
                   class="block text-sm text-gray-100 mb-1"
                   >E-mail</label>
                 <input id="email" placeholder="maria@email.com" autocomplete="email" type="email" name="email"
-                  [(ngModel)]="gerente.email" #email="ngModel" email required
+                  [(ngModel)]="gerente.email" #email="ngModel" email [required]="modoFormulario === 'adicionar'"
                   class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 outline-none focus:border-gray-400"
                   [ngClass]="{
-                  'border-red-500': (email.invalid && (email.touched || formGerentes.submitted)),
+                  'border-red-500': ((email.invalid && (email.touched || formGerentes.submitted))) || (email.errors?.['emailConflito'] && (email.touched || email.dirty)),
                   'border-yellow-500': (email.errors?.['email']),
                   'border-green-500': email.valid && email.touched,
                   'border-neutral-700': email.pristine
@@ -164,6 +166,8 @@
                     <span class="pl-2 text-red-600 text-xs">O email é obrigatório</span>
                   } @else if (email.errors?.['email']) {
                     <span class="pl-2 text-yellow-600 text-xs">O email não é válido</span>
+                  } @else if (email.errors?.['emailConflito'] && (email.touched || email.dirty)) {
+                    <span class="pl-2 text-red-600 text-xs"> E-mail já cadastrado </span>
                   }
                 }
               </div>

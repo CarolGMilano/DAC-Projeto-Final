@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ICliente } from '../../shared';
 
+import { ICliente2 } from '../../shared/models/ICliente_V2';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -139,7 +141,7 @@ export class ClienteService {
 }
 
 
-  salvar(cliente: ICliente) {
+  salvar(cliente: ICliente2) {
     console.log(cliente);
   }
 

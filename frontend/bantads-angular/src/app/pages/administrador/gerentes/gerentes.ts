@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { FormsModule, NgForm, NgModel } from '@angular/forms';
 
-import { SharedModule, Gerente } from '../../../shared';
+import { SharedModule, IGerente, TipoUsuario } from '../../../shared';
+import { GerenteService } from '../../../services';
 
 @Component({
   selector: 'app-gerentes',
@@ -12,108 +13,25 @@ import { SharedModule, Gerente } from '../../../shared';
 })
 export class Gerentes implements OnInit{
   @ViewChild('formGerentes') formGerentes! : NgForm;
+  @ViewChild('cpf') cpfModel!: NgModel;
+  @ViewChild('email') emailModel!: NgModel;
 
-  gerentes: any[] = [
-    {
-      id: 1,
-      nome: 'João Pedro Almeida',
-      cpf: '12345678901',
-      email: 'joao.almeida@empresa.com',
-      telefone: '41988123456',
-      saldoPositivo: 12500.50,
-      saldoNegativo: -3200.75
-    },
-    {
-      id: 2,
-      nome: 'Mariana Costa Ribeiro',
-      cpf: '23456789012',
-      email: 'mariana.ribeiro@empresa.com',
-      telefone: '41987452198',
-      saldoPositivo: 9800.00,
-      saldoNegativo: -1500.20
-    },
-    {
-      id: 3,
-      nome: 'Lucas Fernandes Rocha',
-      cpf: '34567890123',
-      email: 'lucas.rocha@empresa.com',
-      telefone: '41991023344',
-      saldoPositivo: 15700.30,
-      saldoNegativo: -4200.00
-    },
-    {
-      id: 4,
-      nome: 'Beatriz Martins Lopes',
-      cpf: '45678901234',
-      email: 'beatriz.lopes@empresa.com',
-      telefone: '41996547781',
-      saldoPositivo: 8700.90,
-      saldoNegativo: -980.40
-    },
-    {
-      id: 5,
-      nome: 'Rafael Gomes Duarte',
-      cpf: '56789012345',
-      email: 'rafael.duarte@empresa.com',
-      telefone: '41984219902',
-      saldoPositivo: 13200.00,
-      saldoNegativo: -2750.10
-    },
-    {
-      id: 6,
-      nome: 'Camila Nogueira Pinto',
-      cpf: '67890123456',
-      email: 'camila.pinto@empresa.com',
-      telefone: '41992331147',
-      saldoPositivo: 11050.75,
-      saldoNegativo: -3100.00
-    },
-    {
-      id: 7,
-      nome: 'Felipe Andrade Batista',
-      cpf: '78901234567',
-      email: 'felipe.batista@empresa.com',
-      telefone: '41985674432',
-      saldoPositivo: 9400.60,
-      saldoNegativo: -1200.50
-    },
-    {
-      id: 8,
-      nome: 'Juliana Teixeira Moraes',
-      cpf: '89012345678',
-      email: 'juliana.moraes@empresa.com',
-      telefone: '41998017765',
-      saldoPositivo: 17600.00,
-      saldoNegativo: -5300.25
-    },
-    {
-      id: 9,
-      nome: 'Gustavo Carvalho Freitas',
-      cpf: '90123456789',
-      email: 'gustavo.freitas@empresa.com',
-      telefone: '41987902214',
-      saldoPositivo: 10200.10,
-      saldoNegativo: -2100.00
-    },
-    {
-      id: 10,
-      nome: 'Patrícia Oliveira Barros',
-      cpf: '01234567890',
-      email: 'patricia.barros@empresa.com',
-      telefone: '41991776033',
-      saldoPositivo: 8900.00,
-      saldoNegativo: -950.80
-    }
-  ];
+  private gerenteService = inject(GerenteService);
 
-  gerente: any = {
-    id: -1,
+  gerentes: IGerente[] = [];
+
+  gerente: IGerente = {
+    id: -1, 
+    //Só para testes, pois no fluxo da SAGA, este id virá do MSAuth.
+    idUsuario: Math.floor(Math.random() * 1000000000),
     nome: '',
     cpf: '',
     email: '',
     telefone: '',
-    saldoPositivo: 0,
-    saldoNegativo: 0
+    senhaAtual: '',
+    novaSenha: '',
+    ativo: true,
+    tipo: TipoUsuario.GERENTE
   }
 
   pesquisa: string = '';
@@ -128,43 +46,35 @@ export class Gerentes implements OnInit{
   modoFormulario: 'nenhum' | 'adicionar' | 'editar' = 'nenhum';
 
   ngOnInit(){
-    this.ordenarGerentes();
-  }
-
-  ordenarGerentes() {
-    this.gerentes.sort((gerente1, gerente2) => gerente1.nome.localeCompare(gerente2.nome));
-  }
-
-  get gerentesFiltrados() {
-    return this.gerentes.filter(gerente =>
-      gerente.nome.toLowerCase().includes(this.pesquisa.toLowerCase())
-    );
+    this.listarTodos();
   }
 
   abrirAdicionar() {
     this.gerente = {
-      id: -1,
+      id: -1, 
+      idUsuario: Math.floor(Math.random() * 1000000000),
       nome: '',
       cpf: '',
       email: '',
       telefone: '',
       senhaAtual: '',
-      saldoPositivo: 0,
-      saldoNegativo: 0
+      novaSenha: '',
+      ativo: true,
+      tipo: TipoUsuario.GERENTE
     }
 
     this.modoFormulario = 'adicionar';
     this.mostrarFormulario = true;
   }
 
-  abrirEditar(gerenteSelecionado: Gerente) {
+  abrirEditar(gerenteSelecionado: IGerente) {
     this.gerente = { ... gerenteSelecionado };
 
     this.modoFormulario = 'editar';
     this.mostrarFormulario = true;
   }
   
-  abrirExcluir(gerenteSelecionado: Gerente) {
+  abrirExcluir(gerenteSelecionado: IGerente) {
     this.gerente = { ... gerenteSelecionado };
     this.mostrarPopupExclusao = true;
   }
@@ -183,43 +93,92 @@ export class Gerentes implements OnInit{
     this.modoFormulario = 'nenhum';
   }
 
-  salvar(): void {
-    if (this.modoFormulario === 'adicionar') {
-      const novoGerente: any = {
-        id: this.gerentes.length + 1,
-        nome: this.gerente.nome,
-        cpf: this.gerente.cpf,
-        email: this.gerente.email,
-        telefone: this.gerente.telefone,
-        senhaAtual: this.gerente.senhaAtual,
-        saldoNegativo: this.gerente.saldoNegativo,
-        saldoPositivo: this.gerente.saldoPositivo
-      
-      };
-
-      this.gerentes.push(novoGerente);
-      this.ordenarGerentes();
-    } else if (this.modoFormulario === 'editar') {
-      const index = this.gerentes.findIndex(
-        gerente => gerente.cpf === this.gerente.cpf
-      );
-
-      if (index !== -1) {
-        this.gerentes[index] = {
-          ...this.gerentes[index],
-          nome: this.gerente.nome,
-          email: this.gerente.email,
-          telefone: this.gerente.telefone
-        };
+  listarTodos() {
+    this.gerenteService.listarTodos().subscribe({
+      next: (gerentes) => {
+        this.gerentes = (gerentes ?? []).sort((gerente1, gerente2) =>
+          (gerente1.nome ?? '').localeCompare(gerente2.nome ?? '')
+        );
+      },
+      error: (erro) => {
+        if (erro.status === 500) {
+          alert(`Erro interno: ${erro.error}`);
+        } else {
+          alert('Erro inesperado ao listar funcionários.');
+        }
       }
-    }
+    });
+  }
 
-    this.cancelar();
-    this.ordenarGerentes();
+  salvar(): void {
+    this.senhaIncorreta = false;
+
+    if (!this.formGerentes.form.valid) return;
+
+    if (this.modoFormulario === 'adicionar') {
+
+      this.gerenteService.inserir(this.gerente).subscribe({
+        next: () => {
+          this.listarTodos();
+          this.mostrarFormulario = false;
+          this.formGerentes.reset();
+          this.cancelar();
+        },
+        error: (erro) => {
+          if (erro.status === 409) {
+            if (erro.error.tipo === 'cpf') {
+              this.cpfModel.control.setErrors({ cpfConflito: true });
+            } else if (erro.error.tipo === 'email') {
+              this.emailModel.control.setErrors({ emailConflito: true });
+            }
+          } else if (erro.status === 500) {
+            alert(`Erro interno: ${erro.error}`);
+          } else {
+            alert('Erro inesperado ao cadastrar gerente.');
+          }
+        }
+      });
+
+    } else {
+
+      this.gerenteService.atualizar(this.gerente).subscribe({
+        next: () => {
+          this.listarTodos();
+          this.mostrarFormulario = false;
+          this.formGerentes.reset();
+          this.cancelar();
+        },
+        error: (erro) => {
+          if (erro.status === 404) {
+            alert(`Não encontrado: ${erro.error}`);
+          } else if (erro.status === 500) {
+            alert(`Erro interno: ${erro.error}`);
+          } else {
+            alert('Erro inesperado ao atualizar gerente.');
+          }
+        }
+      });
+    }
   }
 
   excluir() {
-    this.gerentes = this.gerentes.filter(gerente => gerente.cpf !== this.gerente?.cpf);
-    this.mostrarPopupExclusao = false;
+    if (!this.gerente.cpf) return;
+
+    this.gerenteService.remover(this.gerente.cpf).subscribe({
+      next: () => {
+        this.listarTodos();
+        this.mostrarPopupExclusao = false;
+      },
+
+      error: (erro) => {
+        if (erro.status === 404) {
+          alert(`Não encontrado: ${erro.error}`);
+        } else if (erro.status === 500) {
+          alert(`Erro interno: ${erro.error}`);
+        } else {
+          alert('Erro inesperado ao excluir o gerente.');
+        }
+      }
+    });
   }
 }

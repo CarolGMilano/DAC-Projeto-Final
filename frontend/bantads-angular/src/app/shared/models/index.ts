@@ -1,4 +1,4 @@
-export * from "./Gerente";
+export * from "./IGerente";
 export * from "./Usuario";
 export * from "./ILogin";
 

@@ -1,6 +1,12 @@
-<div class="flex h-screen bg-zinc-900">
-  <div class="w-2/5 flex items-center justify-center h-full bg-zinc-950">
-    <h1 class="text-white">BANDTADS</h1>
+<div class="flex h-screen bg-green-900">
+  <div class="w-2/5 flex flex-col m-3 rounded-xl justify-end bg-gradient-to-br from-black to-[#2c2c2c] p-8 shadow-lg shadow-black/40 items-end text-right">
+    <h1 class="text-white text-3xl font-bold tracking-widest">
+      BANDTADS
+    </h1>
+
+    <p class="text-gray-200 text-sm mt-3 max-w-[80%] leading-relaxed">
+      Plataforma para gestão inteligente de processos e dados.
+    </p>
   </div>
 
   <div class="flex justify-center items-center w-3/5 px-10">
@@ -22,7 +28,7 @@
               Precisamos de alguns dados pessoais para efetuar seu cadastro
             </p>
   
-            <div class="col-span-4 mt-1.5">
+            <div class="col-span-6 mt-1.5">
               <label 
                 for="nome"
                 class="block text-sm text-gray-100 mb-1"
@@ -43,30 +49,6 @@
     
                 @if (nome.errors?.['required'] && (nome.touched || formCadastro.submitted)) {
                   <span class="pl-2 text-red-600 text-xs">O nome é obrigatório</span>
-                } 
-            </div>
-  
-            <!-- Confirmar com o professor o que é "Estado" nos dados pessoais do cliente. -->
-            <div class="col-span-2 mt-1.5">
-              <label 
-                for="estadoCivil"
-                class="block text-sm text-gray-100 mb-1"
-                >Estado Civil</label>
-              <input 
-                id="estadoCivil"
-                name="estadoCivil" 
-                [(ngModel)]="cliente.estadoCivil" 
-                placeholder="Estado Civil"
-                #estadoCivil="ngModel"
-                required
-                class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 outline-none focus:border-gray-400" [ngClass]="{
-                    'border-red-500': estadoCivil.errors?.['required'] && (estadoCivil.touched || formCadastro.submitted),
-                    'border-green-500': estadoCivil.valid && estadoCivil.touched,
-                    'border-neutral-700': estadoCivil.pristine
-                }" />
-    
-                @if (estadoCivil.errors?.['required'] && (estadoCivil.touched || formCadastro.submitted)) {
-                  <span class="pl-2 text-red-600 text-xs">O estado civil é obrigatório</span>
                 } 
             </div>
   
@@ -388,11 +370,6 @@
                 <div class="col-span-1 flex flex-col">
                   <span class="font-medium text-xs text-gray-200">Telefone</span>
                   <p class="text-white font-thin text-base">{{ cliente.telefone | telefoneFormatador }}</p>
-                </div>
-  
-                <div class="col-span-1 flex flex-col">
-                  <span class="font-medium text-xs text-gray-200">Estado civil</span>
-                  <p class="text-white font-thin text-base">{{ cliente.estadoCivil }}</p>
                 </div>
               </div>
     

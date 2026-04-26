@@ -1,4 +1,4 @@
-import { ICliente } from "../ICliente";
+import { ICliente } from "./ICliente";
 import { IGerente } from "./IGerente";
 import { IMovimentacao } from "./IMovimentacao";
 
