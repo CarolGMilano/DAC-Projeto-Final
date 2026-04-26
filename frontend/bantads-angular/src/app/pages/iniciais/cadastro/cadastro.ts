@@ -2,7 +2,10 @@ import { Component, inject, ViewChild } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule, NgForm, NgModel } from '@angular/forms';
 
-import { CepStatus, ICliente, IEndereco, TipoUsuario, SharedModule, EtapaCadastro } from '../../../shared';
+import { CepStatus, IEndereco, TipoUsuario, SharedModule, EtapaCadastro } from '../../../shared';
+
+import { ICliente2 } from '../../../shared/models/ICliente_V2';
+
 import { ClienteService, EnderecoService } from '../../../services';
 import { CommonModule } from '@angular/common';
 import { IndicadorEtapas } from "../../../components";
@@ -33,19 +36,15 @@ export class Cadastro {
     estado: '',
   };
 
-  cliente: ICliente = {
+  cliente: ICliente2 = {
+    id: -1,
+    tipo: TipoUsuario.CLIENTE,
     nome: '',
     cpf: '',
-    telefone: '',
     email: '',
-    estadoCivil: '',
+    telefone: '',
     salario: null,
-    saldo: null,
-    limite: 0,
     endereco: this.endereco,
-    gerenteNome: '',
-    gerenteCpf: '',
-    numeroConta: '',
   };
 
   salarioFormatado: string = '';
@@ -62,8 +61,7 @@ export class Cadastro {
         return this.formCadastro.controls['nome']?.valid &&
                this.formCadastro.controls['cpf']?.valid &&
                this.formCadastro.controls['email']?.valid &&
-               this.formCadastro.controls['telefone']?.valid &&
-               this.formCadastro.controls['estadoCivil']?.valid;
+               this.formCadastro.controls['telefone']?.valid;
 
       case EtapaCadastro.ENDERECO:
         return this.formCadastro.controls['cep']?.valid;
@@ -142,20 +140,14 @@ export class Cadastro {
   salvar(){
     if (!this.formCadastro.form.valid) return;
 
-    const cliente: ICliente = {
+    const cliente: ICliente2 = {
       id: -1,
       tipo: TipoUsuario.CLIENTE,
       nome: this.cliente.nome,
       cpf: this.cliente.cpf,
       telefone: this.cliente.telefone,
       email: this.cliente.email,
-      estadoCivil: this.cliente.estadoCivil,
       salario: this.salarioParaNumero(this.salarioFormatado),
-      saldo: this.cliente.saldo,
-      limite: this.cliente.limite,
-      gerenteNome: this.cliente.gerenteNome,
-      gerenteCpf: this.cliente.gerenteCpf,
-      numeroConta: this.cliente.numeroConta,
       endereco: {
         cep: this.endereco.cep,
         logradouro: this.cliente.endereco.logradouro,

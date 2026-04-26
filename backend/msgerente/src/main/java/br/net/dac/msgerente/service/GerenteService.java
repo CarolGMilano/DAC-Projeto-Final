@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import br.net.dac.msgerente.model.Gerente;
 import br.net.dac.msgerente.model.dto.GerenteDTO;
 import br.net.dac.msgerente.model.dto.GerenteResumoDTO;
+import br.net.dac.msgerente.model.exception.CPFDuplicadoException;
 import br.net.dac.msgerente.model.exception.GerenteNaoEncontradoException;
+import br.net.dac.msgerente.model.exception.UsuarioDuplicadoException;
 import br.net.dac.msgerente.repository.GerenteRepository;
 
 @Service
@@ -17,7 +19,7 @@ public class GerenteService {
   @Autowired
   private GerenteRepository gerenteRepository;
 
-  private void validarGerente(GerenteDTO gerente)  {
+  private void validarGerenteInsercao(GerenteDTO gerente)  {
     if (gerente.getIdUsuario() == null) {
       throw new IllegalArgumentException("Usuário não cadastrado");
     }
@@ -39,13 +41,25 @@ public class GerenteService {
     }
   }
 
+  private void validarGerenteAlteracao(GerenteDTO gerente)  {
+    if (gerente.getNome() == null || gerente.getNome().isBlank()) {
+      throw new IllegalArgumentException("Nome é obrigatório");
+    }
+  }
+
   public GerenteDTO inserirGerente(GerenteDTO dto)  {
-    validarGerente(dto);
+    validarGerenteInsercao(dto);
 
-    Gerente gerenteEncontrado = gerenteRepository.findByCpf(dto.getCpf());
+    Gerente cpfExistente = gerenteRepository.findByCpf(dto.getCpf());
 
-    if (gerenteEncontrado != null) {
-      throw new IllegalArgumentException("CPF já cadastrado");
+    if (cpfExistente != null) {
+        throw new CPFDuplicadoException();
+    }
+
+    Gerente usuarioExistente = gerenteRepository.findByIdUsuario(dto.getIdUsuario());
+
+    if (usuarioExistente != null) {
+        throw new UsuarioDuplicadoException();
     }
 
     Gerente gerente = new Gerente();
@@ -54,6 +68,7 @@ public class GerenteService {
     gerente.setCpf(dto.getCpf());
     gerente.setNome(dto.getNome());
     gerente.setTelefone(dto.getTelefone());
+    gerente.setAtivo(true);
 
     Gerente gerenteAdicionado = gerenteRepository.save(gerente);
 
@@ -85,8 +100,12 @@ public class GerenteService {
     );
   }
 
-  public Long consultarIdUsuario(Long idGerente) {
+  public Long consultarGerenteIdUsuario(Long idGerente) {
     Gerente gerenteEncontrado = gerenteRepository.findById(idGerente).orElseThrow(GerenteNaoEncontradoException::new);
+
+    if (!gerenteEncontrado.getAtivo()) {
+      throw new GerenteNaoEncontradoException();
+    }
 
     return gerenteEncontrado.getIdUsuario();
   }
@@ -108,7 +127,7 @@ public class GerenteService {
     );
   }
 
-  public List<GerenteResumoDTO> listarGerentes() throws Exception {
+  public List<GerenteResumoDTO> listarGerentes() {
     List<GerenteResumoDTO> gerentes = new ArrayList<>();
 
     for (Gerente gerente : gerenteRepository.findByAtivoTrue()) {
@@ -125,10 +144,10 @@ public class GerenteService {
     return gerentes;
   }
 
-  public void desativarGerente (Long idGerente) {
-    Gerente gerenteEncontrado = gerenteRepository.findById(idGerente).orElseThrow(GerenteNaoEncontradoException::new);
+  public void desativarGerente (String cpfGerente) {
+    Gerente gerenteEncontrado = gerenteRepository.findByCpfAndAtivoTrue(cpfGerente);
     
-    if (!gerenteEncontrado.getAtivo()) {
+    if (gerenteEncontrado == null) {
       throw new GerenteNaoEncontradoException();
     }
 
@@ -137,16 +156,15 @@ public class GerenteService {
   }
 
   public GerenteDTO alterarGerente(GerenteDTO dto) {
-    validarGerente(dto);
+    validarGerenteAlteracao(dto);
     
-    Gerente gerenteEncontrado = gerenteRepository.findById(dto.getId()).orElseThrow(GerenteNaoEncontradoException::new);
+    Gerente gerenteEncontrado = gerenteRepository.findByCpfAndAtivoTrue(dto.getCpf());
 
-    if (!gerenteEncontrado.getAtivo()) {
+    if (gerenteEncontrado == null) {
       throw new GerenteNaoEncontradoException();
     }
 
     gerenteEncontrado.setNome(dto.getNome());
-    gerenteEncontrado.setTelefone(dto.getTelefone());
 
     Gerente gerenteAlterado = gerenteRepository.save(gerenteEncontrado);
 
