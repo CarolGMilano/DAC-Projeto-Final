@@ -9,4 +9,5 @@ public interface GerenteRepository extends JpaRepository<Gerente, Long>{
   public Gerente findByCpf(String cpf);
   List<Gerente> findByAtivoTrue();
   Gerente findByCpfAndAtivoTrue(String cpf);
+  Gerente findByIdUsuario(Long idUsuario);
 }
