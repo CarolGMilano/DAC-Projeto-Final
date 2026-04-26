@@ -10,20 +10,20 @@ public class Gerente {
   @Column(name = "id")
   private Long id;
 
-  @Column(name = "idUsuario")
+  @Column(name = "idusuario", unique = true, nullable = false)
   private Long idUsuario;
 
-  @Column(name = "cpf")
+  @Column(name = "cpf", unique = true, nullable = false)
   private String cpf;
 
-  @Column(name = "nome")
+  @Column(name = "nome", nullable = false)
   private String nome;
 
-  @Column(name = "telefone")
+  @Column(name = "telefone", nullable = false)
   private String telefone;
 
-  @Column(name = "ativo")
-  private Boolean ativo;
+  @Column(name = "ativo", nullable = false)
+  private boolean ativo;
 
   public Gerente() {}
 
