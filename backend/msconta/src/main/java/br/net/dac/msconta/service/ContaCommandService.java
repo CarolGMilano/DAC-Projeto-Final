@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import br.net.dac.msconta.model.Conta;
 import br.net.dac.msconta.model.dto.ContaDTO;
+import br.net.dac.msconta.model.exception.ContaInativaException;
 import br.net.dac.msconta.model.exception.ContaNaoEncontradaException;
 // import br.net.dac.msconta.model.exception.ContaNaoEncontradaException;
 import br.net.dac.msconta.repository.ContaRepository;
@@ -111,4 +112,6 @@ public class ContaCommandService {
         // DESATIVA CONTA
         contaEncontrada.setAtivo(false);
         contaRepository.save(contaEncontrada);
+}
+
 }
