@@ -5,12 +5,12 @@ import { MoedaBrPipe } from '../../../shared/pipes/moedaBr/moeda-br-pipe';
 
 @Component({
   selector: 'app-administrator-dashboard',
-  //imports: [MoedaBrPipe],
+  imports: [MoedaBrPipe],
   templateUrl: './administrator-dashboard.html',
   styleUrl: './administrator-dashboard.css',
 })
 export class AdministratorDashboard {
-gerentes!: IGerente[];
+gerentes: IGerente[] = [];
 
 constructor(private gerenteService: GerenteService) {}
 

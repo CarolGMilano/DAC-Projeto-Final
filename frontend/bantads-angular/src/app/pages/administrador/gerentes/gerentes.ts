@@ -21,15 +21,14 @@ export class Gerentes implements OnInit{
   gerentes: IGerente[] = [];
 
   gerente: IGerente = {
-    id: -1, 
+    //id: -1, 
     //Só para testes, pois no fluxo da SAGA, este id virá do MSAuth.
     idUsuario: Math.floor(Math.random() * 1000000000),
     nome: '',
     cpf: '',
     email: '',
     telefone: '',
-    senhaAtual: '',
-    novaSenha: '',
+    senha: '',
     ativo: true,
     tipo: TipoUsuario.GERENTE
   }
@@ -51,14 +50,13 @@ export class Gerentes implements OnInit{
 
   abrirAdicionar() {
     this.gerente = {
-      id: -1, 
+      //id: -1, 
       idUsuario: Math.floor(Math.random() * 1000000000),
       nome: '',
       cpf: '',
       email: '',
       telefone: '',
-      senhaAtual: '',
-      novaSenha: '',
+      senha: '',
       ativo: true,
       tipo: TipoUsuario.GERENTE
     }

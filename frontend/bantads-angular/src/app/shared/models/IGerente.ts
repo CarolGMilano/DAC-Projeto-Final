@@ -1,14 +1,13 @@
 import { TipoUsuario } from "./EnumTipoUsuario";
 
 export interface IGerente {
-  id: number; 
+  id?: number; 
   idUsuario: number;
   nome: string;
   cpf: string;
   email: string;
   telefone: string;
-  senhaAtual?: string;
-  novaSenha?: string;
+  senha?: string;
   ativo: boolean;
   tipo: TipoUsuario;
 }
