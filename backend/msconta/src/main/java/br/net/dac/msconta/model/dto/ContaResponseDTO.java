@@ -1,49 +1,21 @@
-package br.net.dac.msconta.model;
+package br.net.dac.msconta.model.dto;
 
 import java.sql.Date;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 
-
-@Entity
-@Table(name = "conta")
-public class Conta {
-
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY) //Isso é pra dizer que o id vai ser gerado pelo banco automaticamente
-    private Long id;
-
-    @Column(name= "ativo")
+public class ContaResponseDTO {
     private boolean ativo;
-    
-    @Column(name = "idGerente")
     private Long idGerente;
-
-    @Column(name = "idCliente")
     private Long idCliente;
-
-    @Column(name = "numeroConta")
     private String numeroConta;
-
-    @Column(name = "dataCriacao")
     private Date dataCriacao;
-
-    @Column(name = "saldo")
     private double saldo;
-
-    @Column(name = "limite")
     private double limite;
 
-    public Conta() {
+    public ContaResponseDTO() {
     }
 
-    public Conta(boolean ativo, Long id, Long idGerente, Long idCliente, String numeroConta, Date dataCriacao, double saldo, double limite) {
+    public ContaResponseDTO(boolean ativo, Long idGerente, Long idCliente, String numeroConta, Date dataCriacao, double saldo, double limite) {
         this.ativo = ativo;
-        this.id = id;
         this.idGerente = idGerente;
         this.idCliente = idCliente;
         this.numeroConta = numeroConta;
@@ -60,14 +32,6 @@ public class Conta {
 
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Long getIdGerente() {

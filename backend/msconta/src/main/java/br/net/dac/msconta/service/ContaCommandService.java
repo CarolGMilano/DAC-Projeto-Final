@@ -3,8 +3,9 @@ package br.net.dac.msconta.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.net.dac.msconta.model.Conta;
-import br.net.dac.msconta.model.dto.ContaDTO;
+import br.net.dac.msconta.model.dto.ContaRequestDTO;
+import br.net.dac.msconta.model.dto.ContaResponseDTO;
+import br.net.dac.msconta.model.entity.Conta;
 import br.net.dac.msconta.model.exception.ContaInativaException;
 import br.net.dac.msconta.model.exception.ContaNaoEncontradaException;
 // import br.net.dac.msconta.model.exception.ContaNaoEncontradaException;
@@ -17,18 +18,20 @@ public class ContaCommandService {
     private ContaRepository contaRepository;
 
     // MÉTODOS
-    private void validaConta(ContaDTO conta) {
-        if (conta.getNumeroConta() == null || conta.getNumeroConta().isBlank()) throw new IllegalArgumentException("MsConta: Número da conta == null || \"\"");
-        if (conta.getDataCriacao() == null) throw new IllegalArgumentException("MsConta: dataCriacao da conta == null");
-        if (conta.getId() == null) throw new IllegalArgumentException("MsConta: Id da conta == null");
+    private void validaConta(ContaRequestDTO conta) {
         if (conta.getIdCliente() == null) throw new IllegalArgumentException("MsConta: Id da do cliente == null");
         if (conta.getIdGerente() == null) throw new IllegalArgumentException("MsConta: Id do gerente == null");
+    }
 
+    // criar numero conta aleatorio
+    private String geraNumeroConta() {
+
+        return "";
     }
 
     // MÉTODO CREATE
-    public ContaDTO inserirConta(ContaDTO contaDTO) {
-        validaConta(contaDTO);
+    public ContaResponseDTO inserirConta(ContaRequestDTO requestDTO) {
+        validaConta(requestDTO);
 
         // VALIDAÇÃO DE EXISTÊNCIA DE CONTA
         // NÃO SEI SE VAMOS USAR PRA VERIFICAR SE CONTA É ATIVA OU NÃO, ENTÃO DEIXAMOS COMENTADO CASO PRECISE
@@ -40,19 +43,17 @@ public class ContaCommandService {
         
         
         Conta conta = new Conta();
-
+        conta.setNumeroConta(this.geraNumeroConta());
         conta.setAtivo(true);
-        conta.setIdGerente(contaDTO.getIdGerente());
-        conta.setIdCliente(contaDTO.getIdCliente());
-        conta.setNumeroConta(contaDTO.getNumeroConta());
-        conta.setSaldo(contaDTO.getSaldo());
-        conta.setLimite(contaDTO.getLimite());
+        conta.setIdGerente(requestDTO.getIdGerente());
+        conta.setIdCliente(requestDTO.getIdCliente());
+        conta.setSaldo(requestDTO.getSaldo());
+        conta.setLimite(requestDTO.getLimite());
         
         Conta contaAdicionada = contaRepository.save(conta);
 
-        return new ContaDTO(
+        return new ContaResponseDTO(
             contaAdicionada.isAtivo(),
-            contaAdicionada.getId(),
             contaAdicionada.getIdGerente(),
             contaAdicionada.getIdCliente(),
             contaAdicionada.getNumeroConta(),
@@ -63,31 +64,29 @@ public class ContaCommandService {
     }
 
     //MÉTODO UPDATE
-    public ContaDTO atualizarConta(ContaDTO contaDTO) {
-        validaConta(contaDTO);
+    public ContaResponseDTO atualizarConta(String numeroConta, ContaRequestDTO requestDTO) {
+        validaConta(requestDTO);
 
-        Conta contaEncontrada = contaRepository.findById(contaDTO.getId()).orElseThrow(ContaNaoEncontradaException::new);
+        Conta contaEncontrada = contaRepository.findByNumeroConta(numeroConta);
 
         if (contaEncontrada == null || contaEncontrada.isAtivo() == false) {
              throw new ContaNaoEncontradaException();
          }
 
         Conta conta = new Conta(
-            contaDTO.isAtivo(),
-            contaDTO.getId(),
-            contaDTO.getIdGerente(),
-            contaDTO.getIdCliente(),
-            contaDTO.getNumeroConta(),
-            contaDTO.getDataCriacao(),
-            contaDTO.getSaldo(),
-            contaDTO.getLimite()
+            requestDTO.isAtivo(),
+            requestDTO.getIdGerente(),
+            requestDTO.getIdCliente(),
+            contaEncontrada.getNumeroConta(),
+            contaEncontrada.getDataCriacao(),
+            requestDTO.getSaldo(),
+            requestDTO.getLimite()
         ); 
 
         Conta contaAtualizada = contaRepository.save(conta);
 
-        return new ContaDTO(
+        return new ContaResponseDTO(
             contaAtualizada.isAtivo(),
-            contaAtualizada.getId(),
             contaAtualizada.getIdGerente(),
             contaAtualizada.getIdCliente(),
             contaAtualizada.getNumeroConta(),
@@ -98,13 +97,11 @@ public class ContaCommandService {
     }
 
     //MÉTODO DELETE
-    public void desativarConta (Long idConta) {
+    public void desativarConta (String numeroConta) {
         
         // VALIDAÇÃO
             // BUSCA CONTA SE EXISTE
-                Conta contaEncontrada = contaRepository
-                                            .findById(idConta)
-                                            .orElseThrow(ContaNaoEncontradaException::new);
+                Conta contaEncontrada = contaRepository.findByNumeroConta(numeroConta);
             
             // CHECK SE INATIVO
                 if(!contaEncontrada.isAtivo()) throw new ContaInativaException();

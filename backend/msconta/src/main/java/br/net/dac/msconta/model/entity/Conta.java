@@ -1,23 +1,42 @@
-package br.net.dac.msconta.model.dto;
+package br.net.dac.msconta.model.entity;
 
 import java.sql.Date;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.Column;
 
-public class ContaDTO {
-    private boolean ativo;
-    private Long id;
-    private Long idGerente;
-    private Long idCliente;
+@Entity
+@Table(name = "conta")
+public class Conta {
+
+    @Id
+    @Column(name = "numeroConta")
     private String numeroConta;
+
+    @Column(name= "ativo")
+    private boolean ativo;
+    
+    @Column(name = "idGerente")
+    private Long idGerente;
+
+    @Column(name = "idCliente")
+    private Long idCliente;
+
+    @Column(name = "dataCriacao")
     private Date dataCriacao;
+
+    @Column(name = "saldo")
     private double saldo;
+
+    @Column(name = "limite")
     private double limite;
 
-    public ContaDTO() {
+    public Conta() {
     }
 
-    public ContaDTO(boolean ativo, Long id, Long idGerente, Long idCliente, String numeroConta, Date dataCriacao, double saldo, double limite) {
+    public Conta(boolean ativo, Long idGerente, Long idCliente, String numeroConta, Date dataCriacao, double saldo, double limite) {
         this.ativo = ativo;
-        this.id = id;
         this.idGerente = idGerente;
         this.idCliente = idCliente;
         this.numeroConta = numeroConta;
@@ -34,14 +53,6 @@ public class ContaDTO {
 
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Long getIdGerente() {
@@ -91,5 +102,4 @@ public class ContaDTO {
     public void setLimite(double limite) {
         this.limite = limite;
     }
-
 }
