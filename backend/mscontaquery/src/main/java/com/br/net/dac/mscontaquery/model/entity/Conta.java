@@ -1,12 +1,10 @@
-package com.br.net.dac.mscontaquery.model;
+package com.br.net.dac.mscontaquery.model.entity;
 
 import java.sql.Date;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 
 
 @Entity
@@ -14,8 +12,8 @@ import jakarta.persistence.GenerationType;
 public class Conta {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "numeroConta")
+    private String numeroConta;
 
     @Column(name= "ativo")
     private boolean ativo;
@@ -25,9 +23,6 @@ public class Conta {
 
     @Column(name = "idCliente")
     private Long idCliente;
-
-    @Column(name = "numeroConta")
-    private String numeroConta;
 
     @Column(name = "dataCriacao")
     private Date dataCriacao;
@@ -41,9 +36,8 @@ public class Conta {
     public Conta() {
     }
 
-    public Conta(boolean ativo, Long id, Long idGerente, Long idCliente, String numeroConta, Date dataCriacao, double saldo, double limite) {
+    public Conta(boolean ativo, Long idGerente, Long idCliente, String numeroConta, Date dataCriacao, double saldo, double limite) {
         this.ativo = ativo;
-        this.id = id;
         this.idGerente = idGerente;
         this.idCliente = idCliente;
         this.numeroConta = numeroConta;
@@ -60,14 +54,6 @@ public class Conta {
 
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Long getIdGerente() {

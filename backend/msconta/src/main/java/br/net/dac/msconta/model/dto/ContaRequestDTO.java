@@ -1,27 +1,19 @@
-package com.br.net.dac.mscontaquery.model.dto;
+package br.net.dac.msconta.model.dto;
 
-import java.sql.Date;
-
-public class ContaDTO {
+public class ContaRequestDTO {
     private boolean ativo;
-    private Long id;
     private Long idGerente;
     private Long idCliente;
-    private String numeroConta;
-    private Date dataCriacao;
     private double saldo;
     private double limite;
 
-    public ContaDTO() {
+    public ContaRequestDTO() {
     }
 
-    public ContaDTO(boolean ativo, Long id, Long idGerente, Long idCliente, String numeroConta, Date dataCriacao, double saldo, double limite) {
+    public ContaRequestDTO(boolean ativo, Long idGerente, Long idCliente, double saldo, double limite) {
         this.ativo = ativo;
-        this.id = id;
         this.idGerente = idGerente;
         this.idCliente = idCliente;
-        this.numeroConta = numeroConta;
-        this.dataCriacao = dataCriacao;
         this.saldo = saldo;
         this.limite = limite;
     }
@@ -34,14 +26,6 @@ public class ContaDTO {
 
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Long getIdGerente() {
@@ -58,22 +42,6 @@ public class ContaDTO {
 
     public void setIdCliente(Long idCliente) {
         this.idCliente = idCliente;
-    }
-
-    public String getNumeroConta() {
-        return numeroConta;
-    }
-
-    public void setNumeroConta(String numeroConta) {
-        this.numeroConta = numeroConta;
-    }
-
-    public Date getDataCriacao() {
-        return dataCriacao;
-    }
-
-    public void setDataCriacao(Date dataCriacao) {
-        this.dataCriacao = dataCriacao;
     }
 
     public double getSaldo() {
