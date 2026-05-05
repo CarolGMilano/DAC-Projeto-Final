@@ -23,16 +23,23 @@ public class ContaCommandService {
     private void validaConta(ContaRequestDTO conta) {
         if (conta.getIdCliente() == null) throw new IllegalArgumentException("MsConta: Id da do cliente == null");
         if (conta.getIdGerente() == null) throw new IllegalArgumentException("MsConta: Id do gerente == null");
-        if (conta.isAtivo()) throw new IllegalArgumentException("Conta inativa");        
+        if (conta.isAtivo() == false) throw new IllegalArgumentException("Conta inativa");        
     }
 
-    // 1.1 Criar numero conta aleatório de 4 dígitos
+    // M
+    // 1.2 Criar numero conta aleatório de 4 dígitos
     private String geraNumeroConta() {
         Random random = new Random();
-        int numConta = random.nextInt(10000);
-        return String.format("%04d", numConta);
+        String novoNumeroConta;
+
+        do {
+            int numero = random.nextInt(10000);
+            novoNumeroConta = String.format("%04d", numero);
+        } while (contaRepository.existsByNumeroConta(novoNumeroConta));
+        return novoNumeroConta;
     }
 
+        
     // MÉTODO CREATE
     public ContaResponseDTO inserirConta(ContaRequestDTO requestDTO) {
         validaConta(requestDTO);
