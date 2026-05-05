@@ -1,5 +1,7 @@
 package br.net.dac.msconta.service;
 
+import java.util.Random;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,16 +19,18 @@ public class ContaCommandService {
     @Autowired
     private ContaRepository contaRepository;
 
-    // MÉTODOS
+    // 1. MÉTODOS
     private void validaConta(ContaRequestDTO conta) {
         if (conta.getIdCliente() == null) throw new IllegalArgumentException("MsConta: Id da do cliente == null");
         if (conta.getIdGerente() == null) throw new IllegalArgumentException("MsConta: Id do gerente == null");
+        if (conta.isAtivo()) throw new IllegalArgumentException("Conta inativa");        
     }
 
-    // criar numero conta aleatorio
+    // 1.1 Criar numero conta aleatório de 4 dígitos
     private String geraNumeroConta() {
-
-        return "";
+        Random random = new Random();
+        int numConta = random.nextInt(10000);
+        return String.format("%04d", numConta);
     }
 
     // MÉTODO CREATE
@@ -43,7 +47,7 @@ public class ContaCommandService {
         
         
         Conta conta = new Conta();
-        conta.setNumeroConta(this.geraNumeroConta());
+        conta.setNumeroConta(geraNumeroConta());
         conta.setAtivo(true);
         conta.setIdGerente(requestDTO.getIdGerente());
         conta.setIdCliente(requestDTO.getIdCliente());

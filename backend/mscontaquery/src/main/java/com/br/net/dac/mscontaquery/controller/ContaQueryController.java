@@ -18,13 +18,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RequestMapping("/conta")
-@CrossOrigin
 @RestController
+@CrossOrigin
 public class ContaQueryController {
 
     @Autowired
     private ContaQueryService queryService;
 
+    // BUSCA POR CLIENTES POR GERENTE
     @GetMapping("/{idGerente}")
     public ResponseEntity<List<ContaQueryResponseDTO>> getContasByGerente(@RequestParam Long idGerente) {
         List<Conta> contas = queryService.getContasByGerente(idGerente);
