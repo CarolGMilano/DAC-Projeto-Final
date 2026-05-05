@@ -56,7 +56,7 @@ public class ContaCommandController {
             commandService.desativarConta(numeroConta);
             return ResponseEntity.noContent().build(); // DEU CERTO = 204. NO CONTENT
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); //DEU RUIM = 400 BAD REQUEST
         }
     }
 
