@@ -113,6 +113,12 @@ public class ContaCommandService {
         // VALIDAÇÃO
             // BUSCA CONTA SE EXISTE
                 Conta contaEncontrada = contaRepository.findByNumeroConta(numeroConta);
+
+                // CHECK SE ENCONTRADO
+                if (contaEncontrada == null) {
+                    throw new ContaNaoEncontradaException();
+                }
+
             
             // CHECK SE INATIVO
                 if(!contaEncontrada.isAtivo()) throw new ContaInativaException();

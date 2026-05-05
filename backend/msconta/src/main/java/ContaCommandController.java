@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.annotation.RequestScope;
+
 import br.net.dac.msconta.service.ContaCommandService;
 
-import br.net.dac.msconta.model.dto.ContaDTO;
+import br.net.dac.msconta.model.dto.ContaResponseDTO;
+import br.net.dac.msconta.model.dto.ContaRequestDTO;
 
     @CrossOrigin
     @RestController
@@ -22,13 +25,13 @@ public class ContaCommandController {
     @Autowired
     private ContaCommandService commandService;
 
-    static List<ContaDTO> contas = new ArrayList<>();
+    static List<ContaResponseDTO> contas = new ArrayList<>();
 
     @PostMapping("/contas")
-    public ResponseEntity<ContaDTO> inserirConta(@RequestBody ContaDTO dto) {  
+    public ResponseEntity<ContaResponseDTO> inserirConta(@RequestBody ContaRequestDTO dto) {  
         try {
             //arrumar depois
-            ContaDTO response = commandService.inserirConta(dto);
+            ContaResponseDTO response = commandService.inserirConta(dto);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch(RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
@@ -36,12 +39,20 @@ public class ContaCommandController {
     }
     
     @PutMapping("/contas/{id}")
-    public ContaDTO alterarConta(@PathVariable int id, @RequestBody ContaDTO conta) {        
-        return conta;
+    public ResponseEntity<ContaResponseDTO> alterarConta(@PathVariable String numeroConta, @RequestBody ContaRequestDTO conta) {        
+        try
+        {
+            ContaResponseDTO response = commandService.atualizarConta(numeroConta, conta);
+            return ResponseEntity.ok(response);
+        }
+        catch (RuntimeException ex)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @DeleteMapping("/contas/{id}")
-    public ContaDTO removerConta(@PathVariable int id, @RequestBody ContaDTO conta) {
+    public ResponseEntity<ContaRequestDTO> removerConta(@PathVariable String numeroConta) {
         return conta;
     }
 
