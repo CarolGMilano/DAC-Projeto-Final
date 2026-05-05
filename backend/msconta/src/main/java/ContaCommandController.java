@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.annotation.RequestScope;
 
 import br.net.dac.msconta.service.ContaCommandService;
 
@@ -38,7 +37,7 @@ public class ContaCommandController {
         }
     }
     
-    @PutMapping("/contas/{id}")
+    @PutMapping("/contas/{numeroConta}")
     public ResponseEntity<ContaResponseDTO> alterarConta(@PathVariable String numeroConta, @RequestBody ContaRequestDTO conta) {        
         try
         {
@@ -51,9 +50,14 @@ public class ContaCommandController {
         }
     }
 
-    @DeleteMapping("/contas/{id}")
-    public ResponseEntity<ContaRequestDTO> removerConta(@PathVariable String numeroConta) {
-        return conta;
+    @DeleteMapping("/contas/{numeroConta}")
+    public ResponseEntity<Void> removerConta(@PathVariable String numeroConta) {
+        try {
+            commandService.desativarConta(numeroConta);
+            return ResponseEntity.noContent().build(); // DEU CERTO = 204. NO CONTENT
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
 }

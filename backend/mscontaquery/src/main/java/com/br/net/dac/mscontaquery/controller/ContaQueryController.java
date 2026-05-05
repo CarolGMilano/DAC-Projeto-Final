@@ -41,5 +41,12 @@ public class ContaQueryController {
         
     }
 
+    // BUSCA CLIENTES POR CPF
+    // @GetMapping("/{cpf}")
+    // public ResponseEntity<List<ContaQueryResponseDTO>> getContasByCPF(@RequestParam String CPF) {
+
+    // }
+    
+
 
 }
