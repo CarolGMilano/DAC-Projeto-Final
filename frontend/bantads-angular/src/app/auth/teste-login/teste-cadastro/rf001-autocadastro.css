@@ -1,0 +1,8 @@
+.background-signup {
+    background: linear-gradient(220deg,rgba(47, 144, 235, 1) 0%, rgba(255, 89, 255, 1) 90%);
+}
+
+.card-registration {
+    border-radius: 15px;
+    background-color: #eee;
+}
