@@ -1,0 +1,91 @@
+<!-- PÁGINA DE AUTO CADASTRO -->
+<section class="vh-100 background-signup">
+    <div class="container py-2 h-100">
+        <div class="row justify-content-center align-items-center h-100">
+            <div class="col-12 col-lg-9 col-xl-7">
+                <div class="card shadow-2-strong card-registration">
+                    <div class="card-body p-4 p-md-5">
+
+                <!-- Botão voltar  -->
+            <a class="btn btn-secondary position-absolute top-0 start-0 m-3" href="/login">
+              <i class="fa-solid fa-arrow-left"></i>
+              Voltar
+            </a>
+
+          <!-- Corpo do formulário de cadastro -->
+          <div class="signUpForm">
+            <!-- Título registrar -->
+            <h2 class="card-title text-center h1 fw-bold mt-3 mb-5 mx-1 mx-md-4">Cadastro</h2>
+
+              <!-- Início formulário -->
+                <form class="signUpFields" [formGroup]="formularioAutoCadastro" (ngSubmit)="onSubmit()">
+                  
+                  <!-- Campo nome -->
+                   <div class="row">
+                      <div class="col mb-4">
+                        <div class="form-group px-3">
+                          <label class="form-label">Nome:</label>
+                          <input class="form-control" formControlName="nome">
+                        </div>
+                      </div>
+                  </div> 
+
+                  <!-- Campo CPF -->
+                   <div class="row">
+                    <div class="col mb-4">
+                        <div class="form-group px-3">
+                          <label class="form-label">CPF:</label>
+                          <input class="form-control" formControlName="cpf" placeholder="Somente números">
+                          <!-- Check se CPF invalido -->
+                          @if (formularioAutoCadastro.get('cpf')?.invalid && formularioAutoCadastro.get('cpf')?.touched) {
+                            <div>CPF inválido</div>
+                          }
+                        </div>
+                      </div>
+                    </div>
+
+                  <!-- Campo Email -->
+                  <div class="row">
+                    <div class="col mb-4">
+                      <div class="form-group px-3">
+                        <label class="form-label" >Email:</label>
+                        <input class="form-control" formControlName="email">
+                        @if (formularioAutoCadastro.get('email')?.invalid && formularioAutoCadastro.get('email')?.touched) {
+                          <div>Email inválido</div>
+                        }
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Campo CEP -->
+                   <div class="row">
+                      <div class="col">
+                        <div class="form-group px-3">
+                          <label class="form-label">CEP:</label>
+                          <input class="form-control" formControlName="cep" placeholder="Somente números">
+                        </div>
+                      </div>
+                    
+
+                  <!-- Campo Telefone -->
+                   <div class="col">
+                      <div class="form-group px-3">
+                        <label class="form-label">Telefone:</label>
+                        <input class="form-control" formControlName="telefone" placeholder="DDD + número">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Botão submit -->
+                   <div class="row mt-4 mx-3">
+                      <button type="submit" class="btn btn-primary w-100" [disabled]="formularioAutoCadastro.invalid">Cadastrar</button>
+                    </div>
+                    
+                </form>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
