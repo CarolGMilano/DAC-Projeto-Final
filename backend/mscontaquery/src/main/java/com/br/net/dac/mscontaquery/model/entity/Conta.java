@@ -1,59 +1,93 @@
 package com.br.net.dac.mscontaquery.model.entity;
 
-import java.sql.Date;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.Column;
+import java.time.LocalDate;
+import java.util.List;
 
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "conta")
 public class Conta {
 
     @Id
-    @Column(name = "numeroConta")
     private String numeroConta;
 
-    @Column(name= "ativo")
-    private boolean ativo;
-    
-    @Column(name = "idGerente")
+    private String cpfCliente;
+    private String nomeCliente;
+
+    private Double saldo;
+    private Double limite;
+    private Double salario;
+
     private Long idGerente;
+    private String nomeGerente;
 
-    @Column(name = "idCliente")
-    private Long idCliente;
+    private String statusConta; // ATIVA, PENDENTE, INATIVA
 
-    @Column(name = "dataCriacao")
-    private Date dataCriacao;
+    private LocalDate dataCriacao;
 
-    @Column(name = "saldo")
-    private double saldo;
-
-    @Column(name = "limite")
-    private double limite;
+    @ElementCollection
+    @CollectionTable(
+        name = "movimentacoes",
+        joinColumns = @JoinColumn(name = "conta_id")
+    )
+    private List<Movimentacao> movimentacoes;
 
     public Conta() {
     }
 
-    public Conta(boolean ativo, Long idGerente, Long idCliente, String numeroConta, Date dataCriacao, double saldo, double limite) {
-        this.ativo = ativo;
-        this.idGerente = idGerente;
-        this.idCliente = idCliente;
+    // Getters e Setters
+    public String getNumeroConta() {
+        return numeroConta;
+    }
+
+    public void setNumeroConta(String numeroConta) {
         this.numeroConta = numeroConta;
-        this.dataCriacao = dataCriacao;
+    }
+
+    public String getCpfCliente() {
+        return cpfCliente;
+    }
+
+    public void setCpfCliente(String cpfCliente) {
+        this.cpfCliente = cpfCliente;
+    }
+
+    public String getNomeCliente() {
+        return nomeCliente;
+    }
+
+    public void setNomeCliente(String nomeCliente) {
+        this.nomeCliente = nomeCliente;
+    }
+
+    public Double getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(Double saldo) {
         this.saldo = saldo;
+    }
+
+    public Double getLimite() {
+        return limite;
+    }
+
+    public void setLimite(Double limite) {
         this.limite = limite;
     }
 
-    // Getters e Setters
-
-    public boolean isAtivo() {
-        return ativo;
+    public Double getSalario() {
+        return salario;
     }
 
-    public void setAtivo(boolean ativo) {
-        this.ativo = ativo;
+    public void setSalario(Double salario) {
+        this.salario = salario;
     }
 
     public Long getIdGerente() {
@@ -64,43 +98,35 @@ public class Conta {
         this.idGerente = idGerente;
     }
 
-    public Long getIdCliente() {
-        return idCliente;
+    public String getNomeGerente() {
+        return nomeGerente;
     }
 
-    public void setIdCliente(Long idCliente) {
-        this.idCliente = idCliente;
+    public void setNomeGerente(String nomeGerente) {
+        this.nomeGerente = nomeGerente;
     }
 
-    public String getNumeroConta() {
-        return numeroConta;
+    public String getStatusConta() {
+        return statusConta;
     }
 
-    public void setNumeroConta(String numeroConta) {
-        this.numeroConta = numeroConta;
+    public void setStatusConta(String statusConta) {
+        this.statusConta = statusConta;
     }
 
-    public Date getDataCriacao() {
+    public LocalDate getDataCriacao() {
         return dataCriacao;
     }
 
-    public void setDataCriacao(Date dataCriacao) {
+    public void setDataCriacao(LocalDate dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
 
-    public double getSaldo() {
-        return saldo;
+    public List<Movimentacao> getMovimentacoes() {
+    return movimentacoes;
     }
 
-    public void setSaldo(double saldo) {
-        this.saldo = saldo;
-    }
-
-    public double getLimite() {
-        return limite;
-    }
-
-    public void setLimite(double limite) {
-        this.limite = limite;
-    }
+    public void setMovimentacoes(List<Movimentacao> movimentacoes) {
+        this.movimentacoes = movimentacoes;
+}
 }
