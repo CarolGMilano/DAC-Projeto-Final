@@ -25,6 +25,8 @@ public class ClienteService {
         }
 
         ClienteEntity entity = toEntity(dto);
+        entity.setStatus("AGUARDANDO");
+
 
         if (entity.getEndereco() != null) {
             entity.getEndereco().setCliente(entity);
@@ -57,15 +59,60 @@ public class ClienteService {
         return toDTO(atualizado);
     }
 
+      public void aprovarCliente(String cpf) {
+        ClienteEntity entity = clienteRepository.findByCpf(cpf)
+            .orElseThrow(() -> new RuntimeException(
+                "Cliente com CPF " + cpf + " não encontrado."
+            ));
+
+            entity.setStatus("APROVADO");
+        clienteRepository.save(entity);
+    }
+
+     public void rejeitarCliente(String cpf, String motivo) {
+        ClienteEntity entity = clienteRepository.findByCpf(cpf)
+            .orElseThrow(() -> new RuntimeException(
+                "Cliente com CPF " + cpf + " não encontrado."
+            ));
+
+        entity.setStatus("REJEITADO");
+        entity.setMotivoRejeicao(motivo);
+        clienteRepository.save(entity);
+    }
+
+      public List<ClienteDTO> listarParaAprovar() {
+        return clienteRepository.findByStatus("AGUARDANDO")
+            .stream()
+            .map(this::toDTO)
+            .collect(Collectors.toList());
+    }
+
+
+
     // R12 - Listar todos os clientes
     public List<ClienteDTO> listarClientes() {
+         return clienteRepository.findByStatus("APROVADO")
+            .stream()
+            .map(this::toDTO)
+            .collect(Collectors.toList());
+    }
+
+
+       public List<ClienteDTO> listarRelatorioAdm() {
         return clienteRepository.findAll()
             .stream()
             .map(this::toDTO)
             .collect(Collectors.toList());
     }
 
-    // R13 - Consultar por CPF
+      public List<ClienteDTO> listarMelhoresClientes() {
+        return clienteRepository.findByStatus("APROVADO")
+            .stream()
+            .map(this::toDTO)
+            .collect(Collectors.toList());
+    }
+
+
     public ClienteDTO consultarClientePorCpf(String cpf) {
         ClienteEntity entity = clienteRepository.findByCpf(cpf)
             .orElseThrow(() -> new RuntimeException(
@@ -74,7 +121,6 @@ public class ClienteService {
         return toDTO(entity);
     }
 
-    // Consultar por ID interno
     public ClienteDTO consultarClientePorId(Long id) {
         ClienteEntity entity = clienteRepository.findById(id)
             .orElseThrow(() -> new RuntimeException(
@@ -83,7 +129,7 @@ public class ClienteService {
         return toDTO(entity);
     }
 
-    // Consultar por idUsuario (usado pelo ms-auth)
+   
     public ClienteDTO consultarClientePorIdUsuario(Long idUsuario) {
         ClienteEntity entity = clienteRepository.findByIdUsuario(idUsuario)
             .orElseThrow(() -> new RuntimeException(
@@ -103,6 +149,8 @@ public class ClienteService {
         dto.setCpf(entity.getCpf());
         dto.setNome(entity.getNome());
         dto.setSalario(entity.getSalario());
+        dto.setStatus(entity.getStatus());           
+        dto.setMotivoRejeicao(entity.getMotivoRejeicao());
 
         if (entity.getEndereco() != null) {
             EnderecoDTO enderecoDTO = new EnderecoDTO();

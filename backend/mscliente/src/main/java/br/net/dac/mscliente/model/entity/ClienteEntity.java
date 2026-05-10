@@ -19,9 +19,15 @@ public class ClienteEntity {
     @Column(nullable = false, length = 100)
     private String nome;
 
+    @Column(length = 255)
+    private String motivoRejeicao;
+
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal salario;
+
+    @Column(nullable = false, length = 20)
+    private String status;
 
     @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
     private EnderecoEntity endereco;
@@ -45,4 +51,10 @@ public class ClienteEntity {
 
     public EnderecoEntity getEndereco() { return endereco; }
     public void setEndereco(EnderecoEntity endereco) { this.endereco = endereco; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public String getMotivoRejeicao() { return motivoRejeicao; }
+    public void setMotivoRejeicao(String motivoRejeicao) { this.motivoRejeicao = motivoRejeicao; }
 }
