@@ -1,3 +1,4 @@
+package br.net.dac.mscliente.model.dto;
 public class EnderecoDTO {
     private String cep;
     private String logradouro;

@@ -1,4 +1,6 @@
+package br.net.dac.mscliente.entity;
 import jakarta.persistence.*;
+
 
 @Entity
 @Table(name = "endereco")
