@@ -8,6 +8,8 @@ public class ClienteDTO {
     private String nome;
     private BigDecimal salario;
     private EnderecoDTO endereco;
+    private String status;
+    private String motivoRejeicao;
 
     public ClienteDTO() {}
 
@@ -25,6 +27,12 @@ public class ClienteDTO {
 
     public BigDecimal getSalario() { return salario; }
     public void setSalario(BigDecimal salario) { this.salario = salario; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public String getMotivoRejeicao() { return motivoRejeicao; }
+    public void setMotivoRejeicao(String motivoRejeicao) { this.motivoRejeicao = motivoRejeicao; }
 
     public EnderecoDTO getEndereco() { return endereco; }
     public void setEndereco(EnderecoDTO endereco) { this.endereco = endereco; }
