@@ -177,4 +177,12 @@ public class GerenteService {
       gerenteAlterado.getAtivo()
     );
   }
+
+  public void rollback(GerenteDTO dto) {
+    Gerente gerente = gerenteRepository.findByCpf(dto.getCpf());
+
+    if (gerente != null) {
+      gerenteRepository.delete(gerente);
+    }
+  }
 }
