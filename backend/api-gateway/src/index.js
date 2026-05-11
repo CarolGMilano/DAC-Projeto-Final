@@ -17,6 +17,7 @@ const clienteServiceProxy = httpProxy('http://localhost:8082');
 const gerenteServiceProxy = httpProxy('http://localhost:8083');
 
 //Sagas
+//const sagaServiceProxy = httpProxy('http://localhost:8084');
 
 //Gerente
 app.get('/gerentes', gerenteServiceProxy);
