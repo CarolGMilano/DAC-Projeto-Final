@@ -1,64 +1,65 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { Usuario } from '../shared/models/Usuario';
-import { TipoUsuario } from '../shared/models/EnumTipoUsuario';
+  import { Injectable } from '@angular/core';
+  import { BehaviorSubject, Observable, tap } from 'rxjs';
+  import { HttpClient } from '@angular/common/http';
+  import { Usuario } from '../shared/models/Usuario';
+  import { TipoUsuario } from '../shared/models/EnumTipoUsuario';
 
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class AuthService {
 
-@Injectable
-({
-  providedIn: 'root'
-})
-export class AuthService
-{
+    private readonly STORAGE_KEY = 'token';
+    private readonly USER_KEY = 'usuario';
+    private usuarioSubject = new BehaviorSubject<Usuario | null>(null);
+    usuario$ = this.usuarioSubject.asObservable();
 
-  private readonly STORAGE_KEY = 'usuario';
+    constructor(private http: HttpClient) {
+      this.carregarDoLocalStorage();
+    }
 
-  private usuarioSubject = new BehaviorSubject<Usuario | null>(null);
-  usuario$ = this.usuarioSubject.asObservable();
+    login(login: string, senha: string): Observable<{ auth: boolean; token: string; data: Usuario }> {
+      return this.http.post<{ auth: boolean; token: string; data: Usuario }>(
+        'http://localhost:3000/login',
+        { login, senha }
+      ).pipe(
+        tap(response => {
+          if (response.auth) {
+            localStorage.setItem(this.STORAGE_KEY, response.token);
+            localStorage.setItem(this.USER_KEY, JSON.stringify(response.data));
+            this.usuarioSubject.next(response.data);
+          }
+        })
+      );
+    }
 
-  constructor()
-  {
-    this.carregarDoLocalStorage();
-  }
+    logout(): void {
+      this.usuarioSubject.next(null);
+      localStorage.removeItem(this.STORAGE_KEY);
+      localStorage.removeItem(this.USER_KEY);
+    }
 
-  setUsuario(usuario: Usuario): void
-  {
-    this.usuarioSubject.next(usuario);
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(usuario));
-  }
+    getUsuario(): Usuario | null {
+      return this.usuarioSubject.value;
+    }
 
-  logout(): void
-  {
-    this.usuarioSubject.next(null);
-    localStorage.removeItem(this.STORAGE_KEY);
-  }
+    isAutenticado(): boolean {
+      return !!localStorage.getItem(this.STORAGE_KEY);
+    }
 
-  getUsuario(): Usuario | null
-  {
-    return this.usuarioSubject.value;
-  }
+    temPermissao(roles: TipoUsuario[]): boolean {
+      const usuario = this.usuarioSubject.value;
+      if (!usuario) return false;
+      return roles.includes(usuario.tipo);
+    }
 
-  isAutenticado(): boolean
-  {
-    return !!this.usuarioSubject.value;
-  }
+    private carregarDoLocalStorage(): void {
+      const token = localStorage.getItem(this.STORAGE_KEY);
+      const usuarioStr = localStorage.getItem(this.USER_KEY);
 
-  temPermissao(roles: TipoUsuario[]): boolean
-  {
-    const usuario = this.usuarioSubject.value;
-    if (!usuario) return false;
-    return roles.includes(usuario.tipo);
-  }
-
-  private carregarDoLocalStorage(): void
-  {
-    const data = localStorage.getItem(this.STORAGE_KEY);
-    if (data)
-    {
-      {
-        const usuario: Usuario = JSON.parse(data);
+      if (token && usuarioStr) {
+        const usuario: Usuario = JSON.parse(usuarioStr);
         this.usuarioSubject.next(usuario);
       }
     }
   }
-}
