@@ -1,0 +1,60 @@
+package br.net.dac.mscliente.model.entity;
+import jakarta.persistence.*;
+import java.math.BigDecimal;
+
+@Entity
+@Table(name = "cliente")
+public class ClienteEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private Integer idUsuario;
+
+    @Column(unique = true, nullable = false, length = 14)
+    private String cpf;
+
+    @Column(nullable = false, length = 100)
+    private String nome;
+
+    @Column(length = 255)
+    private String motivoRejeicao;
+
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal salario;
+
+    @Column(nullable = false, length = 20)
+    private String status;
+
+    @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
+    private EnderecoEntity endereco;
+
+    public ClienteEntity() {}
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public Integer getIdUsuario() { return idUsuario; }
+    public void setIdUsuario(Integer idUsuario) { this.idUsuario = idUsuario; }
+
+    public String getCpf() { return cpf; }
+    public void setCpf(String cpf) { this.cpf = cpf; }
+
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+
+    public BigDecimal getSalario() { return salario; }
+    public void setSalario(BigDecimal salario) { this.salario = salario; }
+
+    public EnderecoEntity getEndereco() { return endereco; }
+    public void setEndereco(EnderecoEntity endereco) { this.endereco = endereco; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public String getMotivoRejeicao() { return motivoRejeicao; }
+    public void setMotivoRejeicao(String motivoRejeicao) { this.motivoRejeicao = motivoRejeicao; }
+}

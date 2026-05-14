@@ -27,7 +27,6 @@ import br.net.dac.msgerente.service.GerenteService;
 @RestController
 @RequestMapping("/gerentes")
 public class GerenteController {
-  
   @Autowired
   private GerenteService gerenteService;
 

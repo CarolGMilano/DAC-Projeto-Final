@@ -4,6 +4,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import br.net.dac.msgerente.model.dto.ComandoGerente;
 import br.net.dac.msgerente.model.dto.GerenteDTO;
 import br.net.dac.msgerente.model.event.GerenteCriacaoFalhaEvent;
 import br.net.dac.msgerente.model.event.GerenteCriacaoSucessoEvent;
@@ -17,8 +18,23 @@ public class GerenteConsumidor {
   @Autowired
   private GerenteProdutor gerenteProdutor;
 
-  @RabbitListener(queues = "msgerente.criacao.queue")
-  public void processarCriacao(GerenteDTO gerenteDTO) {
+  @RabbitListener(queues = "msgerente.queue.comando")
+  public void processar(ComandoGerente comando) {
+    switch (comando.getTipo()) {
+      case "CRIAR_GERENTE":
+        criar(comando.getPayload());
+      break;
+
+      case "ROLLBACK_CRIAR_GERENTE":
+        rollback(comando.getPayload());
+      break;
+
+      default:
+        System.out.println("Tipo desconhecido: " + comando.getTipo());
+    }
+  }
+
+  public void criar(GerenteDTO gerenteDTO) {
     try {
       GerenteDTO gerenteAdicionado = gerenteService.inserirGerente(gerenteDTO);
 
@@ -33,6 +49,14 @@ public class GerenteConsumidor {
       gerenteProdutor.criacaoFalha(
         new GerenteCriacaoFalhaEvent("ERRO", e.getMessage())
       );
+    }
+  }
+
+  public void rollback(GerenteDTO gerenteDTO) {
+    try {
+      gerenteService.rollback(gerenteDTO);
+    } catch (Exception e) {
+      System.out.println("Erro rollback gerente: " + e.getMessage());
     }
   }
 }
