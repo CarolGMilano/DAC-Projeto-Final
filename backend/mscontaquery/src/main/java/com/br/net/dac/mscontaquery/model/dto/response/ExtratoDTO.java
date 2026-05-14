@@ -7,6 +7,7 @@ public class ExtratoDTO {
     private String numeroConta;
     private String nomeCliente;
     private Double saldoAtual;
+    private List<MovimentacaoDTO> movimentacoes;
 
     public ExtratoDTO() {
     }
@@ -33,8 +34,6 @@ public class ExtratoDTO {
     public void setMovimentacoes(List<MovimentacaoDTO> movimentacoes) {
         this.movimentacoes = movimentacoes;
     }
-
-    private List<MovimentacaoDTO> movimentacoes;
 
     public String getNumeroConta() {
         return numeroConta;

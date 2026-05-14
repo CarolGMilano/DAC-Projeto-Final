@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.br.net.dac.mscontaquery.model.dto.response.ConsultaDeClientesDTO;
 import com.br.net.dac.mscontaquery.model.dto.response.ContaResponseDTO;
+import com.br.net.dac.mscontaquery.model.dto.response.DashboardAdminDTO;
 import com.br.net.dac.mscontaquery.model.dto.response.DashboardGerenteDTO;
 import com.br.net.dac.mscontaquery.model.dto.response.ExtratoDTO;
 import com.br.net.dac.mscontaquery.model.dto.response.RelatorioClientesDTO;
@@ -22,47 +24,54 @@ public class ContaQueryController {
     private ContaQueryService service;
 
     @GetMapping("/cliente/{cpf}")
-    public ResponseEntity<ContaResponseDTO> buscarContaPorCliente(@PathVariable String cpf) { 
-        return ResponseEntity.ok(service.buscarContaPorCliente(cpf)); 
+    public ResponseEntity<ContaResponseDTO> buscarContaPorCpfCliente(@PathVariable String cpfCliente) { 
+        return ResponseEntity.ok(service.buscarContaPorCpfCliente(cpfCliente)); 
     }
 
-    @GetMapping("/numero/{numero}")
-    public ResponseEntity<ContaResponseDTO> buscarContaPorNumero(@PathVariable String numero) { 
-        return ResponseEntity.ok(service.buscarContaPorNumero(numero)); 
+    @GetMapping("/{numero}")
+    public ResponseEntity<ContaResponseDTO> buscarContaPorNumero(@PathVariable String numeroConta) { 
+        return ResponseEntity.ok(service.buscarContaPorNumero(numeroConta)); 
     }
 
-    @GetMapping("/{id}/saldo")
-    public ResponseEntity<Double> consultarSaldo(@PathVariable String id) { 
-        return ResponseEntity.ok(service.consultarSaldo(id)); 
+    @GetMapping("/{numero}/saldo")
+    public ResponseEntity<Double> consultarSaldo(@PathVariable String numeroConta) { 
+        return ResponseEntity.ok(service.consultarSaldo(numeroConta)); 
+    }
+    
+    //100%
+    @GetMapping("/{numero}/extrato")
+    public ResponseEntity<ExtratoDTO> consultarExtrato(@PathVariable String numeroConta) { 
+        return ResponseEntity.ok(service.consultarExtrato(numeroConta)); 
     }
 
-    @GetMapping("/{id}/extrato")
-    public ResponseEntity<ExtratoDTO> consultarExtrato(@PathVariable String id) { 
-        return ResponseEntity.ok(service.consultarExtrato(id)); 
-    }
-
-    @GetMapping("/gerentes/{id}/clientes")
-    public ResponseEntity<List<ContaResponseDTO>> listarClientesDoGerente(@PathVariable Long id) { 
-        return ResponseEntity.ok(service.listarClientesDoGerente(id)); 
-    }
-
-    @GetMapping("/clientes/{cpf}/detalhes")
-    public ResponseEntity<ContaResponseDTO> buscarDadosClienteConta(@PathVariable String cpf) {
-        return ResponseEntity.ok(service.buscarDadosClienteConta(cpf)); 
-    }
-
-    @GetMapping("/clientes/top3")
+    //100%
+    @GetMapping("/top3")
     public ResponseEntity<List<Top3ClientesDTO>> listarTop3ClientesPorSaldo() { 
         return ResponseEntity.ok(service.listarTop3ClientesPorSaldo()); 
     }
 
-    @GetMapping("/dashboard/gerentes")
-    public ResponseEntity<List<DashboardGerenteDTO>> gerarDashboardGerentes() { 
-        return ResponseEntity.ok(service.gerarDashboardGerentes()); 
+    //100%
+    @GetMapping("/administradores/gerentes")
+    public ResponseEntity<List<DashboardAdminDTO>> gerarDashboardDoAdmin() { 
+        return ResponseEntity.ok(service.gerarDashboardDoAdmin()); 
     }
 
-    @GetMapping("/relatorios/clientes")
+    //100%
+    @GetMapping("/admininstradores/clientes")
     public ResponseEntity<List<RelatorioClientesDTO>> gerarRelatorioClientes() { 
         return ResponseEntity.ok(service.gerarRelatorioClientes()); 
     }
+    
+    //100%
+    @GetMapping("/gerentes/clientes")
+    public ResponseEntity<List<DashboardGerenteDTO>> gerarDashboardDoGerente() { 
+        return ResponseEntity.ok(service.gerarDashboardDoGerente()); 
+    }
+
+    //100%
+    @GetMapping("/gerentes/{id}/clientes")
+    public ResponseEntity<List<ConsultaDeClientesDTO>> listarClientesDoGerente(@PathVariable Long idGerente) { 
+        return ResponseEntity.ok(service.listarClientesDoGerente(idGerente)); 
+    }
+
 }

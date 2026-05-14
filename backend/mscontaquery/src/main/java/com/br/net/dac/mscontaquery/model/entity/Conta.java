@@ -19,13 +19,16 @@ public class Conta {
 
     private String cpfCliente;
     private String nomeCliente;
-
+    private Endereco endereco;
     private Double saldo;
     private Double limite;
     private Double salario;
-
+    private String email;
+    private String telefone;
+    private String estadoCivil;
     private Long idGerente;
     private String nomeGerente;
+    private String cpfGerente;
 
     private String statusConta; // ATIVA, PENDENTE, INATIVA
 
@@ -129,4 +132,46 @@ public class Conta {
     public void setMovimentacoes(List<Movimentacao> movimentacoes) {
         this.movimentacoes = movimentacoes;
 }
+
+    public Endereco getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getCpfGerente() {
+        return cpfGerente;
+    }
+
+    public void setCpfGerente(String cpfGerente) {
+        this.cpfGerente = cpfGerente;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public String getEstadoCivil() {
+        return estadoCivil;
+    }
+
+    public void setEstadoCivil(String estadoCivil) {
+        this.estadoCivil = estadoCivil;
+    }
+
+
 }

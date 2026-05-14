@@ -10,21 +10,52 @@ const cors = require('cors');
 
 const app = express();
 
-//Microsserviços
+// Microsserviços
 const authServiceProxy = httpProxy('http://localhost:8080');
 const contaServiceProxy = httpProxy('http://localhost:8081');
 const clienteServiceProxy = httpProxy('http://localhost:8082');
 const gerenteServiceProxy = httpProxy('http://localhost:8083');
 
-//Sagas
+// Sagas
 //const sagaServiceProxy = httpProxy('http://localhost:8084');
 
-//Gerente
+// ====================
+// Gerente
+// ====================
+
 app.get('/gerentes', gerenteServiceProxy);
 app.get('/gerentes/:cpf', gerenteServiceProxy);
 app.post('/gerentes', gerenteServiceProxy);
 app.put('/gerentes/:cpf', gerenteServiceProxy);
 app.delete('/gerentes/:cpf', gerenteServiceProxy);
+
+// ====================
+// Conta
+// ====================
+
+// Command
+app.post('/contas', contaServiceProxy);
+app.put('/contas/:numeroConta', contaServiceProxy);
+app.delete('/contas/:numeroConta', contaServiceProxy);
+
+// Query
+app.get('/contas/cliente/:cpf', contaServiceProxy);
+
+app.get('/contas/:numero', contaServiceProxy);
+
+app.get('/contas/:numero/saldo', contaServiceProxy);
+
+app.get('/contas/:numero/extrato', contaServiceProxy);
+
+app.get('/contas/top3', contaServiceProxy);
+
+app.get('/contas/administradores/gerentes', contaServiceProxy);
+
+app.get('/contas/admininstradores/clientes', contaServiceProxy);
+
+app.get('/contas/gerentes/clientes', contaServiceProxy);
+
+app.get('/contas/gerentes/:id/clientes', contaServiceProxy);
 
 app.use(cors({ origin: 'http://localhost:4200' }));
 
