@@ -2,6 +2,7 @@ package com.br.net.dac.mscontaquery.model.mapper;
 
 import java.util.stream.Collectors;
 
+import com.br.net.dac.mscontaquery.model.dto.response.ConsultaDeClientesDTO;
 import com.br.net.dac.mscontaquery.model.dto.response.ContaResponseDTO;
 import com.br.net.dac.mscontaquery.model.dto.response.DashboardGerenteDTO;
 import com.br.net.dac.mscontaquery.model.dto.response.ExtratoDTO;
@@ -21,18 +22,17 @@ public class ContaQueryMapper {
         ContaResponseDTO dto = new ContaResponseDTO();
 
         dto.setNumeroConta(conta.getNumeroConta());
-
         dto.setCpfCliente(conta.getCpfCliente());
         dto.setNomeCliente(conta.getNomeCliente());
-
+        dto.setEndereco(conta.getEndereco());
         dto.setSaldo(conta.getSaldo());
         dto.setLimite(conta.getLimite());
         dto.setSalario(conta.getSalario());
-
+        dto.setEmail(conta.getEmail());
+        dto.setTelefone(conta.getTelefone());
+        dto.setEstadoCivil(conta.getEstadoCivil());
         dto.setIdGerente(conta.getIdGerente());
         dto.setNomeGerente(conta.getNomeGerente());
-
-        dto.setStatusConta(conta.getStatusConta());
         dto.setDataCriacao(conta.getDataCriacao());
 
         return dto;
@@ -82,27 +82,10 @@ public class ContaQueryMapper {
         Top3ClientesDTO dto = new Top3ClientesDTO();
 
         dto.setNomeCliente(conta.getNomeCliente());
-        dto.setNumeroConta(conta.getNumeroConta());
         dto.setSaldo(conta.getSaldo());
-        dto.setLimite(conta.getLimite());
-        dto.setNomeGerente(conta.getNomeGerente());
-
-        return dto;
-    }
-
-    public static DashboardGerenteDTO toDashboardGerenteDTO(Conta conta) {
-        if (conta == null) {
-            return null;
-        }
-
-        DashboardGerenteDTO dto = new DashboardGerenteDTO();
-
-        dto.setIdGerente(conta.getIdGerente());
-        dto.setNomeGerente(conta.getNomeGerente());
-        dto.setTotalClientes(1);
-        dto.setTotalSaldoPositivo(conta.getSaldo() > 0 ? conta.getSaldo() : 0.0);
-        dto.setTotalSaldoNegativo(conta.getSaldo() < 0 ? conta.getSaldo() : 0.0);
-        dto.setTotalSaldoGeral(conta.getSaldo());
+        dto.setCpfCliente(conta.getCpfCliente());
+        dto.setCidade(conta.getEndereco().getCidade());
+        dto.setEstado(conta.getEndereco().getEstado());
 
         return dto;
     }
@@ -115,16 +98,48 @@ public class ContaQueryMapper {
         RelatorioClientesDTO dto = new RelatorioClientesDTO();
 
         dto.setNomeCliente(conta.getNomeCliente());
+        dto.setEmail(conta.getEmail());
         dto.setCpfCliente(conta.getCpfCliente());
         dto.setNumeroConta(conta.getNumeroConta());
         dto.setNomeGerente(conta.getNomeGerente());
+        dto.setCpfGerente(conta.getCpfGerente());
         dto.setSaldo(conta.getSaldo());
         dto.setLimite(conta.getLimite());
         dto.setSalario(conta.getSalario());
-        dto.setStatusConta(conta.getStatusConta());
-        dto.setDataCriacao(conta.getDataCriacao());
 
         return dto;
     }
+
+    public static DashboardGerenteDTO toDashboardGerenteDTO(Conta conta) {
+    if (conta == null) {
+        return null;
+    }
+
+    DashboardGerenteDTO dto = new DashboardGerenteDTO();
+
+    dto.setCpfCliente(conta.getCpfCliente());
+    dto.setEmail(conta.getEmail());
+    dto.setSalario(conta.getSalario());
+    dto.setNumeroConta(conta.getNumeroConta());
+
+    return dto;
+}
+
+public static ConsultaDeClientesDTO toConsultaDeClientesDTO(Conta conta) {
+    if (conta == null) {
+        return null;
+    }
+
+    ConsultaDeClientesDTO dto = new ConsultaDeClientesDTO();
+
+    dto.setCpfCliente(conta.getCpfCliente());
+    dto.setNomeCliente(conta.getNomeCliente());
+    dto.setCidade(conta.getEndereco().getCidade());
+    dto.setEstado(conta.getEndereco().getEstado());
+    dto.setSaldo(conta.getSaldo());
+    dto.setLimite(conta.getLimite());
+
+    return dto;
+}
 
 }

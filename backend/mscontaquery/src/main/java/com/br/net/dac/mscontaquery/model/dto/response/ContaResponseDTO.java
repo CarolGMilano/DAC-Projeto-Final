@@ -2,38 +2,24 @@ package com.br.net.dac.mscontaquery.model.dto.response;
 
 import java.time.LocalDate;
 
+import com.br.net.dac.mscontaquery.model.entity.Endereco;
+
 public class ContaResponseDTO {
-private String numeroConta;
-
-private String cpfCliente;
-private String nomeCliente;
-
-private Double saldo;
-private Double limite;
-private Double salario;
-
-private Long idGerente;
-private String nomeGerente;
-
-private String statusConta;
-
-private LocalDate dataCriacao;
+    private String numeroConta;
+    private String cpfCliente;
+    private String nomeCliente;
+    private Endereco endereco;
+    private Double saldo;
+    private Double limite;
+    private Double salario;
+    private String email;
+    private String telefone;
+    private String estadoCivil;
+    private Long idGerente;
+    private String nomeGerente;
+    private LocalDate dataCriacao;
 
 public ContaResponseDTO() {
-}
-
-public ContaResponseDTO(String numeroConta, String cpfCliente, String nomeCliente, Double saldo, Double limite,
-        Double salario, Long idGerente, String nomeGerente, String statusConta, LocalDate dataCriacao) {
-    this.numeroConta = numeroConta;
-    this.cpfCliente = cpfCliente;
-    this.nomeCliente = nomeCliente;
-    this.saldo = saldo;
-    this.limite = limite;
-    this.salario = salario;
-    this.idGerente = idGerente;
-    this.nomeGerente = nomeGerente;
-    this.statusConta = statusConta;
-    this.dataCriacao = dataCriacao;
 }
 
 public String getNumeroConta() {
@@ -60,6 +46,14 @@ public void setNomeCliente(String nomeCliente) {
     this.nomeCliente = nomeCliente;
 }
 
+public Endereco getEndereco() {
+    return endereco;
+}
+
+public void setEndereco(Endereco endereco) {
+    this.endereco = endereco;
+}
+
 public Double getSaldo() {
     return saldo;
 }
@@ -84,6 +78,30 @@ public void setSalario(Double salario) {
     this.salario = salario;
 }
 
+public String getEmail() {
+    return email;
+}
+
+public void setEmail(String email) {
+    this.email = email;
+}
+
+public String getTelefone() {
+    return telefone;
+}
+
+public void setTelefone(String telefone) {
+    this.telefone = telefone;
+}
+
+public String getEstadoCivil() {
+    return estadoCivil;
+}
+
+public void setEstadoCivil(String estadoCivil) {
+    this.estadoCivil = estadoCivil;
+}
+
 public Long getIdGerente() {
     return idGerente;
 }
@@ -98,14 +116,6 @@ public String getNomeGerente() {
 
 public void setNomeGerente(String nomeGerente) {
     this.nomeGerente = nomeGerente;
-}
-
-public String getStatusConta() {
-    return statusConta;
-}
-
-public void setStatusConta(String statusConta) {
-    this.statusConta = statusConta;
 }
 
 public LocalDate getDataCriacao() {
