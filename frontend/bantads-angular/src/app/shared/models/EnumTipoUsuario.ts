@@ -1,11 +1,11 @@
 export enum TipoUsuario {
-  CLIENTE = 1,
-  GERENTE = 2,
-  ADMINISTRADOR = 3
+  CLIENTE = 'CLIENTE',
+  GERENTE = 'GERENTE',
+  ADMIN = 'ADMIN'
 }
 
 export const TipoUsuarioLabel = {
   [TipoUsuario.CLIENTE]: 'Cliente',
   [TipoUsuario.GERENTE]: 'Gerente',
-  [TipoUsuario.ADMINISTRADOR]: 'Administrador'
+  [TipoUsuario.ADMIN]: 'Administrador'
 };

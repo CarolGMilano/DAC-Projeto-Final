@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import br.net.dac.msgerente.model.Gerente;
 import br.net.dac.msgerente.model.dto.GerenteDTO;
 import br.net.dac.msgerente.model.dto.GerenteResumoDTO;
+import br.net.dac.msgerente.model.enums.StatusGerenteEnum;
 import br.net.dac.msgerente.model.exception.CPFDuplicadoException;
 import br.net.dac.msgerente.model.exception.GerenteNaoEncontradoException;
 import br.net.dac.msgerente.model.exception.UsuarioDuplicadoException;
@@ -34,11 +35,13 @@ public class GerenteService {
       throw new IllegalArgumentException("O CPF deve conter apenas números");
     }
 
-    if (gerente.getTelefone() == null || gerente.getTelefone().isBlank()) {
-      throw new IllegalArgumentException("Telefone é obrigatório");
-    } else if (!gerente.getTelefone().matches("\\d+")) {
-      throw new IllegalArgumentException("O telefone deve conter apenas números");
-    }
+    /*
+      if (gerente.getTelefone() == null || gerente.getTelefone().isBlank()) {
+        throw new IllegalArgumentException("Telefone é obrigatório");
+      } else if (!gerente.getTelefone().matches("\\d+")) {
+        throw new IllegalArgumentException("O telefone deve conter apenas números");
+      }
+    */
   }
 
   private void validarGerenteAlteracao(GerenteDTO gerente)  {
@@ -53,13 +56,13 @@ public class GerenteService {
     Gerente cpfExistente = gerenteRepository.findByCpf(dto.getCpf());
 
     if (cpfExistente != null) {
-        throw new CPFDuplicadoException();
+      throw new CPFDuplicadoException();
     }
 
     Gerente usuarioExistente = gerenteRepository.findByIdUsuario(dto.getIdUsuario());
 
     if (usuarioExistente != null) {
-        throw new UsuarioDuplicadoException();
+      throw new UsuarioDuplicadoException();
     }
 
     Gerente gerente = new Gerente();
@@ -67,8 +70,8 @@ public class GerenteService {
     gerente.setIdUsuario(dto.getIdUsuario());
     gerente.setCpf(dto.getCpf());
     gerente.setNome(dto.getNome());
-    gerente.setTelefone(dto.getTelefone());
-    gerente.setAtivo(true);
+    //gerente.setTelefone(dto.getTelefone());
+    gerente.setAtivo(StatusGerenteEnum.ATIVO.name());
 
     Gerente gerenteAdicionado = gerenteRepository.save(gerente);
 
@@ -77,7 +80,7 @@ public class GerenteService {
       gerenteAdicionado.getIdUsuario(),
       gerenteAdicionado.getCpf(),
       gerenteAdicionado.getNome(),
-      gerenteAdicionado.getTelefone(),
+      //gerenteAdicionado.getTelefone(),
       gerenteAdicionado.getAtivo()
     );
   }
@@ -86,7 +89,7 @@ public class GerenteService {
     //O findById retorna um Optional<Gerente> que pode ser nulo e pra evitar um NullPointerException ele te obriga a tratar a saída.
     Gerente gerenteEncontrado = gerenteRepository.findById(idGerente).orElseThrow(GerenteNaoEncontradoException::new);
 
-    if (!gerenteEncontrado.getAtivo()) {
+    if (!StatusGerenteEnum.ATIVO.name().equals(gerenteEncontrado.getAtivo())) {
       throw new GerenteNaoEncontradoException();
     }
 
@@ -95,15 +98,33 @@ public class GerenteService {
       gerenteEncontrado.getIdUsuario(),
       gerenteEncontrado.getCpf(),
       gerenteEncontrado.getNome(),
-      gerenteEncontrado.getTelefone(),
+      //gerenteEncontrado.getTelefone(),
       gerenteEncontrado.getAtivo()
     );
   }
 
-  public Long consultarGerenteIdUsuario(Long idGerente) {
+  public GerenteDTO consultarGerentePorIdUsuario(String idUsuario) {
+    //O findById retorna um Optional<Gerente> que pode ser nulo e pra evitar um NullPointerException ele te obriga a tratar a saída.
+    Gerente gerenteEncontrado = gerenteRepository.findByIdUsuario(idUsuario);
+
+    if (gerenteEncontrado == null || !StatusGerenteEnum.ATIVO.name().equals(gerenteEncontrado.getAtivo())) {
+      throw new GerenteNaoEncontradoException();
+    }
+
+    return new GerenteDTO(
+      gerenteEncontrado.getId(),
+      gerenteEncontrado.getIdUsuario(),
+      gerenteEncontrado.getCpf(),
+      gerenteEncontrado.getNome(),
+      //gerenteEncontrado.getTelefone(),
+      gerenteEncontrado.getAtivo()
+    );
+  }
+
+  public String consultarGerenteIdUsuario(Long idGerente) {
     Gerente gerenteEncontrado = gerenteRepository.findById(idGerente).orElseThrow(GerenteNaoEncontradoException::new);
 
-    if (!gerenteEncontrado.getAtivo()) {
+    if (!StatusGerenteEnum.ATIVO.name().equals(gerenteEncontrado.getAtivo())) {
       throw new GerenteNaoEncontradoException();
     }
 
@@ -111,9 +132,9 @@ public class GerenteService {
   }
 
   public GerenteDTO consultarGerentePorCPF(String cpfGerente) {
-    Gerente gerenteEncontrado = gerenteRepository.findByCpfAndAtivoTrue(cpfGerente);
+    Gerente gerenteEncontrado = gerenteRepository.findByCpf(cpfGerente);
 
-    if(gerenteEncontrado == null){
+    if (!StatusGerenteEnum.ATIVO.name().equals(gerenteEncontrado.getAtivo())) {
       throw new GerenteNaoEncontradoException();
     }
 
@@ -122,7 +143,7 @@ public class GerenteService {
       gerenteEncontrado.getIdUsuario(),
       gerenteEncontrado.getCpf(),
       gerenteEncontrado.getNome(),
-      gerenteEncontrado.getTelefone(),
+      //gerenteEncontrado.getTelefone(),
       gerenteEncontrado.getAtivo()
     );
   }
@@ -130,37 +151,38 @@ public class GerenteService {
   public List<GerenteResumoDTO> listarGerentes() {
     List<GerenteResumoDTO> gerentes = new ArrayList<>();
 
-    for (Gerente gerente : gerenteRepository.findByAtivoTrue()) {
-      gerentes.add(
-        new GerenteResumoDTO(
-          gerente.getIdUsuario(),
-          gerente.getCpf(),
-          gerente.getNome(),
-          gerente.getTelefone()
-        )
-      );
+    for (Gerente gerente : gerenteRepository.findAll()) {
+      if (StatusGerenteEnum.ATIVO.name().equals(gerente.getAtivo())) {
+        gerentes.add(
+          new GerenteResumoDTO(
+            gerente.getIdUsuario(),
+            gerente.getCpf(),
+            gerente.getNome()
+          )
+        );
+      }
     }
 
     return gerentes;
   }
 
   public void desativarGerente (String cpfGerente) {
-    Gerente gerenteEncontrado = gerenteRepository.findByCpfAndAtivoTrue(cpfGerente);
+    Gerente gerenteEncontrado = gerenteRepository.findByCpf(cpfGerente);
     
-    if (gerenteEncontrado == null) {
+    if (!StatusGerenteEnum.ATIVO.name().equals(gerenteEncontrado.getAtivo())) {
       throw new GerenteNaoEncontradoException();
     }
 
-    gerenteEncontrado.setAtivo(false);
+    gerenteEncontrado.setAtivo(StatusGerenteEnum.INATIVO.name());
     gerenteRepository.save(gerenteEncontrado);
   }
 
   public GerenteDTO alterarGerente(GerenteDTO dto) {
     validarGerenteAlteracao(dto);
     
-    Gerente gerenteEncontrado = gerenteRepository.findByCpfAndAtivoTrue(dto.getCpf());
+    Gerente gerenteEncontrado = gerenteRepository.findByCpf(dto.getCpf());
 
-    if (gerenteEncontrado == null) {
+    if (!StatusGerenteEnum.ATIVO.name().equals(gerenteEncontrado.getAtivo())) {
       throw new GerenteNaoEncontradoException();
     }
 
@@ -173,7 +195,7 @@ public class GerenteService {
       gerenteAlterado.getIdUsuario(),
       gerenteAlterado.getCpf(),
       gerenteAlterado.getNome(),
-      gerenteAlterado.getTelefone(),
+      //gerenteAlterado.getTelefone(),
       gerenteAlterado.getAtivo()
     );
   }

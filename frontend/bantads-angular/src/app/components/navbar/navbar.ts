@@ -1,8 +1,9 @@
 import { Component, inject } from '@angular/core';
-import { TipoUsuario } from '../../shared';
+import { IUsuarioLogado, TipoUsuario } from '../../shared';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { LoginService } from '../../services';
 
 @Component({
   selector: 'app-navbar',
@@ -11,14 +12,26 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './navbar.css',
 })
 export class Navbar {
-  usuarioLogado: TipoUsuario | null = null;
+  readonly loginService = inject(LoginService);
+  readonly router = inject(Router);
+
+  usuarioLogado: IUsuarioLogado | null = null;
   TipoUsuario = TipoUsuario;
 
-  router = inject(Router);
-
   ngOnInit() {
-    const tipo = localStorage.getItem('tipoUsuario');
-    this.usuarioLogado = tipo !== null ? Number(tipo) as TipoUsuario : null;
+    this.usuarioLogado = this.loginService.usuarioLogado;
   }
 
+  logout() {
+    this.loginService.logout().subscribe({
+      next: () => {
+        this.usuarioLogado = null;
+        this.router.navigate(['/']);
+      },
+      error: () => {
+        this.usuarioLogado = null;
+        this.router.navigate(['/']);
+      }
+    });
+  }
 }

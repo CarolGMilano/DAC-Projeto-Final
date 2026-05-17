@@ -14,8 +14,8 @@ import org.springframework.amqp.support.converter.MessageConverter;
 public class RabbitMQConfig {
   //Lembrete: deixar mais genérico o nome das filas de sucesso e falha
   public static final String COMANDO_QUEUE = "msgerente.queue.comando";
-  public static final String SUCESSO_QUEUE = "msgerente.criacao.sucesso";
-  public static final String FALHA_QUEUE = "msgerente.criacao.falha";
+  public static final String SUCESSO_QUEUE = "msgerente.queue.sucesso";
+  public static final String FALHA_QUEUE = "msgerente.queue.falha";
 
   @Bean
   public Queue comandoQueue() {

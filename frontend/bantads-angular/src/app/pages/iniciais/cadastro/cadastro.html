@@ -168,7 +168,7 @@
                 >CEP</label>
               <input 
                 name="cep" 
-                [(ngModel)]="cliente.endereco.cep"
+                [(ngModel)]="cliente.cep"
                 (ngModelChange)="validaCEP($event)"
                 placeholder="80000-000"
                 [numericos]="'cep'"
@@ -210,7 +210,7 @@
               <input 
                 id="logradouro"
                 name="logradouro" 
-                [(ngModel)]="cliente.endereco.logradouro"
+                [(ngModel)]="cliente.endereco"
                 placeholder=""
                 class="block w-full rounded-md bg-zinc-800 text-gray-300 px-3 py-1.5 text-base placeholder:text-gray-500 sm:text-sm/6 border border-zinc-600 cursor-not-allowed" readonly />
             </div>
@@ -223,22 +223,9 @@
               <input 
                 id="numero"
                 name="numero" 
-                [(ngModel)]="cliente.endereco.numero"
+                [(ngModel)]="numero"
                 placeholder="100"
                 numericos
-                class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 border-neutral-700 outline-none focus:border-gray-400" />
-            </div>
-            
-            <div class="col-span-6 mt-1.5">
-              <label 
-                for="complemento"
-                class="block text-sm text-gray-100 mb-1"
-                >Complemento <span class="text-xs">(Opcional)</span></label>
-              <input 
-                id="complemento"
-                name="complemento" 
-                [(ngModel)]="cliente.endereco.complemento"
-                placeholder="Ex: Apto 101"
                 class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 border-neutral-700 outline-none focus:border-gray-400" />
             </div>
   
@@ -250,7 +237,7 @@
               <input 
                 id="cidade" 
                 name="cidade" 
-                [(ngModel)]="cliente.endereco.cidade"
+                [(ngModel)]="cliente.cidade"
                 class="block w-full rounded-md bg-zinc-800 text-gray-300 px-3 py-1.5 text-base placeholder:text-gray-500 sm:text-sm/6 border border-zinc-600 cursor-not-allowed" readonly />
             </div>
   
@@ -262,7 +249,7 @@
               <input 
                 id="estado"
                 name="estado" 
-                [(ngModel)]="cliente.endereco.estado"
+                [(ngModel)]="cliente.estado"
                 class="block w-full rounded-md bg-zinc-800 text-gray-300 px-3 py-1.5 text-base placeholder:text-gray-500 sm:text-sm/6 border border-zinc-600 cursor-not-allowed" readonly />
             </div>
   
@@ -391,32 +378,22 @@
       
                 <div class="col-span-4 flex flex-col">
                   <span class="font-medium text-xs text-gray-200">CEP</span>
-                  <p class="text-white font-thin text-base">{{ cliente.endereco.cep | cepFormatador }}</p>
+                  <p class="text-white font-thin text-base">{{ cliente.cep | cepFormatador }}</p>
                 </div>
       
                 <div class="col-span-3 flex flex-col">
                   <span class="font-medium text-xs text-gray-200">Logradouro</span>
-                  <p class="text-white font-thin text-base">{{ cliente.endereco.logradouro }}</p>
+                  <p class="text-white font-thin text-base">{{ cliente.endereco }}</p>
                 </div>
       
-                <div class="col-span-1 flex flex-col">
-                  <span class="font-medium text-xs text-gray-200">Número</span>
-                  <p class="text-white font-thin text-base">{{ cliente.endereco.numero || '—' }}</p>
-                </div>
-      
-                <div class="col-span-4 flex flex-col">
-                  <span class="font-medium text-xs text-gray-200">Complemento</span>
-                  <p class="text-white font-thin text-base">{{ cliente.endereco.complemento || '—' }}</p>
-                </div>
-  
                 <div class="col-span-2 flex flex-col">
                   <span class="font-medium text-xs text-gray-200">Cidade</span>
-                  <p class="text-white font-thin text-base">{{ cliente.endereco.cidade }}</p>
+                  <p class="text-white font-thin text-base">{{ cliente.cidade }}</p>
                 </div>
   
                 <div class="col-span-2 flex flex-col">
                   <span class="font-medium text-xs text-gray-200">Estado</span>
-                  <p class="text-white font-thin text-base">{{ cliente.endereco.estado }}</p>
+                  <p class="text-white font-thin text-base">{{ cliente.estado }}</p>
                 </div>
               </div>
             </div>

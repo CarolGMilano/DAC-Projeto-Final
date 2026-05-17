@@ -4,6 +4,7 @@ import { FormsModule, NgForm, NgModel } from '@angular/forms';
 
 import { SharedModule, IGerente, TipoUsuario } from '../../../shared';
 import { GerenteService } from '../../../services';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-gerentes',
@@ -21,16 +22,11 @@ export class Gerentes implements OnInit{
   gerentes: IGerente[] = [];
 
   gerente: IGerente = {
-    //id: -1, 
-    //Só para testes, pois no fluxo da SAGA, este id virá do MSAuth.
-    idUsuario: Math.floor(Math.random() * 1000000000),
     nome: '',
     cpf: '',
     email: '',
-    telefone: '',
     senha: '',
-    ativo: true,
-    tipo: TipoUsuario.GERENTE
+    tipo:''
   }
 
   pesquisa: string = '';
@@ -50,15 +46,11 @@ export class Gerentes implements OnInit{
 
   abrirAdicionar() {
     this.gerente = {
-      //id: -1, 
-      idUsuario: Math.floor(Math.random() * 1000000000),
       nome: '',
       cpf: '',
       email: '',
-      telefone: '',
       senha: '',
-      ativo: true,
-      tipo: TipoUsuario.GERENTE
+      tipo: ''
     }
 
     this.modoFormulario = 'adicionar';
@@ -75,6 +67,26 @@ export class Gerentes implements OnInit{
   abrirExcluir(gerenteSelecionado: IGerente) {
     this.gerente = { ... gerenteSelecionado };
     this.mostrarPopupExclusao = true;
+  }
+
+  //Fica fazendo um loop de requisições pra ver o status final
+  verificarStatusSaga(id: number) {
+    return new Observable<any>((observer) => {
+      const intervalo = setInterval(() => {
+        this.gerenteService.verificarStatus(id).subscribe({
+          next: (res: any) => {
+            observer.next(res);
+
+            clearInterval(intervalo);
+            observer.complete();
+          },
+          error: (err) => {
+            clearInterval(intervalo);
+            observer.error(err.error);
+          }
+        });
+      }, 2000);
+    });
   }
 
   cancelar() {
@@ -103,6 +115,7 @@ export class Gerentes implements OnInit{
           alert(`Erro interno: ${erro.error}`);
         } else {
           alert('Erro inesperado ao listar funcionários.');
+          console.log(erro);
         }
       }
     });
@@ -114,31 +127,54 @@ export class Gerentes implements OnInit{
     if (!this.formGerentes.form.valid) return;
 
     if (this.modoFormulario === 'adicionar') {
-
       this.gerenteService.inserir(this.gerente).subscribe({
-        next: () => {
-          this.listarTodos();
-          this.mostrarFormulario = false;
-          this.formGerentes.reset();
-          this.cancelar();
+        next: (res: any) => {
+          const idSaga = res.idSaga;
+
+          this.verificarStatusSaga(idSaga).subscribe({
+            next: () => {
+              this.listarTodos();
+              this.mostrarFormulario = false;
+              this.formGerentes.reset();
+              this.cancelar();
+            },
+            error: (erro: any) => {
+              if (erro.tipo === 'cpf') {
+                this.cpfModel.control.setErrors({ cpfConflito: true });
+                return;
+              }
+
+              if (erro.tipo === 'email') {
+                this.emailModel.control.setErrors({ emailConflito: true });
+                return;
+              }
+
+              alert(`Erro interno: ${erro.error}`);
+            }
+          });
         },
         error: (erro) => {
           if (erro.status === 409) {
             if (erro.error.tipo === 'cpf') {
               this.cpfModel.control.setErrors({ cpfConflito: true });
-            } else if (erro.error.tipo === 'email') {
-              this.emailModel.control.setErrors({ emailConflito: true });
+              return;
             }
-          } else if (erro.status === 500) {
-            alert(`Erro interno: ${erro.error}`);
-          } else {
-            alert('Erro inesperado ao cadastrar gerente.');
+
+            if (erro.error.tipo === 'email') {
+              this.emailModel.control.setErrors({ emailConflito: true });
+              return;
+            }
           }
+
+          if (erro.status === 500) {
+            alert(`Erro interno: ${erro.error}`);
+            return;
+          }
+
+          alert(erro);
         }
       });
-
     } else {
-
       this.gerenteService.atualizar(this.gerente).subscribe({
         next: () => {
           this.listarTodos();
@@ -147,13 +183,22 @@ export class Gerentes implements OnInit{
           this.cancelar();
         },
         error: (erro) => {
+          if (erro.error.tipo === 'email') {
+            this.emailModel.control.setErrors({ emailConflito: true });
+            return;
+          }
+
           if (erro.status === 404) {
             alert(`Não encontrado: ${erro.error}`);
-          } else if (erro.status === 500) {
-            alert(`Erro interno: ${erro.error}`);
-          } else {
-            alert('Erro inesperado ao atualizar gerente.');
+            return;
           }
+
+          if (erro.status === 500) {
+            alert(`Erro interno: ${erro.error}`);
+            return;
+          }
+
+          alert('Erro inesperado ao atualizar gerente.');
         }
       });
     }

@@ -6,8 +6,11 @@ import org.springframework.stereotype.Component;
 
 import br.net.dac.msgerente.model.dto.ComandoGerente;
 import br.net.dac.msgerente.model.dto.GerenteDTO;
+import br.net.dac.msgerente.model.enums.CodigoErroEnum;
 import br.net.dac.msgerente.model.event.GerenteCriacaoFalhaEvent;
 import br.net.dac.msgerente.model.event.GerenteCriacaoSucessoEvent;
+import br.net.dac.msgerente.model.exception.CPFDuplicadoException;
+import br.net.dac.msgerente.model.exception.UsuarioDuplicadoException;
 import br.net.dac.msgerente.service.GerenteService;
 
 @Component
@@ -45,9 +48,26 @@ public class GerenteConsumidor {
         )
       );
 
-    } catch (Exception e) {
+    } catch (CPFDuplicadoException e) {
       gerenteProdutor.criacaoFalha(
-        new GerenteCriacaoFalhaEvent("ERRO", e.getMessage())
+        new GerenteCriacaoFalhaEvent(
+          CodigoErroEnum.CPF_DUPLICADO.name(),
+          e.getMessage()
+        )
+      );
+    } catch (UsuarioDuplicadoException e) {
+      gerenteProdutor.criacaoFalha(
+        new GerenteCriacaoFalhaEvent(
+          CodigoErroEnum.USUARIO_DUPLICADO.name(),
+          e.getMessage()
+        )
+      );
+    }catch (Exception e) {
+      gerenteProdutor.criacaoFalha(
+        new GerenteCriacaoFalhaEvent(
+          CodigoErroEnum.ERRO_INTERNO.name(),
+          e.getMessage()
+        )
       );
     }
   }

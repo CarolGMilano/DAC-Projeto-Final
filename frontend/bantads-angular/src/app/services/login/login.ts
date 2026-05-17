@@ -1,35 +1,67 @@
-import { Injectable } from '@angular/core';
-import { TipoUsuario } from '../../shared';
+import { inject, Injectable } from '@angular/core';
+import { catchError, map, Observable, throwError } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+
+import { ILogin, IUsuarioLogado } from '../../shared';
+
+const LS_USUARIO_LOGADO = "usuarioLogado";
+const LS_TOKEN = "token";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-export class LoginService {
-  //Service apenas para teste de rotas de acesso
 
-  setTipoUsuario(tipo: TipoUsuario) {
-    localStorage.setItem('tipoUsuario', tipo.toString());
+export class LoginService {
+  private readonly _httpClient = inject(HttpClient);
+
+  BASE_URL_LOGIN = "http://localhost:3000/login";
+  BASE_URL_LOGOUT = "http://localhost:3000/logout";
+
+  httpOptions = {
+    observe: "response" as "response",
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  };
+
+  public get usuarioLogado(): IUsuarioLogado | null {
+    let usuario = localStorage[LS_USUARIO_LOGADO];
+
+    return (usuario ? JSON.parse(usuario) : null);
   }
 
-  login(email: string, senha: string) {
-    if (email === 'cliente@teste.com') {
-      this.setTipoUsuario(TipoUsuario.CLIENTE);
-      
-      return { tipo: TipoUsuario.CLIENTE };
-    }
+  public set usuarioLogado(usuario: IUsuarioLogado) {
+    localStorage[LS_USUARIO_LOGADO] = JSON.stringify(usuario);
+  }
 
-    if (email === 'gerente@teste.com') {
-      this.setTipoUsuario(TipoUsuario.GERENTE);
+  login(login: ILogin): Observable<IUsuarioLogado> {
+    return this._httpClient.post<IUsuarioLogado>(
+      this.BASE_URL_LOGIN,
+      login
+    ).pipe(
+      map(usuario => {
+        this.usuarioLogado = usuario;
+        localStorage[LS_TOKEN] = usuario.access_token;
 
-      return { tipo: TipoUsuario.GERENTE };
-    }
+        return usuario;
+      }),
+      catchError((erro) => {
+        return throwError(() => erro);
+      })
+    );
+  }
 
-    if (email === 'admin@teste.com') {
-      this.setTipoUsuario(TipoUsuario.ADMINISTRADOR);
-
-      return { tipo: TipoUsuario.ADMINISTRADOR };
-    }
-
-    return null;
+  logout(): Observable<any> {
+    return this._httpClient.post(
+      this.BASE_URL_LOGOUT, {}
+    ).pipe(
+      map(() => {
+        delete localStorage[LS_USUARIO_LOGADO];
+        delete localStorage[LS_TOKEN];
+      }),
+      catchError((erro) => {
+        return throwError(() => erro);
+      })
+    );
   }
 }
