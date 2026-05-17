@@ -1,14 +1,11 @@
 package br.net.dac.saga.rabbitMQ;
 
-import java.util.Map;
-
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import br.net.dac.saga.model.event.Evento;
 import br.net.dac.saga.service.InsercaoGerenteSagaService;
-import tools.jackson.databind.ObjectMapper;
 
 @Component
 public class SagaConsumidor {
