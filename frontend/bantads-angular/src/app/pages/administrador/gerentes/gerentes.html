@@ -30,7 +30,7 @@
           </th>
           <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Nome</th>
           <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">E-mail</th>
-          <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-1/6">Telefone</th>
+          <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-1/6">Tipo</th>
           <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-r-lg w-1/6"></th>
         </tr>
       </thead>
@@ -41,7 +41,7 @@
             <td class="px-12 py-2 text-sm text-gray-100">{{ gerente.cpf | cpfFormatador }}</td>
             <td class="px-4 py-2 text-sm text-gray-100">{{ gerente.nome }}</td>
             <td class="px-4 py-2 text-sm text-gray-100">{{ gerente.email }}</td>
-            <td class="px-4 py-2 text-sm text-gray-100">{{ gerente.telefone | telefoneFormatador }}</td>
+            <td class="px-4 py-2 text-sm text-gray-100">{{ gerente.tipo }}</td>
             <td class="px-12 py-2 flex gap-2">
               <button type="button" class="px-1 py-1 text-white rounded-full group hover:bg-zinc-700 hover:cursor-pointer"
                 (click)="abrirEditar(gerente)">
@@ -175,35 +175,33 @@
               @if(modoFormulario == 'adicionar'){
                 <div class="col-span-3 mt-1.5">
                   <label 
-                    for="telefone"
+                    for="tipo"
                     class="block text-sm text-gray-100 mb-1"
-                    >Telefone</label>
-                  <input 
-                    id="telefone" 
-                    placeholder="(41) 99999-9999" 
-                    type="text" 
-                    maxlength="15" 
-                    name="telefone" 
-                    autocomplete="tel" 
-                    [numericos]="'telefone'"
-                    TelefoneValidator
-                    [(ngModel)]="gerente.telefone" 
-                    #telefone="ngModel" 
-                    required class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 outline-none focus:border-gray-400"
-                    [ngClass]="{
-                      'border-red-500': telefone.errors?.['vazio'] && (telefone.touched || telefone.dirty),
-                      'border-yellow-500': telefone.errors?.['telefoneIncompleto'] && (telefone.touched || telefone.dirty),
-                      'border-green-500': telefone.valid && telefone.touched,
-                      'border-neutral-700': telefone.pristine
-                    }" />
+                  >Tipo</label>
 
-                  @if (telefone.errors?.['vazio'] && (telefone.touched || telefone.dirty)) {
-                    <span class="pl-2 text-red-600 text-xs">O telefone é obrigatório</span>
-                  } @else if (telefone.errors?.['telefoneIncompleto']) {
-                    <span class="pl-2 text-yellow-600 text-xs">O telefone está inválido ou incompleto</span>
+                  <select
+                    id="tipo"
+                    name="tipo"
+                    [(ngModel)]="gerente.tipo"
+                    #tipo="ngModel"
+                    required
+                    class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 sm:text-sm/6 border border-1 outline-none focus:border-gray-400"
+                    [ngClass]="{
+                      'border-red-500': tipo.errors?.['required'] && (tipo.touched || tipo.dirty),
+                      'border-green-500': tipo.valid && tipo.touched,
+                      'border-neutral-700': tipo.pristine
+                    }"
+                  >
+                    <option value="" disabled selected>Selecione o tipo</option>
+                    <option value="ADMIN">ADMIN</option>
+                    <option value="GERENTE">GERENTE</option>
+                  </select>
+
+                  @if (tipo.errors?.['required'] && (tipo.touched || tipo.dirty)) {
+                    <span class="pl-2 text-red-600 text-xs">O tipo é obrigatório</span>
                   }
                 </div>
-              
+                
                 <div class="col-span-6 mt-1.5 relative">
                   <label 
                     for="senha"
