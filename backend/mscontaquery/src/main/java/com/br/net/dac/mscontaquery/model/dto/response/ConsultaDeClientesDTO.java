@@ -1,22 +1,14 @@
 package com.br.net.dac.mscontaquery.model.dto.response;
 
-
-public class Top3ClientesDTO {
-    
-private String nomeCliente;
+public class ConsultaDeClientesDTO {
 private String cpfCliente;
-private Double saldo;
+private String nomeCliente;
 private String cidade;
 private String estado;
+private Double saldo;
+private Double limite;
 
-public Top3ClientesDTO(){}
-
-public String getNomeCliente() {
-    return nomeCliente;
-}
-
-public void setNomeCliente(String nomeCliente) {
-    this.nomeCliente = nomeCliente;
+public ConsultaDeClientesDTO() {
 }
 
 public String getCpfCliente() {
@@ -27,12 +19,12 @@ public void setCpfCliente(String cpfCliente) {
     this.cpfCliente = cpfCliente;
 }
 
-public Double getSaldo() {
-    return saldo;
+public String getNomeCliente() {
+    return nomeCliente;
 }
 
-public void setSaldo(Double saldo) {
-    this.saldo = saldo;
+public void setNomeCliente(String nomeCliente) {
+    this.nomeCliente = nomeCliente;
 }
 
 public String getCidade() {
@@ -51,6 +43,20 @@ public void setEstado(String estado) {
     this.estado = estado;
 }
 
+public Double getSaldo() {
+    return saldo;
+}
 
+public void setSaldo(Double saldo) {
+    this.saldo = saldo;
+}
+
+public Double getLimite() {
+    return limite;
+}
+
+public void setLimite(Double limite) {
+    this.limite = limite;
+}
 
 }
