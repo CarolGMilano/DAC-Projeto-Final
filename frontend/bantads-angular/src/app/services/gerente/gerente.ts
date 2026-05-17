@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
 
-import { IGerente } from '../../shared';
+import { IGerente, ISagaStatus } from '../../shared';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +28,17 @@ export class GerenteService {
         return resposta.body ?? [];
       }),
       catchError((erro) => throwError(() => erro))
+    );
+  }
+
+  //Verifica o status da SAGA
+  verificarStatus(id: number): Observable<ISagaStatus | null> {
+    return this._httpClient.get<ISagaStatus>(
+      `${this.BASE_URL}/status/${id}`,
+      { observe: 'response' }
+    ).pipe(
+      map(res => res.body ?? null),
+      catchError(err => throwError(() => err))
     );
   }
 
