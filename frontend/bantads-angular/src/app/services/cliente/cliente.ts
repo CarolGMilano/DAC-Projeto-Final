@@ -1,13 +1,37 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ICliente } from '../../shared';
 
 import { ICliente2 } from '../../shared/models/ICliente_V2';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError, Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ClienteService {
+  private readonly _httpClient = inject(HttpClient);
+  
+  BASE_URL = "http://localhost:3000/clientes";
+  
+  httpOptions = {
+    observe: "response" as "response",
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  }
+  
+  inserir(cliente: ICliente2): Observable<ICliente2> {
+    return this._httpClient.post<ICliente2>(
+      this.BASE_URL,
+      cliente
+    ).pipe(
+      catchError((erro) => throwError(() => erro))
+    );
+  }
 
+
+
+  
   private storageKey = 'clientes';
 
   constructor() {
@@ -141,9 +165,6 @@ export class ClienteService {
 }
 
 
-  salvar(cliente: ICliente2) {
-    console.log(cliente);
-  }
 
   private getData(): ICliente[] {
     const data = localStorage.getItem(this.storageKey);
@@ -201,6 +222,4 @@ export class ClienteService {
     const filtrados = clientes.filter(c => c.cpf !== cpf);
     this.setData(filtrados);
   }
-
-
 }
