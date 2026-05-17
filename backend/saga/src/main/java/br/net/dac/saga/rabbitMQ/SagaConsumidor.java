@@ -1,11 +1,14 @@
 package br.net.dac.saga.rabbitMQ;
 
+import java.util.Map;
+
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import br.net.dac.saga.model.event.Evento;
 import br.net.dac.saga.service.InsercaoGerenteSagaService;
+import tools.jackson.databind.ObjectMapper;
 
 @Component
 public class SagaConsumidor {
@@ -15,6 +18,9 @@ public class SagaConsumidor {
   //MSAUTH
   @RabbitListener(queues = RabbitMQConfig.AUTH_QUEUE_SUCESSO)
   public void authSucesso(Evento evento) {
+    
+    System.out.println("CRIAR_USUARIO_SUCESSO:" + evento);
+
     switch(evento.getTipo()) {
       case "CRIAR_USUARIO_SUCESSO":
         insercaoGerenteSagaService.criarGerente(evento);
@@ -29,6 +35,7 @@ public class SagaConsumidor {
   public void authFalha(Evento evento) {
     switch(evento.getTipo()) {
       case "CRIAR_USUARIO_FALHA":
+         System.out.println("CRIAR_USUARIO_FALHA:" + evento);
         insercaoGerenteSagaService.authFalhou(evento);
       break;
 
@@ -59,6 +66,7 @@ public class SagaConsumidor {
   public void gerenteSucesso(Evento evento) {
     switch(evento.getTipo()) {
       case "CRIAR_GERENTE_SUCESSO":
+        System.out.println("CRIAR_GERENTE_SUCESSO:" + evento);
         insercaoGerenteSagaService.vincularConta(evento);
       break;
     }
