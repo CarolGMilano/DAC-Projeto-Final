@@ -1,20 +1,18 @@
 package br.net.dac.saga.model.dto;
 
-public class GerenteDTO {
+public class GerenteCriacaoRespostaDTO {
   private String cpf;
   private String nome;
   private String email;
   private String tipo;
-  private String senha;
 
-  public GerenteDTO() {}
+  public GerenteCriacaoRespostaDTO() {}
 
-  public GerenteDTO(String cpf, String nome, String email, String tipo, String senha) {
+  public GerenteCriacaoRespostaDTO(String cpf, String nome, String email, String tipo) {
     this.cpf = cpf;
     this.nome = nome;
     this.email = email;
     this.tipo = tipo;
-    this.senha = senha;
   }
 
   public String getCpf() { return cpf; }
@@ -29,12 +27,8 @@ public class GerenteDTO {
   public String getTipo() { return tipo; }
   public void setTipo(String tipo) { this.tipo = tipo; }
 
-  public String getSenha() { return senha; }
-  public void setSenha(String senha) { this.senha = senha; }
-
   @Override
   public String toString() {
-    return "GerenteDTO [cpf=" + cpf + ", nome=" + nome + ", email=" + email + ", tipo=" + tipo + ", senha=" + senha
-        + "]";
+    return "GerenteCriacaoRespostaDTO [cpf=" + cpf + ", nome=" + nome + ", email=" + email + ", tipo=" + tipo + "]";
   }
 }

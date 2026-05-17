@@ -17,4 +17,9 @@ public class Evento {
 
   public Object getPayload() { return payload; }
   public void setPayload(Object payload) { this.payload = payload; }
+
+  @Override
+  public String toString() {
+    return "Evento [tipo=" + tipo + ", payload=" + payload + "]";
+  }
 }
