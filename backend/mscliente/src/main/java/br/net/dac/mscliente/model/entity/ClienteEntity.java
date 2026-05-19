@@ -16,7 +16,7 @@ public class ClienteEntity {
     private Integer idUsuario;
 
     @Column(name = "id_gerente")
-    private Long idGerente;
+    private Integer idGerente;
 
     @Column(unique = true, nullable = false, length = 14)
     private String cpf;
@@ -54,8 +54,8 @@ public class ClienteEntity {
     public Integer getIdUsuario() { return idUsuario; }
     public void setIdUsuario(Integer idUsuario) { this.idUsuario = idUsuario; }
 
-    public Long getIdGerente() { return idGerente; }
-    public void setIdGerente(Long idGerente) { this.idGerente = idGerente; }
+    public Integer getIdGerente() { return idGerente; }
+    public void setIdGerente(Integer idGerente) { this.idGerente = idGerente; }
 
     public String getCpf() { return cpf; }
     public void setCpf(String cpf) { this.cpf = cpf; }
