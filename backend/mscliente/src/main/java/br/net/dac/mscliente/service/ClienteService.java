@@ -10,6 +10,7 @@ import br.net.dac.mscliente.model.entity.EnderecoEntity;
 import br.net.dac.mscliente.model.entity.StatusCliente; 
 import br.net.dac.mscliente.repository.ClienteRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,14 +20,14 @@ public class ClienteService {
     @Autowired
     private ClienteRepository clienteRepository;
 
-    // R1 - Autocadastro
+    
     public ClienteDTO cadastrarCliente(ClienteDTO dto) {
         if (clienteRepository.findByCpf(dto.getCpf()).isPresent()) {
             throw new RuntimeException("Cliente com CPF " + dto.getCpf() + " já cadastrado.");
         }
 
         ClienteEntity entity = toEntity(dto);
-        entity.setStatus("AGUARDANDO");
+        entity.setStatus(StatusCliente.AGUARDANDO.name()); // ponto 5
 
         if (entity.getEndereco() != null) {
             entity.getEndereco().setCliente(entity);
@@ -36,7 +37,7 @@ public class ClienteService {
         return toDTO(salvo);
     }
 
-    // R4 - Alterar perfil (menos CPF)
+  
     public ClienteDTO alterarCliente(ClienteDTO dto) {
         ClienteEntity entity = clienteRepository.findByCpf(dto.getCpf())
             .orElseThrow(() -> new RuntimeException(
@@ -48,55 +49,64 @@ public class ClienteService {
         entity.setTelefone(dto.getTelefone());
         entity.setSalario(dto.getSalario());
 
-        if (dto.getEndereco() != null && entity.getEndereco() != null) {
-            entity.getEndereco().setLogradouro(dto.getEndereco().getLogradouro());
-            entity.getEndereco().setNumero(dto.getEndereco().getNumero());
-            entity.getEndereco().setComplemento(dto.getEndereco().getComplemento());
-            entity.getEndereco().setCep(dto.getEndereco().getCep());
-            entity.getEndereco().setCidade(dto.getEndereco().getCidade());
-            entity.getEndereco().setEstado(dto.getEndereco().getEstado());
+        // ponto 2: cria endereço se não existia, atualiza se já existe
+        if (dto.getEndereco() != null) {
+            if (entity.getEndereco() == null) {
+                EnderecoEntity novoEndereco = new EnderecoEntity();
+                novoEndereco.setCliente(entity);
+                preencherEndereco(novoEndereco, dto.getEndereco());
+                entity.setEndereco(novoEndereco);
+            } else {
+                preencherEndereco(entity.getEndereco(), dto.getEndereco());
+            }
         }
 
         ClienteEntity atualizado = clienteRepository.save(entity);
         return toDTO(atualizado);
     }
 
+    
     public void aprovarCliente(String cpf) {
         ClienteEntity entity = clienteRepository.findByCpf(cpf)
             .orElseThrow(() -> new RuntimeException(
                 "Cliente com CPF " + cpf + " não encontrado."
             ));
 
-        entity.setStatus("APROVADO");
+        entity.setStatus(StatusCliente.APROVADO.name());
+        entity.setDataAprovacaoRejeicao(LocalDateTime.now()); 
         clienteRepository.save(entity);
     }
 
+   
     public void rejeitarCliente(String cpf, String motivo) {
         ClienteEntity entity = clienteRepository.findByCpf(cpf)
             .orElseThrow(() -> new RuntimeException(
                 "Cliente com CPF " + cpf + " não encontrado."
             ));
 
-        entity.setStatus("REJEITADO");
+        entity.setStatus(StatusCliente.REJEITADO.name());
         entity.setMotivoRejeicao(motivo);
+        entity.setDataAprovacaoRejeicao(LocalDateTime.now()); 
         clienteRepository.save(entity);
     }
 
+   
     public List<ClienteDTO> listarParaAprovar() {
-        return clienteRepository.findByStatus("AGUARDANDO")
+        return clienteRepository.findByStatus(StatusCliente.AGUARDANDO.name()) // ponto 5
             .stream()
             .map(this::toDTO)
             .collect(Collectors.toList());
     }
 
-    // R12 - Listar todos os clientes
+   
     public List<ClienteDTO> listarClientes() {
-         return clienteRepository.findByStatus("APROVADO")
+        return clienteRepository.findByStatus(StatusCliente.APROVADO.name()) // ponto 5
             .stream()
             .map(this::toDTO)
             .collect(Collectors.toList());
     }
 
+  
     public List<ClienteDTO> listarRelatorioAdm() {
         return clienteRepository.findAll()
             .stream()
@@ -104,8 +114,9 @@ public class ClienteService {
             .collect(Collectors.toList());
     }
 
+
     public List<ClienteDTO> listarMelhoresClientes() {
-        return clienteRepository.findByStatus("APROVADO")
+        return clienteRepository.findByStatus(StatusCliente.APROVADO.name()) // ponto 5
             .stream()
             .map(this::toDTO)
             .collect(Collectors.toList());
@@ -136,15 +147,13 @@ public class ClienteService {
         return toDTO(entity);
     }
 
-    // -----------------------------------------------
-    // Conversores Entity <-> DTO
-    // -----------------------------------------------
+   
 
     private ClienteDTO toDTO(ClienteEntity entity) {
         ClienteDTO dto = new ClienteDTO();
         dto.setId(entity.getId());
-        dto.setIdUsuario(entity.getIdUsuario()); 
-        dto.setIdGerente(entity.getIdGerente()); 
+        dto.setIdUsuario(entity.getIdUsuario());
+        dto.setIdGerente(entity.getIdGerente());
         dto.setCpf(entity.getCpf());
         dto.setNome(entity.getNome());
         dto.setEmail(entity.getEmail());
@@ -158,7 +167,7 @@ public class ClienteService {
             try {
                 dto.setStatus(StatusCliente.valueOf(entity.getStatus()));
             } catch (IllegalArgumentException e) {
-                dto.setStatus(null); 
+                dto.setStatus(null);
             }
         }
 
@@ -188,22 +197,25 @@ public class ClienteService {
         entity.setMotivoRejeicao(dto.getMotivoRejeicao());
         entity.setDataAprovacaoRejeicao(dto.getDataAprovacaoRejeicao());
 
-        
         if (dto.getStatus() != null) {
             entity.setStatus(dto.getStatus().name());
         }
 
         if (dto.getEndereco() != null) {
             EnderecoEntity enderecoEntity = new EnderecoEntity();
-            enderecoEntity.setLogradouro(dto.getEndereco().getLogradouro());
-            enderecoEntity.setNumero(dto.getEndereco().getNumero());
-            enderecoEntity.setComplemento(dto.getEndereco().getComplemento());
-            enderecoEntity.setCep(dto.getEndereco().getCep());
-            enderecoEntity.setCidade(dto.getEndereco().getCidade());
-            enderecoEntity.setEstado(dto.getEndereco().getEstado());
+            preencherEndereco(enderecoEntity, dto.getEndereco());
             entity.setEndereco(enderecoEntity);
         }
 
         return entity;
+    }
+
+    private void preencherEndereco(EnderecoEntity entity, EnderecoDTO dto) {
+        entity.setLogradouro(dto.getLogradouro());
+        entity.setNumero(dto.getNumero());
+        entity.setComplemento(dto.getComplemento());
+        entity.setCep(dto.getCep());
+        entity.setCidade(dto.getCidade());
+        entity.setEstado(dto.getEstado());
     }
 }
