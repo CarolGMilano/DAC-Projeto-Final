@@ -10,6 +10,6 @@ import java.util.List;
 public interface ClienteRepository extends JpaRepository<ClienteEntity, Long> {
     Optional<ClienteEntity> findByCpf(String cpf);
     boolean existsByCpf(String cpf);
-    Optional <ClienteEntity> findByIdUsuario(long idUsuario);
+    Optional <ClienteEntity> findByIdUsuario(Integer idUsuario);
     List<ClienteEntity> findByStatus(String status);
 }   
