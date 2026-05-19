@@ -7,6 +7,7 @@ import br.net.dac.mscliente.model.dto.ClienteDTO;
 import br.net.dac.mscliente.model.dto.EnderecoDTO;
 import br.net.dac.mscliente.model.entity.ClienteEntity;
 import br.net.dac.mscliente.model.entity.EnderecoEntity;
+import br.net.dac.mscliente.model.entity.StatusCliente; 
 import br.net.dac.mscliente.repository.ClienteRepository;
 
 import java.util.List;
@@ -27,7 +28,6 @@ public class ClienteService {
         ClienteEntity entity = toEntity(dto);
         entity.setStatus("AGUARDANDO");
 
-
         if (entity.getEndereco() != null) {
             entity.getEndereco().setCliente(entity);
         }
@@ -44,6 +44,8 @@ public class ClienteService {
             ));
 
         entity.setNome(dto.getNome());
+        entity.setEmail(dto.getEmail());
+        entity.setTelefone(dto.getTelefone());
         entity.setSalario(dto.getSalario());
 
         if (dto.getEndereco() != null && entity.getEndereco() != null) {
@@ -59,17 +61,17 @@ public class ClienteService {
         return toDTO(atualizado);
     }
 
-      public void aprovarCliente(String cpf) {
+    public void aprovarCliente(String cpf) {
         ClienteEntity entity = clienteRepository.findByCpf(cpf)
             .orElseThrow(() -> new RuntimeException(
                 "Cliente com CPF " + cpf + " não encontrado."
             ));
 
-            entity.setStatus("APROVADO");
+        entity.setStatus("APROVADO");
         clienteRepository.save(entity);
     }
 
-     public void rejeitarCliente(String cpf, String motivo) {
+    public void rejeitarCliente(String cpf, String motivo) {
         ClienteEntity entity = clienteRepository.findByCpf(cpf)
             .orElseThrow(() -> new RuntimeException(
                 "Cliente com CPF " + cpf + " não encontrado."
@@ -80,14 +82,12 @@ public class ClienteService {
         clienteRepository.save(entity);
     }
 
-      public List<ClienteDTO> listarParaAprovar() {
+    public List<ClienteDTO> listarParaAprovar() {
         return clienteRepository.findByStatus("AGUARDANDO")
             .stream()
             .map(this::toDTO)
             .collect(Collectors.toList());
     }
-
-
 
     // R12 - Listar todos os clientes
     public List<ClienteDTO> listarClientes() {
@@ -97,21 +97,19 @@ public class ClienteService {
             .collect(Collectors.toList());
     }
 
-
-       public List<ClienteDTO> listarRelatorioAdm() {
+    public List<ClienteDTO> listarRelatorioAdm() {
         return clienteRepository.findAll()
             .stream()
             .map(this::toDTO)
             .collect(Collectors.toList());
     }
 
-      public List<ClienteDTO> listarMelhoresClientes() {
+    public List<ClienteDTO> listarMelhoresClientes() {
         return clienteRepository.findByStatus("APROVADO")
             .stream()
             .map(this::toDTO)
             .collect(Collectors.toList());
     }
-
 
     public ClienteDTO consultarClientePorCpf(String cpf) {
         ClienteEntity entity = clienteRepository.findByCpf(cpf)
@@ -129,8 +127,8 @@ public class ClienteService {
         return toDTO(entity);
     }
 
-   
-    public ClienteDTO consultarClientePorIdUsuario(Long idUsuario) {
+    
+    public ClienteDTO consultarClientePorIdUsuario(Integer idUsuario) {
         ClienteEntity entity = clienteRepository.findByIdUsuario(idUsuario)
             .orElseThrow(() -> new RuntimeException(
                 "Cliente com idUsuario " + idUsuario + " não encontrado."
@@ -145,12 +143,24 @@ public class ClienteService {
     private ClienteDTO toDTO(ClienteEntity entity) {
         ClienteDTO dto = new ClienteDTO();
         dto.setId(entity.getId());
-        dto.setIdUsuario(entity.getIdUsuario());
+        dto.setIdUsuario(entity.getIdUsuario()); 
+        dto.setIdGerente(entity.getIdGerente()); 
         dto.setCpf(entity.getCpf());
         dto.setNome(entity.getNome());
+        dto.setEmail(entity.getEmail());
+        dto.setTelefone(entity.getTelefone());
         dto.setSalario(entity.getSalario());
-        dto.setStatus(entity.getStatus());           
         dto.setMotivoRejeicao(entity.getMotivoRejeicao());
+        dto.setDataAprovacaoRejeicao(entity.getDataAprovacaoRejeicao());
+
+    
+        if (entity.getStatus() != null) {
+            try {
+                dto.setStatus(StatusCliente.valueOf(entity.getStatus()));
+            } catch (IllegalArgumentException e) {
+                dto.setStatus(null); 
+            }
+        }
 
         if (entity.getEndereco() != null) {
             EnderecoDTO enderecoDTO = new EnderecoDTO();
@@ -169,9 +179,19 @@ public class ClienteService {
     private ClienteEntity toEntity(ClienteDTO dto) {
         ClienteEntity entity = new ClienteEntity();
         entity.setIdUsuario(dto.getIdUsuario());
+        entity.setIdGerente(dto.getIdGerente());
         entity.setCpf(dto.getCpf());
         entity.setNome(dto.getNome());
+        entity.setEmail(dto.getEmail());
+        entity.setTelefone(dto.getTelefone());
         entity.setSalario(dto.getSalario());
+        entity.setMotivoRejeicao(dto.getMotivoRejeicao());
+        entity.setDataAprovacaoRejeicao(dto.getDataAprovacaoRejeicao());
+
+        
+        if (dto.getStatus() != null) {
+            entity.setStatus(dto.getStatus().name());
+        }
 
         if (dto.getEndereco() != null) {
             EnderecoEntity enderecoEntity = new EnderecoEntity();
