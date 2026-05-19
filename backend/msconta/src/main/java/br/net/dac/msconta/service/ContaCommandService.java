@@ -20,13 +20,13 @@ public class ContaCommandService {
     private ContaRepository contaRepository;
 
     // 1. MÉTODOS
+    // 1.1 VALIDAR SE CONTA É VALIDA
     private void validaConta(ContaRequestDTO conta) {
-        if (conta.getIdCliente() == null) throw new IllegalArgumentException("MsConta: Id da do cliente == null");
+        if (conta.getIdCliente() == null) throw new IllegalArgumentException("MsConta: Id do cliente == null");
         if (conta.getIdGerente() == null) throw new IllegalArgumentException("MsConta: Id do gerente == null");
         if (conta.isAtivo() == false) throw new IllegalArgumentException("Conta inativa");        
     }
 
-    // M
     // 1.2 Criar numero conta aleatório de 4 dígitos
     private String geraNumeroConta() {
         Random random = new Random();
@@ -39,9 +39,9 @@ public class ContaCommandService {
         return novoNumeroConta;
     }
 
-        
-    // MÉTODO CREATE
-    public ContaResponseDTO inserirConta(ContaRequestDTO requestDTO) {
+    
+    // 1.3 CRIA CONTA (CREATE/POST)
+    public ContaResponseDTO criarConta(ContaRequestDTO requestDTO) {
         validaConta(requestDTO);
 
         // VALIDAÇÃO DE EXISTÊNCIA DE CONTA
@@ -74,10 +74,11 @@ public class ContaCommandService {
         );        
     }
 
-    //MÉTODO UPDATE
+    // 1.4 ATUALIZAR CONTA (UPDATE/PUT)
+    // BOTAR 
     public ContaResponseDTO atualizarConta(String numeroConta, ContaRequestDTO requestDTO) {
         validaConta(requestDTO);
-
+        
         Conta contaEncontrada = contaRepository.findByNumeroConta(numeroConta);
 
         if (contaEncontrada == null || contaEncontrada.isAtivo() == false) {
@@ -107,7 +108,7 @@ public class ContaCommandService {
         );
     }
 
-    //MÉTODO DELETE
+    // 1.5 DELETAR CONTA (DELETE)
     public void desativarConta (String numeroConta) {
         
         // VALIDAÇÃO
