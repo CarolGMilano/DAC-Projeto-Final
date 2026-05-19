@@ -1,18 +1,18 @@
 package com.br.net.dac.mscontaquery.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.br.net.dac.mscontaquery.model.dto.response.ConsultaDeClientesDTO;
-import com.br.net.dac.mscontaquery.model.dto.response.ContaResponseDTO;
-import com.br.net.dac.mscontaquery.model.dto.response.DashboardAdminDTO;
-import com.br.net.dac.mscontaquery.model.dto.response.DashboardGerenteDTO;
-import com.br.net.dac.mscontaquery.model.dto.response.ExtratoDTO;
-import com.br.net.dac.mscontaquery.model.dto.response.RelatorioClientesDTO;
-import com.br.net.dac.mscontaquery.model.dto.response.Top3ClientesDTO;
+import com.br.net.dac.mscontaquery.model.dto.response.SaldoResponse;
+import com.br.net.dac.mscontaquery.model.dto.response.ClienteParaAprovarResponse;
+import com.br.net.dac.mscontaquery.model.dto.response.ClienteResponse;
+import com.br.net.dac.mscontaquery.model.dto.response.DadosClienteResponse;
+import com.br.net.dac.mscontaquery.model.dto.response.ItemDashboardResponse;
+import com.br.net.dac.mscontaquery.model.dto.response.ExtratoResponse;
 import com.br.net.dac.mscontaquery.model.entity.Conta;
 import com.br.net.dac.mscontaquery.model.exception.ContaNaoEncontradaException;
 import com.br.net.dac.mscontaquery.model.mapper.ContaQueryMapper;
@@ -24,68 +24,85 @@ public class ContaQueryService {
     @Autowired
     private ContaQueryRepository repository;
 
-    public ContaResponseDTO buscarContaPorCpfCliente(String cpf) {
-        Conta conta = repository.findByCpfCliente(cpf);
+    public DadosClienteResponse buscarContaPorCpfCliente(String cpf) {
+        Conta conta = repository.findByCpfClienteAndStatus(cpf, "ATIVA");
+        if (conta == null) throw new ContaNaoEncontradaException();
+        return ContaQueryMapper.toDadosClienteResponse(conta);
 
-        if (conta == null) {
-            throw new ContaNaoEncontradaException();
+    }
+
+
+    public SaldoResponse consultarSaldo(String numeroConta) {
+        Conta conta = repository.findByNumeroAndStatus(numeroConta, "ATIVA");
+        if (conta == null) throw new ContaNaoEncontradaException();
+        return ContaQueryMapper.toSaldoResponse(conta);
+    }
+
+    public ExtratoResponse consultarExtrato(String numeroConta) {
+        Conta conta = repository.findByNumeroAndStatus(numeroConta, "ATIVA");
+        return ContaQueryMapper.toExtratoResponse(conta);
+
+    }
+
+    public List<ClienteResponse> listarClientes() {
+        return repository.findAllByStatusOrderByClienteNomeAsc("ATIVA")
+            .stream()
+            .map(ContaQueryMapper::toClienteResponse)
+            .toList();
+    }
+
+    public List<ClienteResponse> listarTop3ClientesPorSaldo() {
+        return repository.findTop3ByStatusOrderBySaldoDesc("ATIVA")
+            .stream()
+            .map(ContaQueryMapper::toClienteResponse)
+            .toList();
+    }
+
+    public List<ItemDashboardResponse> gerarDashboardDoAdmin() {
+        List<Conta> contas = repository.findByStatus("ATIVA");
+
+        Map<String, List<Conta>> contasPorGerente = contas.stream()
+                .collect(Collectors.groupingBy(c -> c.getGerente().getCpf()));
+
+        return contasPorGerente.entrySet().stream()
+                .map(entry -> {
+                    List<Conta> contasDoGerente = entry.getValue();
+
+                    ItemDashboardResponse item = new ItemDashboardResponse();
+                    item.setGerente(ContaQueryMapper.toDadoGerente(contasDoGerente.get(0).getGerente()));
+                    item.setClientes(contasDoGerente.stream()
+                            .map(ContaQueryMapper::toDadoConta)
+                            .toList());
+
+                    double saldoPositivo = contasDoGerente.stream()
+                            .mapToDouble(Conta::getSaldo)
+                            .filter(s -> s > 0)
+                            .sum();
+
+                    double saldoNegativo = contasDoGerente.stream()
+                            .mapToDouble(Conta::getSaldo)
+                            .filter(s -> s < 0)
+                            .sum();
+
+                    item.setSaldoPositivo(saldoPositivo);
+                    item.setSaldoNegativo(saldoNegativo);
+
+                    return item;
+                })
+                .toList();
         }
-
-        return ContaQueryMapper.toDTO(conta);
-    }
-
-    public ContaResponseDTO buscarContaPorNumero(String numero) {
-        Conta conta = repository.findByNumeroConta(numero);
-
-        if (conta == null) {
-            throw new ContaNaoEncontradaException();
-        }
-
-        return ContaQueryMapper.toDTO(conta);
-    }
-
-    public Double consultarSaldo(String id) {
-        Conta conta = repository.findById(id)
-                .orElseThrow(() -> new ContaNaoEncontradaException());
-
-        return conta.getSaldo();
-    }
-
-    public ExtratoDTO consultarExtrato(String numeroConta) {
-        Conta conta = repository.findByNumeroConta(numeroConta);
-
-        return ContaQueryMapper.toExtratoDTO(conta);
-    }
-
-    public List<ConsultaDeClientesDTO> listarClientesDoGerente(Long idGerente) {
-        return repository.findByIdGerente(idGerente)
-                .stream()
-                .map(ContaQueryMapper::toConsultaDeClientesDTO)
-                .collect(Collectors.toList());
-    }
-
-    public List<Top3ClientesDTO> listarTop3ClientesPorSaldo() {
-        return repository.findTop3ByOrderBySaldoDesc()
-                .stream()
-                .map(ContaQueryMapper::toTop3ClientesDTO)
-                .collect(Collectors.toList());
-    }
-
-    public List<DashboardGerenteDTO> gerarDashboardDoGerente() {
-        return repository.findByStatusConta("PENDENTE")
-                .stream()
-                .map(ContaQueryMapper::toDashboardGerenteDTO)
-                .collect(Collectors.toList());
-    }
     
-    public List<DashboardAdminDTO> gerarDashboardDoAdmin() {
-        return repository.gerarDashboardAdmin();
-    }
+        public List<ClienteParaAprovarResponse> gerarDashboardDoGerente() {
+            return repository.findByStatus("PENDENTE")
+                    .stream()
+                    .map(ContaQueryMapper::toClienteParaAprovarResponse)
+                    .toList();
+        }
 
-    public List<RelatorioClientesDTO> gerarRelatorioClientes() {
-        return repository.findAllByOrderByNomeClienteAsc()
-                .stream()
-                .map(ContaQueryMapper::toRelatorioClientesDTO)
-                .collect(Collectors.toList());
-    }
+        public List<DadosClienteResponse> gerarRelatorioClientes() {
+            return repository.findAllByStatusOrderByClienteNomeAsc("ATIVA")
+                    .stream()
+                    .map(ContaQueryMapper::toDadosClienteResponse)
+                    .toList();
+        }
 }
