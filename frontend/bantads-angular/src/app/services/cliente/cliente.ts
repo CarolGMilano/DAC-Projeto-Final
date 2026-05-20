@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { ICliente } from '../../shared';
+import { ICliente, IAutocadastro } from '../../shared';
 
-import { ICliente2 } from '../../shared/models/ICliente_V2';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
 
@@ -20,8 +19,8 @@ export class ClienteService {
     })
   }
   
-  inserir(cliente: ICliente2): Observable<ICliente2> {
-    return this._httpClient.post<ICliente2>(
+  inserir(cliente: IAutocadastro): Observable<IAutocadastro> {
+    return this._httpClient.post<IAutocadastro>(
       this.BASE_URL,
       cliente
     ).pipe(
