@@ -1,145 +1,167 @@
 package com.br.net.dac.mscontaquery.model.mapper;
 
-import java.util.stream.Collectors;
+import java.util.List;
 
-import com.br.net.dac.mscontaquery.model.dto.response.ConsultaDeClientesDTO;
-import com.br.net.dac.mscontaquery.model.dto.response.ContaResponseDTO;
-import com.br.net.dac.mscontaquery.model.dto.response.DashboardGerenteDTO;
-import com.br.net.dac.mscontaquery.model.dto.response.ExtratoDTO;
-import com.br.net.dac.mscontaquery.model.dto.response.MovimentacaoDTO;
-import com.br.net.dac.mscontaquery.model.dto.response.RelatorioClientesDTO;
-import com.br.net.dac.mscontaquery.model.dto.response.Top3ClientesDTO;
+import com.br.net.dac.mscontaquery.model.dto.response.ClienteParaAprovarResponse;
+import com.br.net.dac.mscontaquery.model.dto.response.ClienteResponse;
+import com.br.net.dac.mscontaquery.model.dto.response.DadoConta;
+import com.br.net.dac.mscontaquery.model.dto.response.DadoGerente;
+import com.br.net.dac.mscontaquery.model.dto.response.DadosClienteResponse;
+import com.br.net.dac.mscontaquery.model.dto.response.ExtratoResponse;
+import com.br.net.dac.mscontaquery.model.dto.response.ItemExtratoResponse;
+import com.br.net.dac.mscontaquery.model.dto.response.SaldoResponse;
 import com.br.net.dac.mscontaquery.model.entity.Conta;
+import com.br.net.dac.mscontaquery.model.entity.Gerente;
 import com.br.net.dac.mscontaquery.model.entity.Movimentacao;
 
 public class ContaQueryMapper {
 
-    public static ContaResponseDTO toDTO(Conta conta) {
+    public static ClienteResponse toClienteResponse(Conta conta) {
         if (conta == null) {
             return null;
         }
 
-        ContaResponseDTO dto = new ContaResponseDTO();
+        ClienteResponse response = new ClienteResponse();
 
-        dto.setNumeroConta(conta.getNumeroConta());
-        dto.setCpfCliente(conta.getCpfCliente());
-        dto.setNomeCliente(conta.getNomeCliente());
-        dto.setEndereco(conta.getEndereco());
-        dto.setSaldo(conta.getSaldo());
-        dto.setLimite(conta.getLimite());
-        dto.setSalario(conta.getSalario());
-        dto.setEmail(conta.getEmail());
-        dto.setTelefone(conta.getTelefone());
-        dto.setEstadoCivil(conta.getEstadoCivil());
-        dto.setIdGerente(conta.getIdGerente());
-        dto.setNomeGerente(conta.getNomeGerente());
-        dto.setDataCriacao(conta.getDataCriacao());
+        response.setCpf(conta.getCliente().getCpf());
+        response.setNome(conta.getCliente().getNome());
+        response.setEmail(conta.getCliente().getEmail());
+        response.setTelefone(conta.getCliente().getTelefone());
+        response.setEndereco(conta.getCliente().getEndereco());
+        response.setCidade(conta.getCliente().getCidade());
+        response.setEstado(conta.getCliente().getEstado());
+        response.setConta(conta.getNumero());
+        response.setSaldo(conta.getSaldo());
+        response.setLimite(conta.getLimite());
 
-        return dto;
+        return response;
     }
 
-    public static ExtratoDTO toExtratoDTO(Conta conta) {
+    public static DadosClienteResponse toDadosClienteResponse(Conta conta) {
         if (conta == null) {
             return null;
         }
 
-        ExtratoDTO dto = new ExtratoDTO();
+        DadosClienteResponse itemRelatorio = new DadosClienteResponse();
 
-        dto.setNumeroConta(conta.getNumeroConta());
-        dto.setNomeCliente(conta.getNomeCliente());
-        dto.setSaldoAtual(conta.getSaldo());
+        itemRelatorio.setCpf(conta.getCliente().getCpf());
+        itemRelatorio.setNome(conta.getCliente().getNome());
+        itemRelatorio.setTelefone(conta.getCliente().getTelefone());
+        itemRelatorio.setEmail(conta.getCliente().getEmail());
+        itemRelatorio.setEndereco(conta.getCliente().getEndereco());
+        itemRelatorio.setCidade(conta.getCliente().getCidade());
+        itemRelatorio.setEstado(conta.getCliente().getEstado());
+        itemRelatorio.setSalario(conta.getSalario());
+        itemRelatorio.setConta(conta.getNumero());
+        itemRelatorio.setSaldo(conta.getSaldo());
+        itemRelatorio.setLimite(conta.getLimite());
+        itemRelatorio.setGerente(conta.getGerente().getCpf());
+        itemRelatorio.setGerenteNome(conta.getGerente().getNome());
+        itemRelatorio.setGerenteEmail(conta.getGerente().getEmail());
 
-        dto.setMovimentacoes(
-                conta.getMovimentacoes()
-                        .stream()
-                        .map(ContaQueryMapper::toMovimentacaoDTO)
-                        .collect(Collectors.toList())
-        );
-
-        return dto;
+        return itemRelatorio;
     }
 
-    public static MovimentacaoDTO toMovimentacaoDTO(Movimentacao movimentacao) {
-    if (movimentacao == null) {
-        return null;
-    }
-
-    MovimentacaoDTO dto = new MovimentacaoDTO();
-
-    dto.setTipo(movimentacao.getTipo());
-    dto.setValor(movimentacao.getValor());
-    dto.setDescricao(movimentacao.getDescricao());
-    dto.setDataMovimentacao(movimentacao.getDataMovimentacao());
-
-    return dto;
-}
-
-    public static Top3ClientesDTO toTop3ClientesDTO(Conta conta) {
+    public static SaldoResponse toSaldoResponse(Conta conta) {
         if (conta == null) {
             return null;
         }
 
-        Top3ClientesDTO dto = new Top3ClientesDTO();
+        SaldoResponse response = new SaldoResponse();
 
-        dto.setNomeCliente(conta.getNomeCliente());
-        dto.setSaldo(conta.getSaldo());
-        dto.setCpfCliente(conta.getCpfCliente());
-        dto.setCidade(conta.getEndereco().getCidade());
-        dto.setEstado(conta.getEndereco().getEstado());
+        response.setCliente(conta.getCliente().getCpf());
+        response.setConta(conta.getNumero());
+        response.setSaldo(conta.getSaldo());
 
-        return dto;
+        return response;
     }
 
-    public static RelatorioClientesDTO toRelatorioClientesDTO(Conta conta) {
-        if (conta == null) {
-            return null;
-        }
-
-        RelatorioClientesDTO dto = new RelatorioClientesDTO();
-
-        dto.setNomeCliente(conta.getNomeCliente());
-        dto.setEmail(conta.getEmail());
-        dto.setCpfCliente(conta.getCpfCliente());
-        dto.setNumeroConta(conta.getNumeroConta());
-        dto.setNomeGerente(conta.getNomeGerente());
-        dto.setCpfGerente(conta.getCpfGerente());
-        dto.setSaldo(conta.getSaldo());
-        dto.setLimite(conta.getLimite());
-        dto.setSalario(conta.getSalario());
-
-        return dto;
-    }
-
-    public static DashboardGerenteDTO toDashboardGerenteDTO(Conta conta) {
+    public static ExtratoResponse toExtratoResponse(Conta conta) {
     if (conta == null) {
         return null;
     }
 
-    DashboardGerenteDTO dto = new DashboardGerenteDTO();
+    ExtratoResponse response = new ExtratoResponse();
 
-    dto.setCpfCliente(conta.getCpfCliente());
-    dto.setEmail(conta.getEmail());
-    dto.setSalario(conta.getSalario());
-    dto.setNumeroConta(conta.getNumeroConta());
+    response.setConta(conta.getNumero());
+    response.setSaldo(conta.getSaldo());
 
-    return dto;
-}
+    if (conta.getMovimentacoes() != null) {
 
-public static ConsultaDeClientesDTO toConsultaDeClientesDTO(Conta conta) {
-    if (conta == null) {
+        List<ItemExtratoResponse> movimentacoes =
+            conta.getMovimentacoes()
+                .stream()
+                .map(ContaQueryMapper::toItemExtratoResponse)
+                .toList();
+
+        response.setMovimentacoes(movimentacoes);
+    }
+
+    return response;
+    }
+
+    public static ItemExtratoResponse toItemExtratoResponse(
+            Movimentacao movimentacao
+    ) {
+        if (movimentacao == null) {
+            return null;
+        }
+
+        ItemExtratoResponse item = new ItemExtratoResponse();
+
+        item.setDestino(movimentacao.getDestino());
+        item.setOrigem(movimentacao.getOrigem());
+        item.setData(movimentacao.getData());
+        item.setTipo(movimentacao.getTipo());
+        item.setValor(movimentacao.getValor());
+
+        return item;
+    }
+
+    public static ClienteParaAprovarResponse toClienteParaAprovarResponse(Conta conta) {
+
+    if (conta == null || conta.getCliente() == null) {
         return null;
     }
 
-    ConsultaDeClientesDTO dto = new ConsultaDeClientesDTO();
+    ClienteParaAprovarResponse response = new ClienteParaAprovarResponse();
 
-    dto.setCpfCliente(conta.getCpfCliente());
-    dto.setNomeCliente(conta.getNomeCliente());
-    dto.setCidade(conta.getEndereco().getCidade());
-    dto.setEstado(conta.getEndereco().getEstado());
-    dto.setSaldo(conta.getSaldo());
-    dto.setLimite(conta.getLimite());
+    response.setCpf(conta.getCliente().getCpf());
+    response.setNome(conta.getCliente().getNome());
+    response.setEmail(conta.getCliente().getEmail());
+    response.setSalario(conta.getSalario());
+    response.setEndereco(conta.getCliente().getEndereco());
+    response.setCidade(conta.getCliente().getCidade());
+    response.setEstado(conta.getCliente().getEstado());
 
-    return dto;
+    return response;
 }
+
+public static DadoGerente toDadoGerente(Gerente gerente) {
+    if (gerente == null) return null;
+
+    DadoGerente dado = new DadoGerente();
+    dado.setCpf(gerente.getCpf());
+    dado.setNome(gerente.getNome());
+    dado.setEmail(gerente.getEmail());
+    dado.setTipo(gerente.getTipo());
+
+    return dado;
+}
+
+public static DadoConta toDadoConta(Conta conta) {
+    if (conta == null) return null;
+
+    DadoConta dado = new DadoConta();
+    dado.setCliente(conta.getCliente().getCpf());
+    dado.setNumero(conta.getNumero());
+    dado.setSaldo(conta.getSaldo());
+    dado.setLimite(conta.getLimite());
+    dado.setGerente(conta.getGerente().getCpf());
+    dado.setCriacao(conta.getDataCriacao());
+
+    return dado;
+}
+
 
 }

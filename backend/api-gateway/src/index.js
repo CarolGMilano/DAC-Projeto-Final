@@ -915,15 +915,11 @@ app.put('/contas/:numeroConta', contaServiceProxy);
 app.delete('/contas/:numeroConta', contaServiceProxy);
 
 // Query
-app.get('/contas/cliente/:cpf', contaServiceProxy);
-app.get('/contas/:numero', contaServiceProxy);
+app.get('/clientes/', contaServiceProxy);
+app.get('/clientes/:cpf', contaServiceProxy);
 app.get('/contas/:numero/saldo', contaServiceProxy);
 app.get('/contas/:numero/extrato', contaServiceProxy);
-app.get('/contas/top3', contaServiceProxy);
-app.get('/contas/administradores/gerentes', contaServiceProxy);
-app.get('/contas/admininstradores/clientes', contaServiceProxy);
-app.get('/contas/gerentes/clientes', contaServiceProxy);
-app.get('/contas/gerentes/:id/clientes', contaServiceProxy);
+//app.get('/gerentes', contaServiceProxy);
 
 var server = http.createServer(app);
 

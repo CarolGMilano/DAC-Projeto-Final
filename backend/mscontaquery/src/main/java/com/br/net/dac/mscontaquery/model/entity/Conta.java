@@ -15,22 +15,15 @@ import jakarta.persistence.Table;
 public class Conta {
 
     @Id
-    private String numeroConta;
+    private String numero;
 
-    private String cpfCliente;
-    private String nomeCliente;
-    private Endereco endereco;
+    private Cliente cliente;
     private Double saldo;
     private Double limite;
     private Double salario;
-    private String email;
-    private String telefone;
-    private String estadoCivil;
-    private Long idGerente;
-    private String nomeGerente;
-    private String cpfGerente;
+    private Gerente gerente;    
 
-    private String statusConta; // ATIVA, PENDENTE, INATIVA
+    private String status; // ATIVA, PENDENTE, INATIVA
 
     private LocalDate dataCriacao;
 
@@ -44,29 +37,20 @@ public class Conta {
     public Conta() {
     }
 
-    // Getters e Setters
-    public String getNumeroConta() {
-        return numeroConta;
+    public String getNumero() {
+        return numero;
     }
 
-    public void setNumeroConta(String numeroConta) {
-        this.numeroConta = numeroConta;
+    public void setNumero(String numero) {
+        this.numero = numero;
     }
 
-    public String getCpfCliente() {
-        return cpfCliente;
+    public Cliente getCliente() {
+        return cliente;
     }
 
-    public void setCpfCliente(String cpfCliente) {
-        this.cpfCliente = cpfCliente;
-    }
-
-    public String getNomeCliente() {
-        return nomeCliente;
-    }
-
-    public void setNomeCliente(String nomeCliente) {
-        this.nomeCliente = nomeCliente;
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 
     public Double getSaldo() {
@@ -93,29 +77,15 @@ public class Conta {
         this.salario = salario;
     }
 
-    public Long getIdGerente() {
-        return idGerente;
+    public Gerente getGerente() {
+        return gerente;
     }
 
-    public void setIdGerente(Long idGerente) {
-        this.idGerente = idGerente;
+    public void setGerente(Gerente gerente) {
+        this.gerente = gerente;
     }
 
-    public String getNomeGerente() {
-        return nomeGerente;
-    }
-
-    public void setNomeGerente(String nomeGerente) {
-        this.nomeGerente = nomeGerente;
-    }
-
-    public String getStatusConta() {
-        return statusConta;
-    }
-
-    public void setStatusConta(String statusConta) {
-        this.statusConta = statusConta;
-    }
+    
 
     public LocalDate getDataCriacao() {
         return dataCriacao;
@@ -126,52 +96,23 @@ public class Conta {
     }
 
     public List<Movimentacao> getMovimentacoes() {
-    return movimentacoes;
+        return movimentacoes;
     }
 
     public void setMovimentacoes(List<Movimentacao> movimentacoes) {
         this.movimentacoes = movimentacoes;
-}
-
-    public Endereco getEndereco() {
-        return endereco;
     }
 
-    public void setEndereco(Endereco endereco) {
-        this.endereco = endereco;
+    public String getStatus() {
+        return status;
     }
 
-    public String getEmail() {
-        return email;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getCpfGerente() {
-        return cpfGerente;
-    }
-
-    public void setCpfGerente(String cpfGerente) {
-        this.cpfGerente = cpfGerente;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
-    public String getEstadoCivil() {
-        return estadoCivil;
-    }
-
-    public void setEstadoCivil(String estadoCivil) {
-        this.estadoCivil = estadoCivil;
-    }
+    // Getters e Setters
+    
 
 
 }

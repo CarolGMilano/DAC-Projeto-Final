@@ -131,7 +131,7 @@ public class ClienteController {
 
     // GET /clientes/usuario/{idUsuario} - Consultar por idUsuario
     @GetMapping("/usuario/{idUsuario}")
-    public ResponseEntity<?> consultarPorIdUsuario(@PathVariable Long idUsuario) {
+    public ResponseEntity<?> consultarPorIdUsuario(@PathVariable Integer idUsuario) {
         try {
             ClienteDTO cliente = clienteService.consultarClientePorIdUsuario(idUsuario);
             return ResponseEntity.ok(cliente);
