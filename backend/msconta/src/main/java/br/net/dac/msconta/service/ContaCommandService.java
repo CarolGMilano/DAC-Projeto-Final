@@ -152,7 +152,7 @@ public class ContaCommandService {
         Conta destino = contaRepository.findById(dto.getDestino())
             .orElseThrow(() -> new RuntimeException("Conta não encontrada: " + dto.getDestino()));
 
-        if (origem.getSaldo() < dto.getValor()) {
+        if (origem.getSaldo() + origem.getLimite() < dto.getValor()) {
             throw new RuntimeException("Saldo insuficiente");
         }
 
@@ -205,7 +205,7 @@ public class ContaCommandService {
         Conta conta = contaRepository.findById(numero)
             .orElseThrow(() -> new RuntimeException("Conta não encontrada: " + numero));
 
-        if (conta.getSaldo() < valor) {
+        if (conta.getSaldo() + conta.getLimite() < valor) {
             throw new RuntimeException("Saldo insuficiente");
         }
 

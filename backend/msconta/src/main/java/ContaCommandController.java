@@ -91,4 +91,24 @@ public class ContaCommandController {
         }
     }
 
+    @PutMapping("/contas/desativa/{cpf}")
+    public ResponseEntity desativarGerente(@PathVariable String cpf) {
+        try {
+            commandService.redistribuiContasGerenteDeletado(cpf);
+            return ResponseEntity.ok(HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @PutMapping("/contas/gerenteNovo/{cpf}")
+    public ResponseEntity distribuiConta(@PathVariable String cpf) {
+        try {
+            commandService.distribuiContaGerenteNovo(cpf);
+            return ResponseEntity.ok(HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
 }
