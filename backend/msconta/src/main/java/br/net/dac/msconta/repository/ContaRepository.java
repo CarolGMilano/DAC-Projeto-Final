@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.*;
 import br.net.dac.msconta.model.entity.Conta;
 
 public interface ContaRepository extends JpaRepository<Conta, String>{
-    public boolean existsByNumeroConta(String numeroConta);
+    public boolean existsByNumero(String numero);
     List<Conta> findByGerenteCpf(String gerenteCpf);
     List<Conta> findByGerenteCpfAndAtivoTrue(String gerenteCpf);
     @Query(value = "SELECT c.gerente_cpf FROM conta c WHERE c.ativo = true GROUP BY c.gerente_cpf ORDER BY COUNT(c) ASC LIMIT 1", nativeQuery = true)

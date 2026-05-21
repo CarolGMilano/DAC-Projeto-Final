@@ -69,16 +69,15 @@ public class ContaConsumidor {
             // Mapeamento de ContaDTO para ContaRequestDTO
             ContaRequestDTO requestDTO = new ContaRequestDTO();
             requestDTO.setAtivo(contaDTO.isAtivo());
-            requestDTO.setIdGerente(contaDTO.getIdGerente());
-            requestDTO.setIdCliente(contaDTO.getIdCliente());
-            requestDTO.setSaldo(contaDTO.getSaldo());
-            requestDTO.setLimite(contaDTO.getLimite());
-            
+            requestDTO.setGerenteCpf(contaDTO.getGerenteCpf());
+            requestDTO.setClienteCpf(contaDTO.getClienteCpf());
+            requestDTO.setSalario(contaDTO.getSaldo());
+                        
             ContaResponseDTO contaAdicionada = contaCommandService.criarConta(requestDTO);
 
             contaProdutor.contaCriacaoSucesso(
                 new ContaCreatedEvent(
-                    contaAdicionada.getNumeroConta(), contaAdicionada.getSaldo(), contaAdicionada.getLimite()
+                    contaAdicionada.getNumero(), contaAdicionada.getSaldo(), contaAdicionada.getLimite()
                 )
             );
         } catch (Exception e) {
@@ -91,7 +90,7 @@ public class ContaConsumidor {
             // 2.1.2 ROLLBACK DE CONTA
     public void rollbackCriar(ContaResponseDTO contaDTO) {
         try {
-            contaCommandService.desativarConta(contaDTO.getNumeroConta());
+            contaCommandService.desativarConta(contaDTO.getNumero());
         } catch (Exception e) {
             System.out.println("Erro no rollback de criação:  + e.getMessage()");
         }
@@ -103,15 +102,14 @@ public class ContaConsumidor {
         try {
             ContaRequestDTO requestDTO = new ContaRequestDTO();
             requestDTO.setAtivo(contaDTO.isAtivo());
-            requestDTO.setIdGerente(contaDTO.getIdGerente());
-            requestDTO.setIdCliente(contaDTO.getIdCliente());
-            requestDTO.setSaldo(contaDTO.getSaldo());
-            requestDTO.setLimite(contaDTO.getLimite());
-
-            ContaResponseDTO atualizada = contaCommandService.atualizarConta(contaDTO.getNumeroConta(), requestDTO);
+            requestDTO.setGerenteCpf(contaDTO.getGerenteCpf());
+            requestDTO.setClienteCpf(contaDTO.getClienteCpf());
+            requestDTO.setSalario(contaDTO.getSaldo());
+            
+            ContaResponseDTO atualizada = contaCommandService.atualizarConta(contaDTO.getNumero(), requestDTO);
 
             contaProdutor.contaUpdateSucesso(
-                new ContaUpdatedEvent(atualizada.getNumeroConta(), atualizada.isAtivo())
+                new ContaUpdatedEvent(atualizada.getNumero(), atualizada.isAtivo())
             );
         } catch (Exception e) {
             ContaUpdateFailedEvent falha = new ContaUpdateFailedEvent();
@@ -125,12 +123,11 @@ public class ContaConsumidor {
         try {
             ContaRequestDTO requestDTO = new ContaRequestDTO();
             requestDTO.setAtivo(contaDTO.isAtivo());
-            requestDTO.setIdGerente(contaDTO.getIdGerente());
-            requestDTO.setIdCliente(contaDTO.getIdCliente());
-            requestDTO.setSaldo(contaDTO.getSaldo());
-            requestDTO.setLimite(contaDTO.getLimite());
-
-            contaCommandService.atualizarConta(contaDTO.getNumeroConta(), requestDTO);
+            requestDTO.setGerenteCpf(contaDTO.getGerenteCpf());
+            requestDTO.setClienteCpf(contaDTO.getClienteCpf());
+            requestDTO.setSalario(contaDTO.getSaldo());
+            
+            contaCommandService.atualizarConta(contaDTO.getNumero(), requestDTO);
         } catch (Exception e) {
             System.out.println("Erro no rollback de atualização: " + e.getMessage());
         }
@@ -139,11 +136,11 @@ public class ContaConsumidor {
             // 2.3.1 DELETE
     private void deletar(ContaResponseDTO contaDTO) {
         try {
-            contaCommandService.desativarConta(contaDTO.getNumeroConta());
+            contaCommandService.desativarConta(contaDTO.getNumero());
 
             contaProdutor.contaDeleteSucesso(
-                new ContaDeletedEvent(false, contaDTO.getNumeroConta(),
-                    contaDTO.getIdCliente(), contaDTO.getIdGerente())
+                new ContaDeletedEvent(false, contaDTO.getNumero(),
+                    contaDTO.getClienteCpf(), contaDTO.getGerenteCpf())
             );
         } catch (Exception e) {
             ContaDeleteFailedEvent falha = new ContaDeleteFailedEvent();
@@ -157,12 +154,11 @@ public class ContaConsumidor {
         try {
             ContaRequestDTO requestDTO = new ContaRequestDTO();
             requestDTO.setAtivo(true); // reativa
-            requestDTO.setIdGerente(contaDTO.getIdGerente());
-            requestDTO.setIdCliente(contaDTO.getIdCliente());
-            requestDTO.setSaldo(contaDTO.getSaldo());
-            requestDTO.setLimite(contaDTO.getLimite());
-
-            contaCommandService.atualizarConta(contaDTO.getNumeroConta(), requestDTO);
+            requestDTO.setGerenteCpf(contaDTO.getGerenteCpf());
+            requestDTO.setClienteCpf(contaDTO.getClienteCpf());
+            requestDTO.setSalario(contaDTO.getSaldo());
+            
+            contaCommandService.atualizarConta(contaDTO.getNumero(), requestDTO);
         } catch (Exception e) {
             System.out.println("Erro no rollback de deleção: " + e.getMessage());
         }

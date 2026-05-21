@@ -1,21 +1,21 @@
 package br.net.dac.msconta.model.event;
 
 public class ContaCreatedEvent {
-    private String numeroConta;
+    private String numero;
     private double saldo;
     private double limite;
     
     public ContaCreatedEvent() {
     }
 
-    public ContaCreatedEvent(String numeroConta, double saldo, double limite) {
-        this.numeroConta = numeroConta;
+    public ContaCreatedEvent(String numero, double saldo, double limite) {
+        this.numero = numero;
         this.saldo = saldo;
         this.limite = limite;
     }
 
-    public String getNumeroConta() { return numeroConta; }
-    public void setNumeroConta(String numeroConta) { this.numeroConta = numeroConta; }
+    public String getNumero() { return numero; }
+    public void setNumero(String numero) { this.numero = numero; }
 
     public double getSaldo() { return saldo; }
     public void setSaldo(double saldo) { this.saldo = saldo; }

@@ -1,21 +1,19 @@
 package br.net.dac.msconta.model.event;
 
-import java.sql.Date;
-
 public class ContaUpdatedEvent {
-    private String numeroConta;
+    private String numero;
     private boolean ativo; 
     
     public ContaUpdatedEvent() {
     }
 
-    public ContaUpdatedEvent(String numeroConta, boolean ativo) {
-        this.numeroConta = numeroConta;
+    public ContaUpdatedEvent(String numero, boolean ativo) {
+        this.numero = numero;
         this.ativo = ativo;
     }
 
-    public String getNumeroConta() { return numeroConta; }
-    public void setNumeroConta(String numeroConta) { this.numeroConta = numeroConta; }
+    public String getNumero() { return numero; }
+    public void setNumero(String numero) { this.numero = numero; }
 
     public boolean isAtivo() { return ativo; }
     public void setAtivo(boolean ativo) { this.ativo = ativo; }
