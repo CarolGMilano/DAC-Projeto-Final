@@ -306,6 +306,86 @@ app.get('/gerentes/:cpf', validacaoToken, gerenteServiceProxy);
 
 
 // ====================
+// Cliente
+// ====================
+
+// R1 - Autocadastro (sem token )
+app.post('/clientes', async (req, res) => {
+  try {
+    const clienteResp = await fetch('http://localhost:8082/clientes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(req.body)
+    });
+    const data = await clienteResp.json();
+    return res.status(clienteResp.status).json(data);
+  } catch (err) {
+    return res.status(500).json({ message: "Erro no autocadastro", error: err.message });
+  }
+});
+
+//Listagem com filtros
+app.get('/clientes', validacaoToken, clienteServiceProxy);
+
+//API Composition: ms-cliente + ms-conta + ms-gerente
+app.get('/clientes/:cpf', validacaoToken, async (req, res) => {
+  try {
+    const { cpf } = req.params;
+
+    
+    const clienteResp = await fetch(`http://localhost:8082/clientes/${cpf}`);
+    if (!clienteResp.ok) {
+      return res.status(clienteResp.status).json(await clienteResp.json());
+    }
+    const cliente = await clienteResp.json();
+
+  
+    const contaResp = await fetch(`http://localhost:8081/contas/cliente/${cpf}`);
+    const conta = contaResp.ok ? await contaResp.json() : null;
+
+   
+    let gerenteNome = null;
+    let gerenteEmail = null;
+    if (cliente.idGerente) {
+      const gerenteResp = await fetch(`http://localhost:8083/gerentes/id/${cliente.idGerente}`);
+      if (gerenteResp.ok) {
+        const gerente = await gerenteResp.json();
+        gerenteNome  = gerente.nome;
+        gerenteEmail = gerente.email;
+      }
+    }
+
+     //Swagger DadosClienteResponse
+    return res.status(200).json({
+      cpf:           cliente.cpf,
+      nome:          cliente.nome,
+      email:         cliente.email,
+      telefone:      cliente.telefone,
+      endereco:      cliente.endereco?.logradouro,
+      cidade:        cliente.endereco?.cidade,
+      estado:        cliente.endereco?.estado,
+      salario:       cliente.salario,
+      conta:         conta?.numero,
+      saldo:         conta?.saldo,
+      limite:        conta?.limite,
+      gerente:       conta?.gerente,
+      gerente_nome:  gerenteNome,
+      gerente_email: gerenteEmail
+    });
+  } catch (err) {
+    return res.status(500).json({ message: "Erro ao consultar cliente", error: err.message });
+  }
+});
+
+// R4 - Alterar perfil
+app.put('/clientes/:cpf', validacaoToken, clienteServiceProxy);
+// R10 - Aprovar cliente
+app.post('/clientes/:cpf/aprovar', validacaoToken, clienteServiceProxy);
+// R11 - Rejeitar cliente
+app.post('/clientes/:cpf/rejeitar', validacaoToken, clienteServiceProxy);
+
+
+// ====================
 // Conta
 // ====================
 
