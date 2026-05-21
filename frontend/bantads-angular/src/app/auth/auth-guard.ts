@@ -1,43 +1,54 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
-import { AuthService } from '../auth/auth-service';
-import { TipoUsuario } from '../shared/models/EnumTipoUsuario';
+import { CanActivateFn, Router } from '@angular/router';
+import { inject } from '@angular/core';
 
-@Injectable
-({
-  providedIn: 'root'
-})
-export class AuthGuard implements CanActivate
-{
+import { LoginService } from '../services';
+import { TipoUsuario } from '../shared';
 
-  constructor
-  (
-    private router: Router,
-    private authService: AuthService
-  ) {}
+export const authGuard: CanActivateFn = (route, state) => {
+  const loginService = inject(LoginService);
+  const router = inject(Router);
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean
-  {
+  const usuarioLogado = loginService.usuarioLogado;
+  const url = state.url;
 
-    if (!this.authService.isAutenticado())
-    {
-      this.redirecionarParaLogin(state.url);
-      return false;
-    }
+  if (!usuarioLogado) {
+    router.navigate([''], {
+      queryParams: {
+        error: `Deve fazer o login antes de acessar ${url}`
+      }
+    });
 
-    const rolesPermitidas: TipoUsuario[] = route.data['role'] || [];
-
-    if (rolesPermitidas.length > 0 && !this.authService.temPermissao(rolesPermitidas))
-    {
-      this.redirecionarParaLogin();
-      return false;
-    }
-
-    return true;
+    return false;
   }
 
-  private redirecionarParaLogin(urlDestino?: string): void
-  {
-    this.router.navigate(['/login'],{queryParams: { redirectTo: urlDestino }});
+  // ROLE ERRADA
+  if (route.data?.['role'] && !route.data['role'].includes(usuarioLogado.tipo)) {
+    const home = redirecionarHome(usuarioLogado.tipo);
+
+    router.navigate([home], {
+      queryParams: {
+        error: `Proibido o acesso a ${url}`
+      }
+    });
+
+    return false;
+  }
+
+  return true;
+};
+
+function redirecionarHome(tipo: string): string {
+  switch (tipo) {
+    case TipoUsuario.CLIENTE:
+      return '/customerDashboard';
+
+    case TipoUsuario.GERENTE:
+      return '/gerente';
+
+    case TipoUsuario.ADMIN:
+      return '/admin';
+
+    default:
+      return '/';
   }
 }

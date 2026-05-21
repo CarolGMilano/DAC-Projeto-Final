@@ -2,7 +2,7 @@ import { Component, inject, ViewChild } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule, NgForm, NgModel } from '@angular/forms';
 
-import { CepStatus, IEndereco, TipoUsuario, SharedModule, EtapaCadastro } from '../../../shared';
+import { CepStatus, SharedModule, EtapaCadastro } from '../../../shared';
 
 import { ICliente2 } from '../../../shared/models/ICliente_V2';
 
@@ -18,6 +18,8 @@ import { IndicadorEtapas } from "../../../components";
 })
 export class Cadastro {
   @ViewChild('formCadastro') formCadastro! : NgForm;
+  @ViewChild('cpf') cpfModel!: NgModel;
+  @ViewChild('email') emailModel!: NgModel;
 
   private router = inject(Router);
 
@@ -27,24 +29,19 @@ export class Cadastro {
   etapa: EtapaCadastro = 1;
   EtapaCadastro = EtapaCadastro;
 
-  endereco: IEndereco = {
-    cep: '',
-    logradouro: '',
-    numero: undefined,
-    complemento: '',
-    cidade: '',
-    estado: '',
-  };
+  numero: number | undefined;
 
   cliente: ICliente2 = {
     id: -1,
-    tipo: TipoUsuario.CLIENTE,
-    nome: '',
     cpf: '',
     email: '',
+    nome: '',
     telefone: '',
     salario: null,
-    endereco: this.endereco,
+    endereco: '',
+    cep: '',
+    cidade: '',
+    estado: '',
   };
 
   salarioFormatado: string = '';
@@ -87,11 +84,10 @@ export class Cadastro {
   }
 
   limpaEndereco() {
-    this.endereco.logradouro = '';
-    this.endereco.numero = undefined;
-    this.endereco.complemento = '';
-    this.endereco.cidade = '';
-    this.endereco.estado = '';
+    this.cliente.endereco = '';
+    this.numero = undefined;
+    this.cliente.cidade = '';
+    this.cliente.estado = '';
   }
 
   salarioParaNumero(valor: string): number {
@@ -116,9 +112,9 @@ export class Cadastro {
         //Sucesso
         next: (response) => {
           if (response && response.logradouro) {
-            this.endereco.logradouro = response.logradouro;
-            this.endereco.cidade = response.localidade;
-            this.endereco.estado = response.estado;
+            this.cliente.endereco = response.logradouro;
+            this.cliente.cidade = response.localidade;
+            this.cliente.estado = response.estado;
             this.cepStatus = CepStatus.Valido;
           } else {
             this.limpaEndereco();
@@ -140,26 +136,35 @@ export class Cadastro {
   salvar(){
     if (!this.formCadastro.form.valid) return;
 
-    const cliente: ICliente2 = {
-      id: -1,
-      tipo: TipoUsuario.CLIENTE,
-      nome: this.cliente.nome,
+    const novoCliente: ICliente2 = {
       cpf: this.cliente.cpf,
-      telefone: this.cliente.telefone,
       email: this.cliente.email,
+      nome: this.cliente.nome,
+      telefone: this.cliente.telefone,
       salario: this.salarioParaNumero(this.salarioFormatado),
-      endereco: {
-        cep: this.endereco.cep,
-        logradouro: this.cliente.endereco.logradouro,
-        numero: this.cliente.endereco.numero,
-        complemento: this.cliente.endereco.complemento,
-        cidade: this.cliente.endereco.cidade,
-        estado: this.cliente.endereco.estado,
-      }
+      endereco: `${this.cliente.endereco}${this.numero !== undefined ? ', ' + this.numero : ''}`,
+      cep: this.cliente.cep,
+      cidade: this.cliente.cidade,
+      estado: this.cliente.estado,
     }
 
-    this.clienteService.salvar(cliente);
-
-    this.cadastroConcluido = true;
+    this.clienteService.inserir(novoCliente).subscribe({
+      next: () => {
+        this.cadastroConcluido = true;
+      },
+      error: (erro) => {
+        if (erro.status === 409) {
+          if (erro.error.tipo === 'cpf') {
+            this.cpfModel.control.setErrors({ cpfConflito: true });
+          } else if (erro.error.tipo === 'email') {
+            this.emailModel.control.setErrors({ emailConflito: true });
+          }
+        } else if (erro.status === 500) {
+          alert(`Erro interno: ${erro.error}`);
+        } else {
+          alert('Erro inesperado ao cadastrar gerente.');
+        }
+      }
+    });
   }
 }

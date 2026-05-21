@@ -27,7 +27,6 @@ import br.net.dac.msgerente.service.GerenteService;
 @RestController
 @RequestMapping("/gerentes")
 public class GerenteController {
-  
   @Autowired
   private GerenteService gerenteService;
 
@@ -56,11 +55,11 @@ public class GerenteController {
   }
 
   @GetMapping("/usuario/{idUsuario}")
-  public ResponseEntity<?> consultarPorIdUsuario(@PathVariable Long idUsuario) {
+  public ResponseEntity<?> consultarPorIdUsuario(@PathVariable String idUsuario) {
     try {
-      Long idUsuarioEncontrado = gerenteService.consultarGerenteIdUsuario(idUsuario);
+      GerenteDTO gerenteEncontrado = gerenteService.consultarGerentePorIdUsuario(idUsuario);
 
-      return ResponseEntity.ok(idUsuarioEncontrado);
+      return ResponseEntity.ok(gerenteEncontrado);
     } catch (GerenteNaoEncontradoException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     } catch (Exception e){

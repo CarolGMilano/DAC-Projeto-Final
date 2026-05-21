@@ -1,106 +1,118 @@
 package com.br.net.dac.mscontaquery.model.entity;
 
-import java.sql.Date;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.Column;
+import java.time.LocalDate;
+import java.util.List;
 
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "conta")
 public class Conta {
 
     @Id
-    @Column(name = "numeroConta")
-    private String numeroConta;
+    private String numero;
 
-    @Column(name= "ativo")
-    private boolean ativo;
-    
-    @Column(name = "idGerente")
-    private Long idGerente;
+    private Cliente cliente;
+    private Double saldo;
+    private Double limite;
+    private Double salario;
+    private Gerente gerente;    
 
-    @Column(name = "idCliente")
-    private Long idCliente;
+    private String status; // ATIVA, PENDENTE, INATIVA
 
-    @Column(name = "dataCriacao")
-    private Date dataCriacao;
+    private LocalDate dataCriacao;
 
-    @Column(name = "saldo")
-    private double saldo;
-
-    @Column(name = "limite")
-    private double limite;
+    @ElementCollection
+    @CollectionTable(
+        name = "movimentacoes",
+        joinColumns = @JoinColumn(name = "conta_id")
+    )
+    private List<Movimentacao> movimentacoes;
 
     public Conta() {
     }
 
-    public Conta(boolean ativo, Long idGerente, Long idCliente, String numeroConta, Date dataCriacao, double saldo, double limite) {
-        this.ativo = ativo;
-        this.idGerente = idGerente;
-        this.idCliente = idCliente;
-        this.numeroConta = numeroConta;
-        this.dataCriacao = dataCriacao;
-        this.saldo = saldo;
-        this.limite = limite;
+    public String getNumero() {
+        return numero;
     }
 
-    // Getters e Setters
-
-    public boolean isAtivo() {
-        return ativo;
+    public void setNumero(String numero) {
+        this.numero = numero;
     }
 
-    public void setAtivo(boolean ativo) {
-        this.ativo = ativo;
+    public Cliente getCliente() {
+        return cliente;
     }
 
-    public Long getIdGerente() {
-        return idGerente;
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 
-    public void setIdGerente(Long idGerente) {
-        this.idGerente = idGerente;
-    }
-
-    public Long getIdCliente() {
-        return idCliente;
-    }
-
-    public void setIdCliente(Long idCliente) {
-        this.idCliente = idCliente;
-    }
-
-    public String getNumeroConta() {
-        return numeroConta;
-    }
-
-    public void setNumeroConta(String numeroConta) {
-        this.numeroConta = numeroConta;
-    }
-
-    public Date getDataCriacao() {
-        return dataCriacao;
-    }
-
-    public void setDataCriacao(Date dataCriacao) {
-        this.dataCriacao = dataCriacao;
-    }
-
-    public double getSaldo() {
+    public Double getSaldo() {
         return saldo;
     }
 
-    public void setSaldo(double saldo) {
+    public void setSaldo(Double saldo) {
         this.saldo = saldo;
     }
 
-    public double getLimite() {
+    public Double getLimite() {
         return limite;
     }
 
-    public void setLimite(double limite) {
+    public void setLimite(Double limite) {
         this.limite = limite;
     }
+
+    public Double getSalario() {
+        return salario;
+    }
+
+    public void setSalario(Double salario) {
+        this.salario = salario;
+    }
+
+    public Gerente getGerente() {
+        return gerente;
+    }
+
+    public void setGerente(Gerente gerente) {
+        this.gerente = gerente;
+    }
+
+    
+
+    public LocalDate getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public void setDataCriacao(LocalDate dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
+    public List<Movimentacao> getMovimentacoes() {
+        return movimentacoes;
+    }
+
+    public void setMovimentacoes(List<Movimentacao> movimentacoes) {
+        this.movimentacoes = movimentacoes;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    // Getters e Setters
+    
+
+
 }

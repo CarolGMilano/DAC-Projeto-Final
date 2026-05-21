@@ -15,12 +15,12 @@
           type="email"
           name="email"
           #email="ngModel"
-          [(ngModel)]="login.email"
+          [(ngModel)]="login.login"
           placeholder="maria@email.com"
           required
           class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 outline-none focus:border-gray-400" 
           [ngClass]="{
-            'border-red-500': (email.invalid && (email.touched || formLogin.submitted)),
+            'border-red-500': (email.invalid && (email.touched || formLogin.submitted) || ((usuarioStatus == status.Invalido) && (email.touched || formLogin.submitted))),
             'border-yellow-500': (email.errors?.['email']),
             'border-green-500': email.valid && email.touched,
             'border-neutral-700': email.pristine
@@ -52,24 +52,22 @@
             required
             class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 outline-none focus:border-gray-400"
             [ngClass]="{
-                'border-red-500': ((senha.errors?.['required'] && (senha.touched || formLogin.submitted))),
+                'border-red-500': ((senha.errors?.['required'] && (senha.touched || formLogin.submitted)) || ((usuarioStatus == status.Invalido) && (senha.touched || formLogin.submitted))),
                 'border-green-500': senha.valid && senha.touched,
                 'border-neutral-700': senha.pristine
               }" />
 
-              @if (senha.invalid && (senha.touched || formLogin.submitted)) {
-                @if (senha.errors?.['required']) {
-                  <span class="pl-2 text-red-600 text-xs">A senha é obrigatória</span>
+              <div class="flex flex-col">
+                @if (senha.invalid && (senha.touched || formLogin.submitted)) {
+                  @if (senha.errors?.['required']) {
+                    <span class="pl-2 text-red-600 text-xs">A senha é obrigatória</span>
+                  }
+                } 
+  
+                @if (usuarioStatus == status.Invalido) {
+                  <span class="pl-2 text-red-600 text-xs">Email ou senha incorretos. Tente novamente.</span>
                 }
-              } 
-
-              <!--
-              Para quando a lógica de verificação de senha estiver implementada
-
-              @if (usuarioStatus == status.Invalido) {
-                <span class="pl-2 text-red-600 text-xs">Email ou senha incorretos. Tente novamente.</span>
-              }
-              -->
+              </div>
 
               <button 
                 type="button"

@@ -227,7 +227,6 @@ app.put('/gerentes/:cpf', validacaoToken, async (req, res) => {
 
   }
 });
-
 app.delete('/gerentes/:cpf', validacaoToken, async (req, res) => {
   try {
     const { cpf } = req.params;
