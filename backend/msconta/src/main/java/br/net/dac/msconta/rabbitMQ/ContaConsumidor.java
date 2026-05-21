@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import br.net.dac.msconta.model.dto.ComandoConta;
-import br.net.dac.msconta.model.dto.ContaDTO;
+import br.net.dac.msconta.model.dto.ContaResponseDTO;
 import br.net.dac.msconta.model.dto.ContaRequestDTO;
 import br.net.dac.msconta.model.dto.ContaResponseDTO;
 import br.net.dac.msconta.model.event.ContaCreateFailedEvent;
@@ -64,7 +64,7 @@ public class ContaConsumidor {
         // 2. MÉTODOS DE RESPOSTA A SAGA
             // 2.1 CREATE
                 // 2.2.1 CRIAÇÃO DE CONTA
-    public void criar (ContaDTO contaDTO) {
+    public void criar (ContaResponseDTO contaDTO) {
         try {
             // Mapeamento de ContaDTO para ContaRequestDTO
             ContaRequestDTO requestDTO = new ContaRequestDTO();
@@ -89,7 +89,7 @@ public class ContaConsumidor {
         }
     }
             // 2.1.2 ROLLBACK DE CONTA
-    public void rollbackCriar(ContaDTO contaDTO) {
+    public void rollbackCriar(ContaResponseDTO contaDTO) {
         try {
             contaCommandService.desativarConta(contaDTO.getNumeroConta());
         } catch (Exception e) {
@@ -99,7 +99,7 @@ public class ContaConsumidor {
 
         // 2.2 UPDATE
             // 2.2.1 ATUALIZAÇÃO DE CONTA
-    private void atualizar(ContaDTO contaDTO) {
+    private void atualizar(ContaResponseDTO contaDTO) {
         try {
             ContaRequestDTO requestDTO = new ContaRequestDTO();
             requestDTO.setAtivo(contaDTO.isAtivo());
@@ -121,7 +121,7 @@ public class ContaConsumidor {
         }
     }
             // 2.2.2 ROLLBACK DE ATUALIZAÇÃO - REQUER QUE O ESTADO ANTERIOR SEJA ENVIADO NO PAYLOAD!!!
-    private void rollbackAtualizar(ContaDTO contaDTO) {
+    private void rollbackAtualizar(ContaResponseDTO contaDTO) {
         try {
             ContaRequestDTO requestDTO = new ContaRequestDTO();
             requestDTO.setAtivo(contaDTO.isAtivo());
@@ -137,7 +137,7 @@ public class ContaConsumidor {
     }
         // 2.3.1 DELETE
             // 2.3.1 DELETE
-    private void deletar(ContaDTO contaDTO) {
+    private void deletar(ContaResponseDTO contaDTO) {
         try {
             contaCommandService.desativarConta(contaDTO.getNumeroConta());
 
@@ -153,7 +153,7 @@ public class ContaConsumidor {
         }
     }
             // 2.3.1 ROLLBACK DE DELETE
-    private void rollbackDeletar(ContaDTO contaDTO) {
+    private void rollbackDeletar(ContaResponseDTO contaDTO) {
         try {
             ContaRequestDTO requestDTO = new ContaRequestDTO();
             requestDTO.setAtivo(true); // reativa

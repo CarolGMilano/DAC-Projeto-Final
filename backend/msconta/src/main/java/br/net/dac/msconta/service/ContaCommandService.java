@@ -1,16 +1,21 @@
 package br.net.dac.msconta.service;
 
 import java.sql.Date;
+import java.util.List;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.net.dac.msconta.model.dto.ContaRequestDTO;
+import br.net.dac.msconta.model.dto.ContaResponseDTO;
 import br.net.dac.msconta.model.dto.OperacaoResponseDTO;
 import br.net.dac.msconta.model.dto.TransferenciaRequestDTO;
 import br.net.dac.msconta.model.dto.TransferenciaResponseDTO;
 import br.net.dac.msconta.model.entity.Conta;
 import br.net.dac.msconta.model.entity.Movimentacao;
-// import br.net.dac.msconta.model.exception.ContaNaoEncontradaException;
+import br.net.dac.msconta.model.exception.ContaInativaException;
+import br.net.dac.msconta.model.exception.ContaNaoEncontradaException;
 import br.net.dac.msconta.repository.ContaRepository;
 import br.net.dac.msconta.repository.MovimentacaoRepository;
 
@@ -20,13 +25,13 @@ public class ContaCommandService {
     @Autowired
     private ContaRepository contaRepository;
     private MovimentacaoRepository movimentacaoRepository;
-/* 
+
     // 1. MÉTODOS
     // 1.1 VALIDAR SE CONTA É VALIDA
     private void validaConta(ContaRequestDTO conta) {
-        if (conta.getIdCliente() == null) throw new IllegalArgumentException("MsConta: Id do cliente == null");
-        if (conta.getIdGerente() == null) throw new IllegalArgumentException("MsConta: Id do gerente == null");
-        if (conta.isAtivo() == false) throw new IllegalArgumentException("Conta inativa");        
+    //    if (conta.getIdCliente() == null) throw new IllegalArgumentException("MsConta: Id do cliente == null");
+    //    if (conta.getIdGerente() == null) throw new IllegalArgumentException("MsConta: Id do gerente == null");
+    //    if (conta.isAtivo() == false) throw new IllegalArgumentException("Conta inativa");        
     }
 
     // 1.2 Criar numero conta aleatório de 4 dígitos
@@ -53,24 +58,28 @@ public class ContaCommandService {
         // if (!contaEncontrado.getAtivo()) {
         //     throw new ContaNaoEncontradaException();
         // }
-        
+        Double limite = 0.0;
+        if(requestDTO.getSalario() > 2000) {
+            limite = requestDTO.getSalario() / 2;
+        }
         
         Conta conta = new Conta();
-        conta.setNumeroConta(geraNumeroConta());
+        conta.setNumero(geraNumeroConta());
         conta.setAtivo(true);
-        conta.setIdGerente(requestDTO.getIdGerente());
-        conta.setIdCliente(requestDTO.getIdCliente());
-        conta.setSaldo(requestDTO.getSaldo());
-        conta.setLimite(requestDTO.getLimite());
+        conta.setGerenteCpf(requestDTO.getGerenteCpf());
+        conta.setClienteCpf(requestDTO.getClienteCpf());
+        conta.setSaldo(0);
+        conta.setLimite(limite);
+        conta.setData(new Date(System.currentTimeMillis()));
         
         Conta contaAdicionada = contaRepository.save(conta);
 
         return new ContaResponseDTO(
-            contaAdicionada.isAtivo(),
-            contaAdicionada.getIdGerente(),
-            contaAdicionada.getIdCliente(),
-            contaAdicionada.getNumeroConta(),
-            contaAdicionada.getDataCriacao(),
+            contaAdicionada.getAtivo(),
+            contaAdicionada.getGerenteCpf(),
+            contaAdicionada.getClienteCpf(),
+            contaAdicionada.getNumero(),
+            contaAdicionada.getData(),
             contaAdicionada.getSaldo(),
             contaAdicionada.getLimite()
         );        
@@ -78,61 +87,64 @@ public class ContaCommandService {
 
     // 1.4 ATUALIZAR CONTA (UPDATE/PUT)
     // BOTAR 
-    public ContaResponseDTO atualizarConta(String numeroConta, ContaRequestDTO requestDTO) {
+    public ContaResponseDTO atualizarConta(String numero, ContaRequestDTO requestDTO) {
         validaConta(requestDTO);
         
-        Conta contaEncontrada = contaRepository.findByNumeroConta(numeroConta);
+        Conta contaEncontrada = contaRepository.findById(numero)
+            .orElseThrow(() -> new ContaNaoEncontradaException());
 
-        if (contaEncontrada == null || contaEncontrada.isAtivo() == false) {
-             throw new ContaNaoEncontradaException();
-         }
+        Double limite = contaEncontrada.getLimite();
+        if(requestDTO.getSalarioAlterado()) {
+            limite = requestDTO.getSalario() / 2;
+            if(contaEncontrada.getSaldo() < 0 && limite < Math.abs(contaEncontrada.getSaldo())) { 
+                limite = Math.abs(contaEncontrada.getSaldo());
+            }
+        }
 
         Conta conta = new Conta(
-            requestDTO.isAtivo(),
-            requestDTO.getIdGerente(),
-            requestDTO.getIdCliente(),
-            contaEncontrada.getNumeroConta(),
-            contaEncontrada.getDataCriacao(),
-            requestDTO.getSaldo(),
-            requestDTO.getLimite()
+            contaEncontrada.getNumero(),
+            requestDTO.getGerenteCpf(),
+            requestDTO.getClienteCpf(),
+            contaEncontrada.getData(),
+            contaEncontrada.getSaldo(),
+            limite,
+            requestDTO.isAtivo()
         ); 
 
         Conta contaAtualizada = contaRepository.save(conta);
 
         return new ContaResponseDTO(
-            contaAtualizada.isAtivo(),
-            contaAtualizada.getIdGerente(),
-            contaAtualizada.getIdCliente(),
-            contaAtualizada.getNumeroConta(),
-            contaAtualizada.getDataCriacao(),
+            contaAtualizada.getAtivo(),
+            contaAtualizada.getGerenteCpf(),
+            contaAtualizada.getClienteCpf(),
+            contaAtualizada.getNumero(),
+            contaAtualizada.getData(),
             contaAtualizada.getSaldo(),
             contaAtualizada.getLimite()
         );
     }
 
     // 1.5 DELETAR CONTA (DELETE)
-    public void desativarConta (String numeroConta) {
+    public void desativarConta (String numero) {
         
         // VALIDAÇÃO
             // BUSCA CONTA SE EXISTE
-                Conta contaEncontrada = contaRepository.findByNumeroConta(numeroConta);
-
+                Conta contaEncontrada = contaRepository.findById(numero)
+                    .orElseThrow(() -> new ContaNaoEncontradaException());
                 // CHECK SE ENCONTRADO
-                if (contaEncontrada == null) {
-                    throw new ContaNaoEncontradaException();
-                }
+
 
             
             // CHECK SE INATIVO
-                if(!contaEncontrada.isAtivo()) throw new ContaInativaException();
+                if(!contaEncontrada.getAtivo()) throw new ContaInativaException();
           
         // DESATIVA CONTA
         contaEncontrada.setAtivo(false);
         contaRepository.save(contaEncontrada);
 }
-*/
 
-    
+
+
 
     public TransferenciaResponseDTO transferir(String numero, TransferenciaRequestDTO dto) {
         Conta origem = contaRepository.findById(numero)
@@ -215,5 +227,36 @@ public class ContaCommandService {
             movimentacao.getData(), 
             conta.getSaldo());
     }
+
+    public void redistribuiContasGerenteDeletado(String gerenteCpf) {
+        List<Conta> contas = contaRepository.findByGerenteCpf(gerenteCpf);
+        String novoGerente = contaRepository.findGerenteWithLeastActiveContas()
+            .orElseThrow(() -> new RuntimeException("Nenhum gerente disponível"));
+
+        for (Conta conta : contas) {
+            
+            conta.setGerenteCpf(novoGerente);
+            contaRepository.save(conta);
+        }
+    }
+
+    public void distribuiContaGerenteNovo(String novoGerenteCpf) {
+        String gerenteCpf = contaRepository.findGerenteComMaisContasAtivasEMenorSaldoPositivo();
+
+        if (gerenteCpf == null) return;
+
+        // Busca todas as contas ativas do gerente encontrado
+        List<Conta> contasDoGerente = contaRepository.findByGerenteCpfAndAtivoTrue(gerenteCpf);
+
+        if (contasDoGerente.isEmpty()) return;
+
+        // Pega uma conta aleatória
+        Conta contaSelecionada = contasDoGerente.get(new Random().nextInt(contasDoGerente.size()));
+
+        // Troca o gerente
+        contaSelecionada.setGerenteCpf(novoGerenteCpf);
+        contaRepository.save(contaSelecionada);
+    }
+
 
 }

@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,25 +24,24 @@ public class ContaCommandController {
 
     @Autowired
     private ContaCommandService commandService;
-/* 
-    static List<ContaResponseDTO> contas = new ArrayList<>();
+
 
     @PostMapping("/contas")
-    public ResponseEntity<ContaResponseDTO> inserirConta(@RequestBody ContaRequestDTO dto) {  
+    public ResponseEntity<ContaResponseDTO> criarConta(@RequestBody ContaRequestDTO dto) {  
         try {
             //arrumar depois
-            ContaResponseDTO response = commandService.inserirConta(dto);
+            ContaResponseDTO response = commandService.criarConta(dto);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch(RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
     
-    @PutMapping("/contas/{numeroConta}")
-    public ResponseEntity<ContaResponseDTO> alterarConta(@PathVariable String numeroConta, @RequestBody ContaRequestDTO conta) {        
+    @PutMapping("/contas/{numero}")
+    public ResponseEntity<ContaResponseDTO> alterarConta(@PathVariable String numero, @RequestBody ContaRequestDTO conta) {        
         try
         {
-            ContaResponseDTO response = commandService.atualizarConta(numeroConta, conta);
+            ContaResponseDTO response = commandService.atualizarConta(numero, conta);
             return ResponseEntity.ok(response);
         }
         catch (RuntimeException ex)
@@ -53,16 +50,16 @@ public class ContaCommandController {
         }
     }
 
-    @DeleteMapping("/contas/{numeroConta}")
-    public ResponseEntity<Void> removerConta(@PathVariable String numeroConta) {
+    @DeleteMapping("/contas/{numero}")
+    public ResponseEntity<Void> removerConta(@PathVariable String numero) {
         try {
-            commandService.desativarConta(numeroConta);
+            commandService.desativarConta(numero);
             return ResponseEntity.noContent().build(); // DEU CERTO = 204. NO CONTENT
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); //DEU RUIM = 400 BAD REQUEST
         }
     }
-*/
+
 
     @PostMapping("/contas/{numero}/depositar")
     public ResponseEntity<OperacaoResponseDTO> depositar(@PathVariable String numero, @RequestBody Double valor) {
