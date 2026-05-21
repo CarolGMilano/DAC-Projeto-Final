@@ -4,33 +4,34 @@ import java.util.Date;
 
 public class ContaDTO {
     private boolean ativo;
-    private Long idGerente;
-    private Long idCliente;
-    private String numeroConta;
-    private Date dataCriacao;
+    private String gerenteCpf;
+    private String clienteCpf;
+    private String numero;
+    private Date data;
     private double saldo;
     private double limite;
     
     public boolean isAtivo() { return ativo; }
     public void setAtivo(boolean ativo) {this.ativo = ativo; }
-    
-    public Long getIdGerente() { return idGerente; }
-    public void setIdGerente(Long idGerente) { this.idGerente = idGerente; }
-    
-    public Long getIdCliente() { return idCliente; }
-    public void setIdCliente(Long idCliente) { this.idCliente = idCliente; }
 
-    public String getNumeroConta() { return numeroConta; }
-    public void setNumeroConta(String numeroConta) { this.numeroConta = numeroConta; }
+    public String getNumero() { return numero; }
+    public void setNumero(String numero) { this.numero = numero; }
 
-    public Date getDataCriacao() { return dataCriacao; }
-    public void setDataCriacao(Date dataCriacao) { this.dataCriacao = dataCriacao; }
+    public Date getData() { return data; }
+    public void setData(Date data) { this.data = data; }
 
     public double getSaldo() { return saldo; }
     public void setSaldo(double saldo) { this.saldo = saldo; }
     
     public double getLimite() { return limite; }
-    public void setLimite(double limite) { this.limite = limite; }    
+    public void setLimite(double limite) { this.limite = limite; }
+
+    public String getGerenteCpf() {return gerenteCpf;}
+    public void setGerenteCpf(String gerenteCpf) {this.gerenteCpf = gerenteCpf;}
+
+    public String getClienteCpf() {return clienteCpf;}
+    public void setClienteCpf(String clienteCpf) {this.clienteCpf = clienteCpf;}    
+    
 }
 
 

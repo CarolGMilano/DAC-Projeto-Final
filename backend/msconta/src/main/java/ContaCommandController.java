@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import br.net.dac.msconta.service.ContaCommandService;
 
 import br.net.dac.msconta.model.dto.ContaResponseDTO;
+import br.net.dac.msconta.model.dto.OperacaoResponseDTO;
+import br.net.dac.msconta.model.dto.TransferenciaRequestDTO;
+import br.net.dac.msconta.model.dto.TransferenciaResponseDTO;
 import br.net.dac.msconta.model.dto.ContaRequestDTO;
 
     @CrossOrigin
@@ -23,7 +26,7 @@ public class ContaCommandController {
 
     @Autowired
     private ContaCommandService commandService;
-
+/* 
     static List<ContaResponseDTO> contas = new ArrayList<>();
 
     @PostMapping("/contas")
@@ -57,6 +60,37 @@ public class ContaCommandController {
             return ResponseEntity.noContent().build(); // DEU CERTO = 204. NO CONTENT
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); //DEU RUIM = 400 BAD REQUEST
+        }
+    }
+*/
+
+    @PostMapping("/contas/{numero}/depositar")
+    public ResponseEntity<OperacaoResponseDTO> depositar(@PathVariable String numero, @RequestBody Double valor) {
+        try {
+            OperacaoResponseDTO response = commandService.depositar(numero, valor);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @PostMapping("/contas/{numero}/transferir")
+    public ResponseEntity<TransferenciaResponseDTO> transferir(@PathVariable String numero, @RequestBody TransferenciaRequestDTO dto) {
+        try {
+            TransferenciaResponseDTO response = commandService.transferir(numero, dto);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @PostMapping("/contas/{numero}/sacar")
+    public ResponseEntity<OperacaoResponseDTO> sacar(@PathVariable String numero, @RequestBody Double valor) {
+        try {
+            OperacaoResponseDTO response = commandService.sacar(numero, valor);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 

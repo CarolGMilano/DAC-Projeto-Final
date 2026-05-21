@@ -1,24 +1,26 @@
 package br.net.dac.msconta.service;
 
-import java.util.Random;
+import java.sql.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.net.dac.msconta.model.dto.ContaRequestDTO;
-import br.net.dac.msconta.model.dto.ContaResponseDTO;
+import br.net.dac.msconta.model.dto.OperacaoResponseDTO;
+import br.net.dac.msconta.model.dto.TransferenciaRequestDTO;
+import br.net.dac.msconta.model.dto.TransferenciaResponseDTO;
 import br.net.dac.msconta.model.entity.Conta;
-import br.net.dac.msconta.model.exception.ContaInativaException;
-import br.net.dac.msconta.model.exception.ContaNaoEncontradaException;
+import br.net.dac.msconta.model.entity.Movimentacao;
 // import br.net.dac.msconta.model.exception.ContaNaoEncontradaException;
 import br.net.dac.msconta.repository.ContaRepository;
+import br.net.dac.msconta.repository.MovimentacaoRepository;
 
 @Service
 public class ContaCommandService {
 
     @Autowired
     private ContaRepository contaRepository;
-
+    private MovimentacaoRepository movimentacaoRepository;
+/* 
     // 1. MÉTODOS
     // 1.1 VALIDAR SE CONTA É VALIDA
     private void validaConta(ContaRequestDTO conta) {
@@ -128,5 +130,90 @@ public class ContaCommandService {
         contaEncontrada.setAtivo(false);
         contaRepository.save(contaEncontrada);
 }
+*/
+
+    
+
+    public TransferenciaResponseDTO transferir(String numero, TransferenciaRequestDTO dto) {
+        Conta origem = contaRepository.findById(numero)
+            .orElseThrow(() -> new RuntimeException("Conta não encontrada: " + numero));
+        Conta destino = contaRepository.findById(dto.getDestino())
+            .orElseThrow(() -> new RuntimeException("Conta não encontrada: " + dto.getDestino()));
+
+        if (origem.getSaldo() < dto.getValor()) {
+            throw new RuntimeException("Saldo insuficiente");
+        }
+
+        origem.setSaldo(origem.getSaldo() - dto.getValor());
+        destino.setSaldo(destino.getSaldo() + dto.getValor());
+
+        Movimentacao movimentacao = new Movimentacao();
+        movimentacao.setOrigem(origem);
+        movimentacao.setDestino(destino);
+        movimentacao.setValor(dto.getValor());
+        movimentacao.setData(new Date(System.currentTimeMillis()));
+        movimentacao.setTipo("TRANSFERENCIA");
+
+        contaRepository.save(destino);
+        contaRepository.save(origem);
+
+        movimentacaoRepository.save(movimentacao);
+
+        return new TransferenciaResponseDTO(
+            movimentacao.getOrigem().getNumero(), 
+            movimentacao.getData(), 
+            movimentacao.getDestino().getNumero(), 
+            origem.getSaldo(), 
+            movimentacao.getValor());
+    }
+
+    public OperacaoResponseDTO depositar(String numero, Double valor) {
+        Conta conta = contaRepository.findById(numero)
+            .orElseThrow(() -> new RuntimeException("Conta não encontrada: " + numero));
+
+        conta.setSaldo(conta.getSaldo() + valor);
+
+        Movimentacao movimentacao = new Movimentacao();
+        movimentacao.setOrigem(conta);
+        movimentacao.setDestino(null);
+        movimentacao.setValor(valor);
+        movimentacao.setData(new Date(System.currentTimeMillis()));
+        movimentacao.setTipo("DEPOSITO");
+
+        contaRepository.save(conta);
+
+        movimentacaoRepository.save(movimentacao);
+
+        return new OperacaoResponseDTO(
+            movimentacao.getOrigem().getNumero(), 
+            movimentacao.getData(), 
+            conta.getSaldo());
+    }
+    public OperacaoResponseDTO sacar(String numero, Double valor) {
+        Conta conta = contaRepository.findById(numero)
+            .orElseThrow(() -> new RuntimeException("Conta não encontrada: " + numero));
+
+        if (conta.getSaldo() < valor) {
+            throw new RuntimeException("Saldo insuficiente");
+        }
+
+        conta.setSaldo(conta.getSaldo() - valor);
+
+        Movimentacao movimentacao = new Movimentacao();
+        movimentacao.setOrigem(conta);
+        movimentacao.setDestino(null);
+        movimentacao.setValor(valor);
+        movimentacao.setData(new Date(System.currentTimeMillis()));
+        movimentacao.setTipo("SAQUE");
+
+        contaRepository.save(conta);
+
+        movimentacaoRepository.save(movimentacao);    
+
+        return new OperacaoResponseDTO(
+            movimentacao.getOrigem().getNumero(), 
+            movimentacao.getData(), 
+            conta.getSaldo());
+    }
 
 }

@@ -1,10 +1,14 @@
 package br.net.dac.msconta.model.entity;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 
 @Entity
@@ -12,20 +16,17 @@ import jakarta.persistence.Column;
 public class Conta {
 
     @Id
-    @Column(name = "numeroConta")
-    private String numeroConta;
+    @Column(name = "numero")
+    private String numero;
 
-    @Column(name= "ativo")
-    private boolean ativo;
-    
-    @Column(name = "idGerente")
-    private Long idGerente;
+    @Column(name = "gerente_cpf")
+    private String gerenteCpf;
 
-    @Column(name = "idCliente")
-    private Long idCliente;
+    @Column(name = "cliente_cpf")
+    private String clienteCpf;
 
-    @Column(name = "dataCriacao")
-    private Date dataCriacao;
+    @Column(name = "data_criacao")
+    private Date data;
 
     @Column(name = "saldo")
     private double saldo;
@@ -33,64 +34,55 @@ public class Conta {
     @Column(name = "limite")
     private double limite;
 
-    public Conta() {
-    }
+    @Column(name = "ativo")
+    private Boolean ativo;
 
-    public Conta(boolean ativo, Long idGerente, Long idCliente, String numeroConta, Date dataCriacao, double saldo, double limite) {
-        this.ativo = ativo;
-        this.idGerente = idGerente;
-        this.idCliente = idCliente;
-        this.numeroConta = numeroConta;
-        this.dataCriacao = dataCriacao;
+    @OneToMany(mappedBy = "origem", cascade = CascadeType.ALL)
+    private List<Movimentacao> movimentacoes = new ArrayList<>();
+
+    public Conta() {}
+
+    public Conta(String numero, String gerenteCpf, String clienteCpf, Date data, double saldo, double limite,
+            Boolean ativo) {
+        this.numero = numero;
+        this.gerenteCpf = gerenteCpf;
+        this.clienteCpf = clienteCpf;
+        this.data = data;
         this.saldo = saldo;
         this.limite = limite;
-    }
-
-    @PrePersist
-    protected void onCreate() {
-        this.dataCriacao = new Date(System.currentTimeMillis());
-    }
-    
-    // Getters e Setters
-
-    public boolean isAtivo() {
-        return ativo;
-    }
-
-    public void setAtivo(boolean ativo) {
         this.ativo = ativo;
     }
 
-    public Long getIdGerente() {
-        return idGerente;
+    public String getNumero() {
+        return numero;
     }
 
-    public void setIdGerente(Long idGerente) {
-        this.idGerente = idGerente;
+    public void setNumero(String numero) {
+        this.numero = numero;
     }
 
-    public Long getIdCliente() {
-        return idCliente;
+    public String getGerenteCpf() {
+        return gerenteCpf;
     }
 
-    public void setIdCliente(Long idCliente) {
-        this.idCliente = idCliente;
+    public void setGerenteCpf(String gerenteCpf) {
+        this.gerenteCpf = gerenteCpf;
     }
 
-    public String getNumeroConta() {
-        return numeroConta;
+    public String getClienteCpf() {
+        return clienteCpf;
     }
 
-    public void setNumeroConta(String numeroConta) {
-        this.numeroConta = numeroConta;
+    public void setClienteCpf(String clienteCpf) {
+        this.clienteCpf = clienteCpf;
     }
 
-    public Date getDataCriacao() {
-        return dataCriacao;
+    public Date getData() {
+        return data;
     }
 
-    public void setDataCriacao(Date dataCriacao) {
-        this.dataCriacao = dataCriacao;
+    public void setData(Date data) {
+        this.data = data;
     }
 
     public double getSaldo() {
@@ -108,4 +100,11 @@ public class Conta {
     public void setLimite(double limite) {
         this.limite = limite;
     }
+
+    public Boolean getAtivo() {return ativo;}
+    public void setAtivo(Boolean ativo) {this.ativo = ativo;}
+
+    public List<Movimentacao> getMovimentacoes() { return movimentacoes; }
+    public void setMovimentacoes(List<Movimentacao> movimentacoes) { this.movimentacoes = movimentacoes; }
+
 }
