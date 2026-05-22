@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import br.net.dac.msconta.model.dto.ComandoConta;
+import br.net.dac.msconta.model.dto.ContaCreateRequestDTO;
 import br.net.dac.msconta.model.dto.ContaResponseDTO;
 import br.net.dac.msconta.model.dto.ContaUpdateRequestDTO;
 import br.net.dac.msconta.model.dto.ContaResponseDTO;
@@ -67,8 +68,7 @@ public class ContaConsumidor {
     public void criar (ContaResponseDTO contaDTO) {
         try {
             // Mapeamento de ContaDTO para ContaRequestDTO
-            ContaUpdateRequestDTO requestDTO = new ContaUpdateRequestDTO();
-            requestDTO.setAtivo(contaDTO.isAtivo());
+            ContaCreateRequestDTO requestDTO = new ContaCreateRequestDTO();
             requestDTO.setGerenteCpf(contaDTO.getGerenteCpf());
             requestDTO.setClienteCpf(contaDTO.getClienteCpf());
             requestDTO.setSalario(contaDTO.getSaldo());
@@ -101,7 +101,6 @@ public class ContaConsumidor {
     private void atualizar(ContaResponseDTO contaDTO) {
         try {
             ContaUpdateRequestDTO requestDTO = new ContaUpdateRequestDTO();
-            requestDTO.setAtivo(contaDTO.isAtivo());
             requestDTO.setGerenteCpf(contaDTO.getGerenteCpf());
             requestDTO.setClienteCpf(contaDTO.getClienteCpf());
             requestDTO.setSalario(contaDTO.getSaldo());
@@ -122,7 +121,6 @@ public class ContaConsumidor {
     private void rollbackAtualizar(ContaResponseDTO contaDTO) {
         try {
             ContaUpdateRequestDTO requestDTO = new ContaUpdateRequestDTO();
-            requestDTO.setAtivo(contaDTO.isAtivo());
             requestDTO.setGerenteCpf(contaDTO.getGerenteCpf());
             requestDTO.setClienteCpf(contaDTO.getClienteCpf());
             requestDTO.setSalario(contaDTO.getSaldo());
@@ -153,7 +151,6 @@ public class ContaConsumidor {
     private void rollbackDeletar(ContaResponseDTO contaDTO) {
         try {
             ContaUpdateRequestDTO requestDTO = new ContaUpdateRequestDTO();
-            requestDTO.setAtivo(true); // reativa
             requestDTO.setGerenteCpf(contaDTO.getGerenteCpf());
             requestDTO.setClienteCpf(contaDTO.getClienteCpf());
             requestDTO.setSalario(contaDTO.getSaldo());
