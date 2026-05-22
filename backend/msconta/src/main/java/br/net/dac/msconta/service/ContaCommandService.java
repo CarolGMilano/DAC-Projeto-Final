@@ -42,7 +42,7 @@ public class ContaCommandService {
         do {
             int numero = random.nextInt(10000);
             novoNumeroConta = String.format("%04d", numero);
-        } while (contaRepository.existsByNumeroConta(novoNumeroConta));
+        } while (contaRepository.existsByNumero(novoNumeroConta));
         return novoNumeroConta;
     }
 
