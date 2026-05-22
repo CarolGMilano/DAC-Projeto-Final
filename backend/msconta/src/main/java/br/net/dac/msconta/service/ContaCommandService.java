@@ -25,6 +25,8 @@ public class ContaCommandService {
 
     @Autowired
     private ContaRepository contaRepository;
+    
+    @Autowired
     private MovimentacaoRepository movimentacaoRepository;
 
     // 1. MÉTODOS
@@ -181,6 +183,7 @@ public class ContaCommandService {
     }
 
     public OperacaoResponseDTO depositar(String numero, Double valor) {
+        System.out.println("a");
         Conta conta = contaRepository.findById(numero)
             .orElseThrow(() -> new RuntimeException("Conta não encontrada: " + numero));
 
@@ -193,12 +196,14 @@ public class ContaCommandService {
         movimentacao.setData(new Date(System.currentTimeMillis()));
         movimentacao.setTipo("DEPOSITO");
 
+        System.out.println("b");
+        System.out.println("c");
         contaRepository.save(conta);
-
+        System.out.println("");
         movimentacaoRepository.save(movimentacao);
-
+        System.out.println("tidal wave");
         return new OperacaoResponseDTO(
-            movimentacao.getOrigem().getNumero(), 
+            conta.getNumero(),
             movimentacao.getData(), 
             conta.getSaldo());
     }
@@ -224,7 +229,7 @@ public class ContaCommandService {
         movimentacaoRepository.save(movimentacao);    
 
         return new OperacaoResponseDTO(
-            movimentacao.getOrigem().getNumero(), 
+            conta.getNumero(),
             movimentacao.getData(), 
             conta.getSaldo());
     }

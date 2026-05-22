@@ -17,6 +17,7 @@ import br.net.dac.msconta.model.dto.ContaResponseDTO;
 import br.net.dac.msconta.model.dto.OperacaoResponseDTO;
 import br.net.dac.msconta.model.dto.TransferenciaRequestDTO;
 import br.net.dac.msconta.model.dto.TransferenciaResponseDTO;
+import br.net.dac.msconta.model.dto.ValorDTO;
 import br.net.dac.msconta.model.dto.ContaUpdateRequestDTO;
 
     @CrossOrigin
@@ -63,11 +64,13 @@ public class ContaCommandController {
 
 
     @PostMapping("/contas/{numero}/depositar")
-    public ResponseEntity<OperacaoResponseDTO> depositar(@PathVariable String numero, @RequestBody Double valor) {
+    public ResponseEntity<OperacaoResponseDTO> depositar(@PathVariable String numero, @RequestBody ValorDTO valorDTO) {
         try {
-            OperacaoResponseDTO response = commandService.depositar(numero, valor);
+            OperacaoResponseDTO response = commandService.depositar(numero, valorDTO.getValor());
+            System.out.println("EXCEÇÃO TA AQUI O TIDAL WAVE ATHADUFUHS:" + response);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
+            System.out.println("EXCEÇÃO TA AQUI O TIDAL WAVE ATHADUFUHS:" + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
