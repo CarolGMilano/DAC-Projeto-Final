@@ -21,11 +21,11 @@ public class Movimentacao {
     private Date data;
 
     @ManyToOne
-    @JoinColumn(name = "origem", referencedColumnName = "numero")
+    @JoinColumn(name = "origem", referencedColumnName = "numero", nullable = true)
     private Conta origem;
 
     @ManyToOne
-    @JoinColumn(name = "destino", referencedColumnName = "numero", nullable = true)
+    @JoinColumn(name = "destino", referencedColumnName = "numero")
     private Conta destino; // nullable pois saque/deposito tem apenas uma conta
 
     public Movimentacao() {}

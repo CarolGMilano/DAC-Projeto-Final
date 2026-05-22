@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import br.net.dac.msconta.model.dto.ComandoConta;
 import br.net.dac.msconta.model.dto.ContaResponseDTO;
-import br.net.dac.msconta.model.dto.ContaRequestDTO;
+import br.net.dac.msconta.model.dto.ContaUpdateRequestDTO;
 import br.net.dac.msconta.model.dto.ContaResponseDTO;
 import br.net.dac.msconta.model.event.ContaCreateFailedEvent;
 import br.net.dac.msconta.model.event.ContaCreatedEvent;
@@ -67,7 +67,7 @@ public class ContaConsumidor {
     public void criar (ContaResponseDTO contaDTO) {
         try {
             // Mapeamento de ContaDTO para ContaRequestDTO
-            ContaRequestDTO requestDTO = new ContaRequestDTO();
+            ContaUpdateRequestDTO requestDTO = new ContaUpdateRequestDTO();
             requestDTO.setAtivo(contaDTO.isAtivo());
             requestDTO.setGerenteCpf(contaDTO.getGerenteCpf());
             requestDTO.setClienteCpf(contaDTO.getClienteCpf());
@@ -100,7 +100,7 @@ public class ContaConsumidor {
             // 2.2.1 ATUALIZAÇÃO DE CONTA
     private void atualizar(ContaResponseDTO contaDTO) {
         try {
-            ContaRequestDTO requestDTO = new ContaRequestDTO();
+            ContaUpdateRequestDTO requestDTO = new ContaUpdateRequestDTO();
             requestDTO.setAtivo(contaDTO.isAtivo());
             requestDTO.setGerenteCpf(contaDTO.getGerenteCpf());
             requestDTO.setClienteCpf(contaDTO.getClienteCpf());
@@ -121,7 +121,7 @@ public class ContaConsumidor {
             // 2.2.2 ROLLBACK DE ATUALIZAÇÃO - REQUER QUE O ESTADO ANTERIOR SEJA ENVIADO NO PAYLOAD!!!
     private void rollbackAtualizar(ContaResponseDTO contaDTO) {
         try {
-            ContaRequestDTO requestDTO = new ContaRequestDTO();
+            ContaUpdateRequestDTO requestDTO = new ContaUpdateRequestDTO();
             requestDTO.setAtivo(contaDTO.isAtivo());
             requestDTO.setGerenteCpf(contaDTO.getGerenteCpf());
             requestDTO.setClienteCpf(contaDTO.getClienteCpf());
@@ -152,7 +152,7 @@ public class ContaConsumidor {
             // 2.3.1 ROLLBACK DE DELETE
     private void rollbackDeletar(ContaResponseDTO contaDTO) {
         try {
-            ContaRequestDTO requestDTO = new ContaRequestDTO();
+            ContaUpdateRequestDTO requestDTO = new ContaUpdateRequestDTO();
             requestDTO.setAtivo(true); // reativa
             requestDTO.setGerenteCpf(contaDTO.getGerenteCpf());
             requestDTO.setClienteCpf(contaDTO.getClienteCpf());

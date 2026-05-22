@@ -1,3 +1,4 @@
+package br.net.dac.msconta;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,12 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.net.dac.msconta.service.ContaCommandService;
-
+import br.net.dac.msconta.model.dto.ContaCreateRequestDTO;
 import br.net.dac.msconta.model.dto.ContaResponseDTO;
 import br.net.dac.msconta.model.dto.OperacaoResponseDTO;
 import br.net.dac.msconta.model.dto.TransferenciaRequestDTO;
 import br.net.dac.msconta.model.dto.TransferenciaResponseDTO;
-import br.net.dac.msconta.model.dto.ContaRequestDTO;
+import br.net.dac.msconta.model.dto.ContaUpdateRequestDTO;
 
     @CrossOrigin
     @RestController
@@ -27,7 +28,7 @@ public class ContaCommandController {
 
 
     @PostMapping("/contas")
-    public ResponseEntity<ContaResponseDTO> criarConta(@RequestBody ContaRequestDTO dto) {  
+    public ResponseEntity<ContaResponseDTO> criarConta(@RequestBody ContaCreateRequestDTO dto) {  
         try {
             //arrumar depois
             ContaResponseDTO response = commandService.criarConta(dto);
@@ -38,7 +39,7 @@ public class ContaCommandController {
     }
     
     @PutMapping("/contas/{numero}")
-    public ResponseEntity<ContaResponseDTO> alterarConta(@PathVariable String numero, @RequestBody ContaRequestDTO conta) {        
+    public ResponseEntity<ContaResponseDTO> alterarConta(@PathVariable String numero, @RequestBody ContaUpdateRequestDTO conta) {        
         try
         {
             ContaResponseDTO response = commandService.atualizarConta(numero, conta);

@@ -7,7 +7,8 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.net.dac.msconta.model.dto.ContaRequestDTO;
+import br.net.dac.msconta.model.dto.ContaUpdateRequestDTO;
+import br.net.dac.msconta.model.dto.ContaCreateRequestDTO;
 import br.net.dac.msconta.model.dto.ContaResponseDTO;
 import br.net.dac.msconta.model.dto.OperacaoResponseDTO;
 import br.net.dac.msconta.model.dto.TransferenciaRequestDTO;
@@ -28,7 +29,7 @@ public class ContaCommandService {
 
     // 1. MÉTODOS
     // 1.1 VALIDAR SE CONTA É VALIDA
-    private void validaConta(ContaRequestDTO conta) {
+    private void validaConta(ContaUpdateRequestDTO conta) {
     //    if (conta.getIdCliente() == null) throw new IllegalArgumentException("MsConta: Id do cliente == null");
     //    if (conta.getIdGerente() == null) throw new IllegalArgumentException("MsConta: Id do gerente == null");
     //    if (conta.isAtivo() == false) throw new IllegalArgumentException("Conta inativa");        
@@ -48,8 +49,8 @@ public class ContaCommandService {
 
     
     // 1.3 CRIA CONTA (CREATE/POST)
-    public ContaResponseDTO criarConta(ContaRequestDTO requestDTO) {
-        validaConta(requestDTO);
+    public ContaResponseDTO criarConta(ContaCreateRequestDTO requestDTO) {
+        // validaConta(requestDTO);
 
         // VALIDAÇÃO DE EXISTÊNCIA DE CONTA
         // NÃO SEI SE VAMOS USAR PRA VERIFICAR SE CONTA É ATIVA OU NÃO, ENTÃO DEIXAMOS COMENTADO CASO PRECISE
@@ -87,7 +88,7 @@ public class ContaCommandService {
 
     // 1.4 ATUALIZAR CONTA (UPDATE/PUT)
     // BOTAR 
-    public ContaResponseDTO atualizarConta(String numero, ContaRequestDTO requestDTO) {
+    public ContaResponseDTO atualizarConta(String numero, ContaUpdateRequestDTO requestDTO) {
         validaConta(requestDTO);
         
         Conta contaEncontrada = contaRepository.findById(numero)
@@ -108,7 +109,7 @@ public class ContaCommandService {
             contaEncontrada.getData(),
             contaEncontrada.getSaldo(),
             limite,
-            requestDTO.isAtivo()
+            true
         ); 
 
         Conta contaAtualizada = contaRepository.save(conta);
@@ -186,8 +187,8 @@ public class ContaCommandService {
         conta.setSaldo(conta.getSaldo() + valor);
 
         Movimentacao movimentacao = new Movimentacao();
-        movimentacao.setOrigem(conta);
-        movimentacao.setDestino(null);
+        movimentacao.setOrigem(null);
+        movimentacao.setDestino(conta);
         movimentacao.setValor(valor);
         movimentacao.setData(new Date(System.currentTimeMillis()));
         movimentacao.setTipo("DEPOSITO");
@@ -212,8 +213,8 @@ public class ContaCommandService {
         conta.setSaldo(conta.getSaldo() - valor);
 
         Movimentacao movimentacao = new Movimentacao();
-        movimentacao.setOrigem(conta);
-        movimentacao.setDestino(null);
+        movimentacao.setOrigem(null);
+        movimentacao.setDestino(conta);
         movimentacao.setValor(valor);
         movimentacao.setData(new Date(System.currentTimeMillis()));
         movimentacao.setTipo("SAQUE");
