@@ -29,10 +29,10 @@ public class Conta {
     private Date data;
 
     @Column(name = "saldo")
-    private double saldo;
+    private Double saldo;
 
     @Column(name = "limite")
-    private double limite;
+    private Double limite;
 
     @Column(name = "ativo")
     private Boolean ativo;
@@ -42,7 +42,7 @@ public class Conta {
 
     public Conta() {}
 
-    public Conta(String numero, String gerenteCpf, String clienteCpf, Date data, double saldo, double limite,
+    public Conta(String numero, String gerenteCpf, String clienteCpf, Date data, Double saldo, Double limite,
             Boolean ativo) {
         this.numero = numero;
         this.gerenteCpf = gerenteCpf;
@@ -53,53 +53,23 @@ public class Conta {
         this.ativo = ativo;
     }
 
-    public String getNumero() {
-        return numero;
-    }
+    public String getNumero() { return numero; }
+    public void setNumero(String numero) { this.numero = numero; }
 
-    public void setNumero(String numero) {
-        this.numero = numero;
-    }
+    public String getGerenteCpf() { return gerenteCpf; }
+    public void setGerenteCpf(String gerenteCpf) { this.gerenteCpf = gerenteCpf; }
 
-    public String getGerenteCpf() {
-        return gerenteCpf;
-    }
+    public String getClienteCpf() { return clienteCpf; }
+    public void setClienteCpf(String clienteCpf) { this.clienteCpf = clienteCpf; }
 
-    public void setGerenteCpf(String gerenteCpf) {
-        this.gerenteCpf = gerenteCpf;
-    }
+    public Date getData() { return data; }
+    public void setData(Date data) { this.data = data; }
 
-    public String getClienteCpf() {
-        return clienteCpf;
-    }
+    public Double getSaldo() { return saldo; }
+    public void setSaldo(Double saldo) { this.saldo = saldo; }
 
-    public void setClienteCpf(String clienteCpf) {
-        this.clienteCpf = clienteCpf;
-    }
-
-    public Date getData() {
-        return data;
-    }
-
-    public void setData(Date data) {
-        this.data = data;
-    }
-
-    public double getSaldo() {
-        return saldo;
-    }
-
-    public void setSaldo(double saldo) {
-        this.saldo = saldo;
-    }
-
-    public double getLimite() {
-        return limite;
-    }
-
-    public void setLimite(double limite) {
-        this.limite = limite;
-    }
+    public Double getLimite() { return limite; }
+    public void setLimite(Double limite) { this.limite = limite; }
 
     public Boolean getAtivo() {return ativo;}
     public void setAtivo(Boolean ativo) {this.ativo = ativo;}

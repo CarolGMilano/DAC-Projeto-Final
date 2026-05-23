@@ -15,8 +15,11 @@ import br.net.dac.msconta.model.dto.TransferenciaRequestDTO;
 import br.net.dac.msconta.model.dto.TransferenciaResponseDTO;
 import br.net.dac.msconta.model.entity.Conta;
 import br.net.dac.msconta.model.entity.Movimentacao;
+import br.net.dac.msconta.model.event.ContaCreatedEvent;
+import br.net.dac.msconta.model.event.ContaDeletedEvent;
 import br.net.dac.msconta.model.exception.ContaInativaException;
 import br.net.dac.msconta.model.exception.ContaNaoEncontradaException;
+import br.net.dac.msconta.rabbitMQ.ContaProdutor;
 import br.net.dac.msconta.repository.ContaRepository;
 import br.net.dac.msconta.repository.MovimentacaoRepository;
 
@@ -28,6 +31,9 @@ public class ContaCommandService {
     
     @Autowired
     private MovimentacaoRepository movimentacaoRepository;
+
+    @Autowired
+    private ContaProdutor contaProdutor;
 
     // 1. MÉTODOS
     // 1.1 VALIDAR SE CONTA É VALIDA
@@ -71,11 +77,24 @@ public class ContaCommandService {
         conta.setAtivo(true);
         conta.setGerenteCpf(requestDTO.getGerenteCpf());
         conta.setClienteCpf(requestDTO.getClienteCpf());
-        conta.setSaldo(0);
+        conta.setSaldo(0.0);
         conta.setLimite(limite);
         conta.setData(new Date(System.currentTimeMillis()));
         
         Conta contaAdicionada = contaRepository.save(conta);
+
+        // Dispara evento pro conta query
+        contaProdutor.contaCriacaoSucesso(
+            new ContaCreatedEvent (
+                contaAdicionada.getNumero(),
+                contaAdicionada.getGerenteCpf(),
+                contaAdicionada.getClienteCpf(),
+                contaAdicionada.getData(),
+                contaAdicionada.getSaldo(),
+                contaAdicionada.getLimite(),
+                contaAdicionada.getAtivo()
+            )
+        );
 
         return new ContaResponseDTO(
             contaAdicionada.getAtivo(),
@@ -143,7 +162,17 @@ public class ContaCommandService {
           
         // DESATIVA CONTA
         contaEncontrada.setAtivo(false);
-        contaRepository.save(contaEncontrada);
+        
+        // Dispara evento pra contaquery
+        Conta contaDesativada = contaRepository.save(contaEncontrada);
+        contaProdutor.contaDeleteSucesso(
+            new ContaDeletedEvent(
+                contaDesativada.getAtivo(),
+                contaDesativada.getNumero(),
+                contaDesativada.getClienteCpf(),
+                contaDesativada.getGerenteCpf()                
+            )
+        );
 }
 
 

@@ -12,24 +12,28 @@ import jakarta.persistence.Table;
 @Table(name = "conta")
 public class Conta {
 
-@Id
-private String numero;
+    @Id
+    @Column(name = "numero")
+    private String numero;
 
-@Column(name = "saldo")
-private Double saldo;
+    @Column(name = "gerente_cpf")
+    private String gerenteCpf;
 
-@Column(name = "limite")
-private Double limite;
+    @Column(name = "cliente_cpf")
+    private String clienteCpf;
 
-@Column(name = "gerente_cpf")
-private String gerenteCpf;
+    @Column(name = "data_criacao")
+    private Date data;
 
-@Column(name = "cliente_cpf")
-private String clienteCpf;
+    @Column(name = "saldo")
+    private Double saldo;
 
-@Column(name = "data_criacao")
-private Date data;
+    @Column(name = "limite")
+    private Double limite;
 
+    @Column(name = "ativo")
+    private Boolean ativo;
+    
 public String getNumero() {
     return numero;
 }
@@ -78,4 +82,11 @@ public void setLimite(Double limite) {
     this.limite = limite;
 }
 
+public Boolean getAtivo() {
+    return ativo;
+}
+
+public void setAtivo(Boolean ativo) {
+    this.ativo = ativo;
+}
 }

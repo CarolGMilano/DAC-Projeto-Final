@@ -77,7 +77,13 @@ public class ContaConsumidor {
 
             contaProdutor.contaCriacaoSucesso(
                 new ContaCreatedEvent(
-                    contaAdicionada.getNumero(), contaAdicionada.getSaldo(), contaAdicionada.getLimite()
+                    contaAdicionada.getNumero(),
+                    contaAdicionada.getGerenteCpf(),
+                    contaAdicionada.getClienteCpf(),
+                    contaAdicionada.getData(),
+                    contaAdicionada.getSaldo(),
+                    contaAdicionada.getLimite(),
+                    contaAdicionada.isAtivo()
                 )
             );
         } catch (Exception e) {
@@ -108,7 +114,12 @@ public class ContaConsumidor {
             ContaResponseDTO atualizada = contaCommandService.atualizarConta(contaDTO.getNumero(), requestDTO);
 
             contaProdutor.contaUpdateSucesso(
-                new ContaUpdatedEvent(atualizada.getNumero(), atualizada.isAtivo())
+                new ContaUpdatedEvent(
+                    atualizada.getNumero(),
+                    atualizada.getGerenteCpf(),
+                    atualizada.getSaldo(),
+                    atualizada.getLimite()
+                )
             );
         } catch (Exception e) {
             ContaUpdateFailedEvent falha = new ContaUpdateFailedEvent();
