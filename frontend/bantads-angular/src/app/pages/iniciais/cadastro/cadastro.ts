@@ -2,9 +2,7 @@ import { Component, inject, ViewChild } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule, NgForm, NgModel } from '@angular/forms';
 
-import { CepStatus, SharedModule, EtapaCadastro } from '../../../shared';
-
-import { ICliente2 } from '../../../shared/models/ICliente_V2';
+import { CepStatus, SharedModule, EtapaCadastro, IAutocadastro } from '../../../shared';
 
 import { ClienteService, EnderecoService } from '../../../services';
 import { CommonModule } from '@angular/common';
@@ -31,8 +29,7 @@ export class Cadastro {
 
   numero: number | undefined;
 
-  cliente: ICliente2 = {
-    id: -1,
+  cliente: IAutocadastro = {
     cpf: '',
     email: '',
     nome: '',
@@ -136,7 +133,7 @@ export class Cadastro {
   salvar(){
     if (!this.formCadastro.form.valid) return;
 
-    const novoCliente: ICliente2 = {
+    const novoCliente: IAutocadastro = {
       cpf: this.cliente.cpf,
       email: this.cliente.email,
       nome: this.cliente.nome,

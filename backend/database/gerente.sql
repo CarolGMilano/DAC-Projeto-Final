@@ -1,4 +1,5 @@
 -- Estrutura validada do banco de gerente 
+CREATE DATABASE msgerente;
 
 DROP TABLE IF EXISTS gerente;
 

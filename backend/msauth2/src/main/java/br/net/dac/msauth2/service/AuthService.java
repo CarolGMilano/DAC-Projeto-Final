@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
@@ -16,8 +17,10 @@ import org.springframework.stereotype.Service;
 
 import br.net.dac.msauth2.jwt.TokenService;
 import br.net.dac.msauth2.model.dto.LoginDTO;
+import br.net.dac.msauth2.model.dto.RejeicaoDTO;
 import br.net.dac.msauth2.model.dto.RespostaDTO;
 import br.net.dac.msauth2.model.dto.UsuarioAlteracaoDTO;
+import br.net.dac.msauth2.model.dto.UsuarioAprovacaoRejeicaoDTO;
 import br.net.dac.msauth2.model.dto.UsuarioCriacaoDTO;
 import br.net.dac.msauth2.model.dto.UsuarioDesativacaoDTO;
 import br.net.dac.msauth2.model.entity.Usuario;
@@ -199,13 +202,48 @@ public class AuthService {
   }
 
   //Lógica de aprovação
-  public void aprovarCliente() throws Exception {
-    //
+  public UsuarioAprovacaoRejeicaoDTO aprovarCliente(String id) throws Exception {
+    Usuario usuarioEncontrado = usuarioRepository.findById(id).orElseThrow(UsuarioNaoEncontradoException::new);
+
+    String salt = gerarSalt();
+    String senhaHash;
+    String senhaAleatoria = null;
+
+    senhaAleatoria = Long.toString(Math.abs(new java.util.Random().nextLong()), 36).substring(0, 4);
+    senhaHash = gerarHash(senhaAleatoria, salt);
+
+    usuarioEncontrado.setSalt(salt);
+    usuarioEncontrado.setSenha(senhaHash);
+    usuarioEncontrado.setAtivo(StatusUsuarioEnum.ATIVO.name());
+
+    System.out.println("\n===== EMAIL =====");
+    System.out.println("ASSUNTO: Aprovação de conta");
+    System.out.println("MENSAGEM: Bem-vindo ao banco. Sua senha é " + senhaAleatoria);
+    System.out.println("=================\n");
+
+    usuarioRepository.save(usuarioEncontrado);
+
+    return new UsuarioAprovacaoRejeicaoDTO(
+      usuarioEncontrado.getId()
+    );
   }
 
   //Lógica de rejeição
-  public void rejeitarCliente() throws Exception {
-    //
+  public UsuarioAprovacaoRejeicaoDTO rejeitarCliente(String id, RejeicaoDTO dto) throws Exception {
+    Usuario usuarioEncontrado = usuarioRepository.findById(id).orElseThrow(UsuarioNaoEncontradoException::new);
+
+    usuarioEncontrado.setAtivo(StatusUsuarioEnum.REJEITADO.name());
+
+    System.out.println("\n===== EMAIL =====");
+    System.out.println("ASSUNTO: Rejeição de conta");
+    System.out.println("MENSAGEM: Sentimos muito. Sua conta foi rejeitada pelo motivo de " + dto.getMotivo());
+    System.out.println("=================\n");
+
+    usuarioRepository.save(usuarioEncontrado);
+
+    return new UsuarioAprovacaoRejeicaoDTO(
+      usuarioEncontrado.getId()
+    );
   }
 
   public RespostaDTO buscarPorId(String id) throws Exception {
@@ -257,6 +295,54 @@ public class AuthService {
       dto.setTipo(tipo.name());
 
       resposta.add(dto);
+    }
+
+    return resposta;
+  }
+
+  public List<RespostaDTO> listarPendentes() {
+    List<Usuario> usuarios = usuarioRepository.findAll();
+    List<RespostaDTO> resposta = new ArrayList<>();
+
+    for (Usuario usuario : usuarios) {
+      if (StatusUsuarioEnum.PENDENTE.name().equals(usuario.getAtivo())) {
+        TipoUsuarioEnum tipo = TipoUsuarioEnum.CLIENTE;
+
+        if (!usuario.getAtivo().equals(tipo.name())) {
+          continue;
+        }
+
+        RespostaDTO dto = new RespostaDTO();
+        dto.setId(usuario.getId());
+        dto.setEmail(usuario.getEmail());
+        dto.setTipo(usuario.getAtivo());
+  
+        resposta.add(dto);
+      }
+    }
+
+    return resposta;
+  }
+
+  public List<RespostaDTO> listarClientes() {
+    List<Usuario> usuarios = usuarioRepository.findAll();
+    List<RespostaDTO> resposta = new ArrayList<>();
+
+    for (Usuario usuario : usuarios) {
+      if (StatusUsuarioEnum.ATIVO.name().equals(usuario.getAtivo())) {
+        TipoUsuarioEnum tipo = TipoUsuarioEnum.CLIENTE;
+
+        if (!usuario.getAtivo().equals(tipo.name())) {
+          continue;
+        }
+        
+        RespostaDTO dto = new RespostaDTO();
+        dto.setId(usuario.getId());
+        dto.setEmail(usuario.getEmail());
+        dto.setTipo(usuario.getAtivo());
+  
+        resposta.add(dto);
+      }
     }
 
     return resposta;

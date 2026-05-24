@@ -24,7 +24,8 @@ public class SagaController {
   @Autowired
   private InsercaoGerenteSagaService insercaoGerenteSagaService;
 
-  @PostMapping("/gerentes")
+  //O Spring aceita multiplas rotas para o mesmo endpoint. É só mandar uma listinha.
+  @PostMapping({"/gerentes", "/reboot/gerentes"})
   public ResponseEntity<?> inserir(@RequestBody GerenteDTO dto) {
     SagaInsercaoContexto contexto = insercaoGerenteSagaService.iniciar(dto);
 
