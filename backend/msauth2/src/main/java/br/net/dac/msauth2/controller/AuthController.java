@@ -1,5 +1,6 @@
 package br.net.dac.msauth2.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -9,8 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import br.net.dac.msauth2.model.dto.LoginDTO;
+import br.net.dac.msauth2.model.dto.RejeicaoDTO;
 import br.net.dac.msauth2.model.dto.RespostaDTO;
 import br.net.dac.msauth2.model.dto.UsuarioAlteracaoDTO;
+import br.net.dac.msauth2.model.dto.UsuarioAprovacaoRejeicaoDTO;
 import br.net.dac.msauth2.model.dto.UsuarioCriacaoDTO;
 import br.net.dac.msauth2.model.dto.UsuarioDesativacaoDTO;
 import br.net.dac.msauth2.model.enums.TipoUsuarioEnum;
@@ -70,6 +73,32 @@ public class AuthController {
     }
   }
 
+  @PostMapping("auth/usuarios/{id}/aprovar")
+  public ResponseEntity<?> aprovar(@PathVariable String id) {
+    try {
+      UsuarioAprovacaoRejeicaoDTO usuarioAprovado = authService.aprovarCliente(id);
+
+      return ResponseEntity.ok(usuarioAprovado);
+    } catch (RuntimeException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao aprovar cliente: " + e.getMessage());
+    }
+  }
+
+  @PostMapping("auth/usuarios/{id}/rejeitar")
+  public ResponseEntity<?> rejeitar(@PathVariable String id, @RequestBody RejeicaoDTO dto) {
+    try {
+      UsuarioAprovacaoRejeicaoDTO usuarioRejeitadp = authService.rejeitarCliente(id, dto);
+
+      return ResponseEntity.ok(usuarioRejeitadp);
+    } catch (RuntimeException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao aprovar cliente: " + e.getMessage());
+    }
+  }
+
   @PutMapping("auth/usuarios/desativar")
   public ResponseEntity<?> desativarUsuario(@RequestBody UsuarioDesativacaoDTO usuarioDTO) {
     try {
@@ -125,12 +154,15 @@ public class AuthController {
   }
 
   @GetMapping("auth/usuarios/clientes")
-  public ResponseEntity<?> listarClientes() {
+  public ResponseEntity<?> listarClientes(@RequestParam(required = false) String filtro) {
     try {
-      List<RespostaDTO> usuarios =  authService.listarUsuarios(
-        List.of(TipoUsuarioEnum.CLIENTE)
-      );
+      List<RespostaDTO> usuarios = new ArrayList<>();
 
+      if ("para_aprovar".equals(filtro)) {
+        usuarios = authService.listarPendentes();
+      } else {
+        usuarios = authService.listarClientes();
+      }
       return ResponseEntity.ok(usuarios);
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao listar usuários: " + e.getMessage());
@@ -140,7 +172,11 @@ public class AuthController {
   @DeleteMapping("auth/usuarios/{id}")
   public ResponseEntity<?> rollback(@PathVariable String id) {
     try {
-      //authService.rollback(id);
+      UsuarioDesativacaoDTO usuarioDeletado = new UsuarioDesativacaoDTO();
+
+      usuarioDeletado.setId(id);
+
+      authService.rollback(usuarioDeletado);
 
       return ResponseEntity.noContent().build();
     } catch (UsuarioNaoEncontradoException e) {
