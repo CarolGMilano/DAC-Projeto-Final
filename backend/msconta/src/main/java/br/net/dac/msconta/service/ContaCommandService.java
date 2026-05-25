@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import br.net.dac.msconta.model.dto.ContaRequestDTO;
 import br.net.dac.msconta.model.dto.ContaResponseDTO;
 import br.net.dac.msconta.model.dto.OperacaoResponseDTO;
+import br.net.dac.msconta.model.dto.GerenteRequestDTO;
 import br.net.dac.msconta.model.dto.TransferenciaRequestDTO;
 import br.net.dac.msconta.model.dto.TransferenciaResponseDTO;
 import br.net.dac.msconta.model.dto.ValorDTO;
@@ -132,11 +133,7 @@ public class ContaCommandService {
             contaEncontrada.getData(),
             contaEncontrada.getSaldo(),
             limite,
-<<<<<<< HEAD
-            true
-=======
             contaEncontrada.getAtivo()
->>>>>>> f1a863361431a2faafecede9a074e2e7a192daee
         );
 
         Conta contaAtualizada = contaRepository.save(conta);
@@ -313,8 +310,9 @@ public class ContaCommandService {
             conta.getSaldo());
     }
 
-    public void redistribuiContasGerenteDeletado(String gerenteCpf) {
-        List<Conta> contas = contaRepository.findByGerenteCpf(gerenteCpf);
+    public void redistribuiContasGerenteDeletado(GerenteRequestDTO gerenteCpf) {
+        String cpf = gerenteCpf.getGerenteCpf();
+        List<Conta> contas = contaRepository.findByGerenteCpf(cpf);
         String novoGerente = contaRepository.findGerenteWithLeastActiveContas()
             .orElseThrow(() -> new RuntimeException("Nenhum gerente disponível"));
 
@@ -325,7 +323,7 @@ public class ContaCommandService {
         }
     }
 
-    public void distribuiContaGerenteNovo(String novoGerenteCpf) {
+    public void realocarCliente(GerenteRequestDTO GerenteCpf) {
         String gerenteCpf = contaRepository.findGerenteComMaisContasAtivasEMenorSaldoPositivo();
 
         if (gerenteCpf == null) return;
@@ -339,7 +337,7 @@ public class ContaCommandService {
         Conta contaSelecionada = contasDoGerente.get(new Random().nextInt(contasDoGerente.size()));
 
         // Troca o gerente
-        contaSelecionada.setGerenteCpf(novoGerenteCpf);
+        contaSelecionada.setGerenteCpf(gerenteCpf);
         contaRepository.save(contaSelecionada);
     }
 

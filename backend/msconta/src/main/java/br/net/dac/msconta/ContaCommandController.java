@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.net.dac.msconta.service.ContaCommandService;
@@ -17,17 +18,19 @@ import br.net.dac.msconta.model.dto.OperacaoResponseDTO;
 import br.net.dac.msconta.model.dto.TransferenciaRequestDTO;
 import br.net.dac.msconta.model.dto.TransferenciaResponseDTO;
 import br.net.dac.msconta.model.dto.ValorDTO;
+import br.net.dac.msconta.model.dto.GerenteRequestDTO;
 import br.net.dac.msconta.model.dto.ContaRequestDTO;
 
     @CrossOrigin
     @RestController
+    @RequestMapping("/contas")
 public class ContaCommandController {
 
     @Autowired
     private ContaCommandService commandService;
 
 
-    @PostMapping("/contas")
+    @PostMapping()
     public ResponseEntity<ContaResponseDTO> criarConta(@RequestBody ContaRequestDTO dto) {  
         try {
             //arrumar depois
@@ -38,7 +41,7 @@ public class ContaCommandController {
         }
     }
     
-    @PutMapping("/contas/{numero}/saldo")
+    @PutMapping("/{numero}/saldo")
     public ResponseEntity<ValorDTO> atualizarLimite(@PathVariable String numero, @RequestBody ValorDTO salario) {        
         try
         {
@@ -51,7 +54,7 @@ public class ContaCommandController {
         }
     }
 
-    @DeleteMapping("/contas/{numero}")
+    @DeleteMapping("/{numero}")
     public ResponseEntity<Void> removerConta(@PathVariable String numero) {
         try {
             commandService.desativarConta(numero);
@@ -62,7 +65,7 @@ public class ContaCommandController {
     }
 
 
-    @PostMapping("/contas/{numero}/depositar")
+    @PostMapping("/{numero}/depositar")
     public ResponseEntity<OperacaoResponseDTO> depositar(@PathVariable String numero, @RequestBody ValorDTO valorDTO) {
         try {
             OperacaoResponseDTO response = commandService.depositar(numero, valorDTO.getValor());
@@ -74,7 +77,7 @@ public class ContaCommandController {
         }
     }
 
-    @PostMapping("/contas/{numero}/transferir")
+    @PostMapping("/{numero}/transferir")
     public ResponseEntity<TransferenciaResponseDTO> transferir(@PathVariable String numero, @RequestBody TransferenciaRequestDTO dto) {
         try {
             TransferenciaResponseDTO response = commandService.transferir(numero, dto);
@@ -84,7 +87,7 @@ public class ContaCommandController {
         }
     }
 
-    @PostMapping("/contas/{numero}/sacar")
+    @PostMapping("/{numero}/sacar")
     public ResponseEntity<OperacaoResponseDTO> sacar(@PathVariable String numero, @RequestBody Double valor) {
         try {
             OperacaoResponseDTO response = commandService.sacar(numero, valor);
@@ -94,20 +97,20 @@ public class ContaCommandController {
         }
     }
 
-    @DeleteMapping("/contas/gerentes/{cpf}")
-    public ResponseEntity<Void> desativarGerente(@PathVariable String cpf) {
+    @PostMapping("/redistribuir-gerente")
+    public ResponseEntity<Void> desativarGerente(@RequestBody GerenteRequestDTO dto) {
         try {
-            commandService.redistribuiContasGerenteDeletado(cpf);
+            commandService.redistribuiContasGerenteDeletado(dto);
             return ResponseEntity.ok().build();
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @PostMapping("/contas/gerentes/{cpf}")
-    public ResponseEntity<Void> distribuiConta(@PathVariable String cpf) {
+    @PostMapping("/realocar-cliente")
+    public ResponseEntity<Void> realocarCliente(@RequestBody GerenteRequestDTO dto) {
         try {
-            commandService.distribuiContaGerenteNovo(cpf);
+            commandService.realocarCliente(dto);
             return ResponseEntity.ok().build();
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
