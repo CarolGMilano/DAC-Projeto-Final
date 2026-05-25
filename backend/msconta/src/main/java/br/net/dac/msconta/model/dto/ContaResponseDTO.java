@@ -1,84 +1,50 @@
 package br.net.dac.msconta.model.dto;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class ContaResponseDTO {
-    private boolean ativo;
-    private Long idGerente;
-    private Long idCliente;
-    private String numeroConta;
-    private Date dataCriacao;
-    private double saldo;
-    private double limite;
+    private Boolean ativo;
+    private String gerenteCpf;
+    private String clienteCpf;
+    private String numero;
+    private Date data;
+    private Double saldo;
+    private Double limite;
+    
 
-    public ContaResponseDTO() {
-    }
-
-    public ContaResponseDTO(boolean ativo, Long idGerente, Long idCliente, String numeroConta, Date dataCriacao, double saldo, double limite) {
+    
+    public ContaResponseDTO(Boolean ativo, String gerenteCpf, String clienteCpf, String numero, Date data, Double saldo,
+            Double limite) {
         this.ativo = ativo;
-        this.idGerente = idGerente;
-        this.idCliente = idCliente;
-        this.numeroConta = numeroConta;
-        this.dataCriacao = dataCriacao;
+        this.gerenteCpf = gerenteCpf;
+        this.clienteCpf = clienteCpf;
+        this.numero = numero;
+        this.data = data;
         this.saldo = saldo;
         this.limite = limite;
+        this.data = data;
     }
+    public Boolean isAtivo() { return ativo; }
+    public void setAtivo(Boolean ativo) {this.ativo = ativo; }
 
-    // Getters e Setters
+    public String getNumero() { return numero; }
+    public void setNumero(String numero) { this.numero = numero; }
 
-    public boolean isAtivo() {
-        return ativo;
-    }
+    public Date getData() { return data; }
+    public void setData(Date data) { this.data = data; }
 
-    public void setAtivo(boolean ativo) {
-        this.ativo = ativo;
-    }
+    public Double getSaldo() { return saldo; }
+    public void setSaldo(Double saldo) { this.saldo = saldo; }
+    
+    public Double getLimite() { return limite; }
+    public void setLimite(Double limite) { this.limite = limite; }
 
-    public Long getIdGerente() {
-        return idGerente;
-    }
+    public String getGerenteCpf() {return gerenteCpf;}
+    public void setGerenteCpf(String gerenteCpf) {this.gerenteCpf = gerenteCpf;}
 
-    public void setIdGerente(Long idGerente) {
-        this.idGerente = idGerente;
-    }
-
-    public Long getIdCliente() {
-        return idCliente;
-    }
-
-    public void setIdCliente(Long idCliente) {
-        this.idCliente = idCliente;
-    }
-
-    public String getNumeroConta() {
-        return numeroConta;
-    }
-
-    public void setNumeroConta(String numeroConta) {
-        this.numeroConta = numeroConta;
-    }
-
-    public Date getDataCriacao() {
-        return dataCriacao;
-    }
-
-    public void setDataCriacao(Date dataCriacao) {
-        this.dataCriacao = dataCriacao;
-    }
-
-    public double getSaldo() {
-        return saldo;
-    }
-
-    public void setSaldo(double saldo) {
-        this.saldo = saldo;
-    }
-
-    public double getLimite() {
-        return limite;
-    }
-
-    public void setLimite(double limite) {
-        this.limite = limite;
-    }
+    public String getClienteCpf() {return clienteCpf;}
+    public void setClienteCpf(String clienteCpf) {this.clienteCpf = clienteCpf;}    
+    
 }
+
+

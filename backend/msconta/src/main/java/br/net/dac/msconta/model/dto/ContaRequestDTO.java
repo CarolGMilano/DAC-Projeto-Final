@@ -1,63 +1,35 @@
 package br.net.dac.msconta.model.dto;
 
 public class ContaRequestDTO {
-    private boolean ativo;
-    private Long idGerente;
-    private Long idCliente;
-    private double saldo;
-    private double limite;
+    private String clienteCpf;
+    private String gerenteCpf;
+    private Double salario;
 
     public ContaRequestDTO() {
     }
 
-    public ContaRequestDTO(boolean ativo, Long idGerente, Long idCliente, double saldo, double limite) {
-        this.ativo = ativo;
-        this.idGerente = idGerente;
-        this.idCliente = idCliente;
-        this.saldo = saldo;
-        this.limite = limite;
+    public String getClienteCpf() {
+        return clienteCpf;
     }
 
-    // Getters e Setters
-
-    public boolean isAtivo() {
-        return ativo;
+    public void setClienteCpf(String clienteCpf) {
+        this.clienteCpf = clienteCpf;
     }
 
-    public void setAtivo(boolean ativo) {
-        this.ativo = ativo;
+    public String getGerenteCpf() {
+        return gerenteCpf;
     }
 
-    public Long getIdGerente() {
-        return idGerente;
+    public void setGerenteCpf(String gerenteCpf) {
+        this.gerenteCpf = gerenteCpf;
     }
 
-    public void setIdGerente(Long idGerente) {
-        this.idGerente = idGerente;
+    public Double getSalario() {
+        return salario;
     }
 
-    public Long getIdCliente() {
-        return idCliente;
-    }
-
-    public void setIdCliente(Long idCliente) {
-        this.idCliente = idCliente;
-    }
-
-    public double getSaldo() {
-        return saldo;
-    }
-
-    public void setSaldo(double saldo) {
-        this.saldo = saldo;
-    }
-
-    public double getLimite() {
-        return limite;
-    }
-
-    public void setLimite(double limite) {
-        this.limite = limite;
+    public void setSalario(Double salario) {
+        this.salario = salario;
     }
 
 }

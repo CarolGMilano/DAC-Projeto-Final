@@ -1,84 +1,83 @@
 package com.br.net.dac.mscontaquery.model.entity;
 
-import java.time.LocalDateTime;
 
-import com.br.net.dac.mscontaquery.model.MovimentacaoTipo;
+import java.sql.Date;
 
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-@Embeddable
+@Entity
+@Table(name = "movimentacao")
 public class Movimentacao {
 
-    private String id;
+@Id
+private Long id;
 
-    private MovimentacaoTipo tipo; 
-    // DEPOSITO, SAQUE, TRANSFERENCIA_ENTRADA, TRANSFERENCIA_SAIDA
+@Column(name = "data")
+private Date data;
 
-    private Double valor;
+@Column(name = "tipo")
+private String tipo;
 
-    private String origem;
-    private String destino;
+@Column(name = "origem")
+private String origem;
 
+@Column(name = "destino")
+private String destino;
 
-    private LocalDateTime data;
+@Column(name = "valor")
+private Double valor;
 
+public Long getId() {
+    return id;
+}
 
-    public String getId() {
-        return id;
-    }
+public void setId(Long id) {
+    this.id = id;
+}
 
+public String getOrigem() {
+    return origem;
+}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+public void setOrigem(String origem) {
+    this.origem = origem;
+}
 
+public String getDestino() {
+    return destino;
+}
 
-    public MovimentacaoTipo getTipo() {
-        return tipo;
-    }
+public void setDestino(String destino) {
+    this.destino = destino;
+}
 
+public Date getData() {
+    return data;
+}
 
-    public void setTipo(MovimentacaoTipo tipo) {
-        this.tipo = tipo;
-    }
+public void setData(Date data) {
+    this.data = data;
+}
 
+public String getTipo() {
+    return tipo;
+}
 
-    public Double getValor() {
-        return valor;
-    }
+public void setTipo(String tipo) {
+    this.tipo = tipo;
+}
 
+public Double getValor() {
+    return valor;
+}
 
-    public void setValor(Double valor) {
-        this.valor = valor;
-    }
-
-    public String getOrigem() {
-        return origem;
-    }
-
-
-    public void setOrigem(String origem) {
-        this.origem = origem;
-    }
-
-
-    public String getDestino() {
-        return destino;
-    }
-
-
-    public void setDestino(String destino) {
-        this.destino = destino;
-    }
-
-
-    public LocalDateTime getData() {
-        return data;
-    }
+public void setValor(Double valor) {
+    this.valor = valor;
+}
 
 
-    public void setData(LocalDateTime data) {
-        this.data = data;
-    }
 
 }

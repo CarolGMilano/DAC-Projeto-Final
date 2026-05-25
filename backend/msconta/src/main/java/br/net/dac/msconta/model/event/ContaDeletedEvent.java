@@ -2,29 +2,31 @@ package br.net.dac.msconta.model.event;
 
 public class ContaDeletedEvent {
     private boolean ativo;
-    private String numeroConta;
-    private Long idCliente;
-    private Long idGerente;
+    private String numero;
+    private String clienteCpf;
+    private String gerenteCpf;
     
 
     public ContaDeletedEvent() {}
 
-    public ContaDeletedEvent(boolean ativo, String numeroConta, Long idCliente, Long idGerente) {
+    public ContaDeletedEvent(boolean ativo, String numero, String clienteCpf, String gerenteCpf) {
         this.ativo = ativo;
-        this.numeroConta = numeroConta;
-        this.idCliente = idCliente;
-        this.idGerente = idGerente;
+        this.numero = numero;
+        this.clienteCpf = clienteCpf;
+        this.gerenteCpf = gerenteCpf;
     }
 
     public boolean isAtivo() { return ativo; }
     public void setAtivo(boolean ativo) { this.ativo = ativo; }
 
-    public String getNumeroConta() { return numeroConta; }
-    public void setNumeroConta(String numeroConta) { this.numeroConta = numeroConta; }
+    public String getNumero() { return numero; }
+    public void setNumero(String numero) { this.numero = numero;}
 
-    public Long getIdCliente() { return idCliente; }
-    public void setIdCliente(Long idCliente) { this.idCliente = idCliente; }
+    public String getClienteCpf() { return clienteCpf; }
+    public void setClienteCpf(String clienteCpf) { this.clienteCpf = clienteCpf; }
 
-    public Long getIdGerente() { return idGerente; }
-    public void setIdGerente(Long idGerente) { this.idGerente = idGerente; }    
+    public String getGerenteCpf() { return gerenteCpf; }
+    public void setGerenteCpf(String gerenteCpf) { this.gerenteCpf = gerenteCpf; }
+
+    
 }

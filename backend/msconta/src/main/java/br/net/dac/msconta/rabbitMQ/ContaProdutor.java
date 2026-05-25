@@ -11,6 +11,8 @@ import br.net.dac.msconta.model.event.ContaDeletedEvent;
 import br.net.dac.msconta.model.event.ContaUpdateFailedEvent;
 import br.net.dac.msconta.model.event.ContaUpdatedEvent;
 import br.net.dac.msconta.model.event.Evento;
+import br.net.dac.msconta.model.event.MovimentacaoCreatedEvent;
+import br.net.dac.msconta.model.event.MovimentacaoFailedEvent;
 
 @Component
 public class ContaProdutor {
@@ -18,10 +20,12 @@ public class ContaProdutor {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    public static final String CONTA_SUCESSO = "msconta.queue.sucesso";
-    public static final String CONTA_FALHA   = "msconta.queue.falha";
     public static final String CONTA_QUERY   = "msconta.queue.query";
 
+    public static final String CONTA_SUCESSO = "msconta.queue.sucesso";
+    public static final String CONTA_FALHA   = "msconta.queue.falha";
+
+// CONTA
     // CREATE
 
     public void contaCriacaoSucesso(ContaCreatedEvent payload) {
@@ -54,6 +58,17 @@ public class ContaProdutor {
     public void contaDeleteFalha(ContaDeleteFailedEvent payload) {
         publicar(CONTA_FALHA, "DELETAR_CONTA_FALHA", payload);
     }
+
+    // MOVIMENTACAO
+    public void movimentacaoCreateSucesso(MovimentacaoCreatedEvent payload) {
+        publicar(CONTA_SUCESSO, "CRIAR_MOVIMENTACAO_SUCESSO", payload);
+        publicar(CONTA_QUERY, "MOVIMENTACAO_CRIADA", payload);
+    }
+
+    public void movimentantacaoCreateFalha(MovimentacaoFailedEvent payload) {
+        publicar(CONTA_FALHA, "CRIAR_MOVIMENTACAO_FALHA", payload);
+    }
+
 
     // PUBLICAR
 

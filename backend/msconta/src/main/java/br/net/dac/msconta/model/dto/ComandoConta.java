@@ -2,11 +2,11 @@ package br.net.dac.msconta.model.dto;
 
 public class ComandoConta {
     private String tipo;
-    private ContaDTO payload;
+    private ContaResponseDTO payload;
 
     public ComandoConta(){}
 
-    public ComandoConta(String tipo, ContaDTO payload) {
+    public ComandoConta(String tipo, ContaResponseDTO payload) {
         this.tipo = tipo;
         this.payload = payload;
     }
@@ -14,6 +14,6 @@ public class ComandoConta {
     public String getTipo() { return tipo; }
     public void setTipo(String tipo) { this.tipo = tipo; }
 
-    public ContaDTO getPayload() { return payload; }
-    public void setPayload(ContaDTO payload) { this.payload = payload; }   
+    public ContaResponseDTO getPayload() { return payload; }
+    public void setPayload(ContaResponseDTO payload) { this.payload = payload; }   
 }

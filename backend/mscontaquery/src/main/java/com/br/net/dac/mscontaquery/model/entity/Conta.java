@@ -1,13 +1,11 @@
 package com.br.net.dac.mscontaquery.model.entity;
 
-import java.time.LocalDate;
-import java.util.List;
 
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.ElementCollection;
+import java.sql.Date;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 
 @Entity
@@ -15,104 +13,80 @@ import jakarta.persistence.Table;
 public class Conta {
 
     @Id
+    @Column(name = "numero")
     private String numero;
 
-    private Cliente cliente;
+    @Column(name = "gerente_cpf")
+    private String gerenteCpf;
+
+    @Column(name = "cliente_cpf")
+    private String clienteCpf;
+
+    @Column(name = "data_criacao")
+    private Date data;
+
+    @Column(name = "saldo")
     private Double saldo;
+
+    @Column(name = "limite")
     private Double limite;
-    private Double salario;
-    private Gerente gerente;    
 
-    private String status; // ATIVA, PENDENTE, INATIVA
-
-    private LocalDate dataCriacao;
-
-    @ElementCollection
-    @CollectionTable(
-        name = "movimentacoes",
-        joinColumns = @JoinColumn(name = "conta_id")
-    )
-    private List<Movimentacao> movimentacoes;
-
-    public Conta() {
-    }
-
-    public String getNumero() {
-        return numero;
-    }
-
-    public void setNumero(String numero) {
-        this.numero = numero;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
-
-    public Double getSaldo() {
-        return saldo;
-    }
-
-    public void setSaldo(Double saldo) {
-        this.saldo = saldo;
-    }
-
-    public Double getLimite() {
-        return limite;
-    }
-
-    public void setLimite(Double limite) {
-        this.limite = limite;
-    }
-
-    public Double getSalario() {
-        return salario;
-    }
-
-    public void setSalario(Double salario) {
-        this.salario = salario;
-    }
-
-    public Gerente getGerente() {
-        return gerente;
-    }
-
-    public void setGerente(Gerente gerente) {
-        this.gerente = gerente;
-    }
-
+    @Column(name = "ativo")
+    private Boolean ativo;
     
+public String getNumero() {
+    return numero;
+}
 
-    public LocalDate getDataCriacao() {
-        return dataCriacao;
-    }
+public String getGerenteCpf() {
+    return gerenteCpf;
+}
 
-    public void setDataCriacao(LocalDate dataCriacao) {
-        this.dataCriacao = dataCriacao;
-    }
+public void setGerenteCpf(String gerenteCpf) {
+    this.gerenteCpf = gerenteCpf;
+}
 
-    public List<Movimentacao> getMovimentacoes() {
-        return movimentacoes;
-    }
+public String getClienteCpf() {
+    return clienteCpf;
+}
 
-    public void setMovimentacoes(List<Movimentacao> movimentacoes) {
-        this.movimentacoes = movimentacoes;
-    }
+public void setClienteCpf(String clienteCpf) {
+    this.clienteCpf = clienteCpf;
+}
 
-    public String getStatus() {
-        return status;
-    }
+public Date getData() {
+    return data;
+}
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+public void setData(Date data) {
+    this.data = data;
+}
 
-    // Getters e Setters
-    
+public void setNumero(String numero) {
+    this.numero = numero;
+}
 
+public Double getSaldo() {
+    return saldo;
+}
 
+public void setSaldo(Double saldo) {
+    this.saldo = saldo;
+}
+
+public Double getLimite() {
+    return limite;
+}
+
+public void setLimite(Double limite) {
+    this.limite = limite;
+}
+
+public Boolean getAtivo() {
+    return ativo;
+}
+
+public void setAtivo(Boolean ativo) {
+    this.ativo = ativo;
+}
 }

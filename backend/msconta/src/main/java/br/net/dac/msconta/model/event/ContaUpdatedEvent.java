@@ -1,22 +1,29 @@
 package br.net.dac.msconta.model.event;
 
-import java.sql.Date;
-
 public class ContaUpdatedEvent {
-    private String numeroConta;
-    private boolean ativo; 
-    
-    public ContaUpdatedEvent() {
+    private String numero; // Para encontrar a conta que foi atualizada
+    private String gerenteCpf;
+    private Double saldo;
+    private Double limite;
+            
+    public ContaUpdatedEvent() { }
+
+    public ContaUpdatedEvent(String numero, String gerenteCpf, Double saldo, Double limite) {
+        this.numero = numero;
+        this.gerenteCpf = gerenteCpf;
+        this.saldo = saldo;
+        this.limite = limite;
     }
 
-    public ContaUpdatedEvent(String numeroConta, boolean ativo) {
-        this.numeroConta = numeroConta;
-        this.ativo = ativo;
-    }
+    public String getNumero() { return numero; }
+    public void setNumero(String numero) { this.numero = numero; }
 
-    public String getNumeroConta() { return numeroConta; }
-    public void setNumeroConta(String numeroConta) { this.numeroConta = numeroConta; }
+    public String getGerenteCpf() { return gerenteCpf; }
+    public void setGerenteCpf(String gerenteCpf) { this.gerenteCpf = gerenteCpf; }
 
-    public boolean isAtivo() { return ativo; }
-    public void setAtivo(boolean ativo) { this.ativo = ativo; }
+    public Double getSaldo() { return saldo; }
+    public void setSaldo(Double saldo) { this.saldo = saldo; }
+
+    public Double getLimite() { return limite; }
+    public void setLimite(Double limite) { this.limite = limite; }
 }
