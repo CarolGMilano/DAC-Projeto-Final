@@ -12,13 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.net.dac.msconta.service.ContaCommandService;
-import br.net.dac.msconta.model.dto.ContaCreateRequestDTO;
 import br.net.dac.msconta.model.dto.ContaResponseDTO;
 import br.net.dac.msconta.model.dto.OperacaoResponseDTO;
 import br.net.dac.msconta.model.dto.TransferenciaRequestDTO;
 import br.net.dac.msconta.model.dto.TransferenciaResponseDTO;
 import br.net.dac.msconta.model.dto.ValorDTO;
-import br.net.dac.msconta.model.dto.ContaUpdateRequestDTO;
+import br.net.dac.msconta.model.dto.ContaRequestDTO;
 
     @CrossOrigin
     @RestController
@@ -29,7 +28,7 @@ public class ContaCommandController {
 
 
     @PostMapping("/contas")
-    public ResponseEntity<ContaResponseDTO> criarConta(@RequestBody ContaCreateRequestDTO dto) {  
+    public ResponseEntity<ContaResponseDTO> criarConta(@RequestBody ContaRequestDTO dto) {  
         try {
             //arrumar depois
             ContaResponseDTO response = commandService.criarConta(dto);
@@ -39,11 +38,11 @@ public class ContaCommandController {
         }
     }
     
-    @PutMapping("/contas/{numero}")
-    public ResponseEntity<ContaResponseDTO> alterarConta(@PathVariable String numero, @RequestBody ContaUpdateRequestDTO conta) {        
+    @PutMapping("/contas/{numero}/saldo")
+    public ResponseEntity<ValorDTO> atualizarLimite(@PathVariable String numero, @RequestBody ValorDTO salario) {        
         try
         {
-            ContaResponseDTO response = commandService.atualizarConta(numero, conta);
+            ValorDTO response = commandService.atualizarLimite(numero, salario);
             return ResponseEntity.ok(response);
         }
         catch (RuntimeException ex)
@@ -95,23 +94,23 @@ public class ContaCommandController {
         }
     }
 
-    @PutMapping("/contas/desativa/{cpf}")
-    public ResponseEntity desativarGerente(@PathVariable String cpf) {
+    @DeleteMapping("/contas/gerentes/{cpf}")
+    public ResponseEntity<Void> desativarGerente(@PathVariable String cpf) {
         try {
             commandService.redistribuiContasGerenteDeletado(cpf);
-            return ResponseEntity.ok(HttpStatus.OK);
+            return ResponseEntity.ok().build();
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.badRequest().build();
         }
     }
 
-    @PutMapping("/contas/gerenteNovo/{cpf}")
-    public ResponseEntity distribuiConta(@PathVariable String cpf) {
+    @PostMapping("/contas/gerentes/{cpf}")
+    public ResponseEntity<Void> distribuiConta(@PathVariable String cpf) {
         try {
             commandService.distribuiContaGerenteNovo(cpf);
-            return ResponseEntity.ok(HttpStatus.OK);
+            return ResponseEntity.ok().build();
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.badRequest().build();
         }
     }
 
