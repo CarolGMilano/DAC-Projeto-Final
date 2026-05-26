@@ -60,6 +60,7 @@ public class ContaProdutor {
     }
 
     // MOVIMENTACAO
+        // ABRANGE SAQUE, DEPÓSITO, TRANSFERÊNCIA
     public void movimentacaoCreateSucesso(MovimentacaoCreatedEvent payload) {
         publicar(CONTA_SUCESSO, "CRIAR_MOVIMENTACAO_SUCESSO", payload);
         publicar(CONTA_QUERY, "MOVIMENTACAO_CRIADA", payload);

@@ -66,7 +66,7 @@ public class ContaCommandController {
     public ResponseEntity<OperacaoResponseDTO> depositar(@PathVariable String numero, @RequestBody ValorDTO valorDTO) {
         try {
             OperacaoResponseDTO response = commandService.depositar(numero, valorDTO.getValor());
-            System.out.println("EXCEÇÃO TA AQUI O TIDAL WAVE ATHADUFUHS:" + response);
+            System.out.println("PostMapping /contas/{numero}/depositar: OperacaoResponseDTO Retornado:" + response.conta + ", " + response.data + ", " + response.saldo);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             System.out.println("EXCEÇÃO TA AQUI O TIDAL WAVE ATHADUFUHS:" + e.getMessage());
@@ -85,9 +85,9 @@ public class ContaCommandController {
     }
 
     @PostMapping("/contas/{numero}/sacar")
-    public ResponseEntity<OperacaoResponseDTO> sacar(@PathVariable String numero, @RequestBody Double valor) {
+    public ResponseEntity<OperacaoResponseDTO> sacar(@PathVariable String numero, @RequestBody ValorDTO valorDTO) {
         try {
-            OperacaoResponseDTO response = commandService.sacar(numero, valor);
+            OperacaoResponseDTO response = commandService.sacar(numero, valorDTO.getValor());
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

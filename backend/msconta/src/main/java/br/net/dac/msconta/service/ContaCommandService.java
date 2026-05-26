@@ -132,11 +132,7 @@ public class ContaCommandService {
             contaEncontrada.getData(),
             contaEncontrada.getSaldo(),
             limite,
-<<<<<<< HEAD
             true
-=======
-            contaEncontrada.getAtivo()
->>>>>>> f1a863361431a2faafecede9a074e2e7a192daee
         );
 
         Conta contaAtualizada = contaRepository.save(conta);
@@ -233,10 +229,40 @@ public class ContaCommandService {
         movimentacao.setData(new Date(System.currentTimeMillis()));
         movimentacao.setTipo("TRANSFERENCIA");
 
-        contaRepository.save(destino);
-        contaRepository.save(origem);
+        // Enviar alterações para o query
+            // Conta Destino
+        Conta contaTransferenciaDestinoAlterada = contaRepository.save(destino);
+        contaProdutor.contaUpdateSucesso(
+            new ContaUpdatedEvent(
+                contaTransferenciaDestinoAlterada.getNumero(),
+                contaTransferenciaDestinoAlterada.getGerenteCpf(),
+                contaTransferenciaDestinoAlterada.getSaldo(),
+                contaTransferenciaDestinoAlterada.getLimite()
+            )
+        );
+            // Conta Origem
+        Conta contaTransferenciaOrigemAlterada = contaRepository.save(origem);
+        contaProdutor.contaUpdateSucesso(
+            new ContaUpdatedEvent(
+                contaTransferenciaOrigemAlterada.getNumero(),
+                contaTransferenciaOrigemAlterada.getGerenteCpf(),
+                contaTransferenciaOrigemAlterada.getSaldo(),
+                contaTransferenciaOrigemAlterada.getLimite()
+            )
+        );
 
-        movimentacaoRepository.save(movimentacao);
+            // Movimentação
+        Movimentacao movimentacaoTransferenciaInserida = movimentacaoRepository.save(movimentacao);
+        contaProdutor.movimentacaoCreateSucesso(
+            new MovimentacaoCreatedEvent(
+                movimentacaoTransferenciaInserida.getId(),
+                movimentacaoTransferenciaInserida.getTipo(),
+                movimentacaoTransferenciaInserida.getValor(),
+                movimentacaoTransferenciaInserida.getData(),
+                movimentacaoTransferenciaInserida.getOrigem() != null ? movimentacaoTransferenciaInserida.getOrigem().getClienteCpf() : null,
+                movimentacaoTransferenciaInserida.getDestino().getClienteCpf()
+            )
+        );
 
         return new TransferenciaResponseDTO(
             movimentacao.getOrigem().getNumero(), 
@@ -270,6 +296,7 @@ public class ContaCommandService {
         );
 
         Movimentacao movimentacaoInserida = movimentacaoRepository.save(movimentacao);
+
         contaProdutor.movimentacaoCreateSucesso(
             new MovimentacaoCreatedEvent(
                 movimentacaoInserida.getId(),
@@ -286,6 +313,7 @@ public class ContaCommandService {
             movimentacao.getData(), 
             conta.getSaldo());
     }
+
     public OperacaoResponseDTO sacar(String numero, Double valor) {
         Conta conta = contaRepository.findById(numero)
             .orElseThrow(() -> new RuntimeException("Conta não encontrada: " + numero));
@@ -303,9 +331,29 @@ public class ContaCommandService {
         movimentacao.setData(new Date(System.currentTimeMillis()));
         movimentacao.setTipo("SAQUE");
 
-        contaRepository.save(conta);
-
-        movimentacaoRepository.save(movimentacao);    
+        // Envia os dados salvos para a query
+        Conta contaAlterada = contaRepository.save(conta);
+        contaProdutor.contaUpdateSucesso(
+            new ContaUpdatedEvent(
+                contaAlterada.getNumero(),
+                contaAlterada.getGerenteCpf(),
+                contaAlterada.getSaldo(),
+                contaAlterada.getLimite()
+            )
+        );
+        
+        Movimentacao movimentacaoInserida = movimentacaoRepository.save(movimentacao);    
+            contaProdutor.movimentacaoCreateSucesso(
+                new MovimentacaoCreatedEvent(
+                movimentacaoInserida.getId(),
+                movimentacaoInserida.getTipo(),
+                movimentacaoInserida.getValor(),
+                movimentacaoInserida.getData(),
+                movimentacaoInserida.getOrigem() != null ? movimentacaoInserida.getOrigem().getClienteCpf() : null,
+                movimentacaoInserida.getDestino().getClienteCpf()
+                )
+            );
+        
 
         return new OperacaoResponseDTO(
             conta.getNumero(),
