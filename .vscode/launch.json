@@ -1,0 +1,62 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Current File",
+      "request": "launch",
+      "mainClass": "${file}"
+    },
+    {
+      "type": "java",
+      "name": "Msauth2Application",
+      "request": "launch",
+      "mainClass": "br.net.dac.msauth2.Msauth2Application",
+      "vmArgs": "-Xms64m -Xmx256m",
+      "projectName": "msauth2"
+    },
+    {
+      "type": "java",
+      "name": "Mscliente2Application",
+      "request": "launch",
+      "mainClass": "br.net.dac.mscliente2.Mscliente2Application",
+      "vmArgs": "-Xms64m -Xmx256m",
+      "projectName": "mscliente2"
+    },
+    {
+      "type": "java",
+      "name": "MscontaqueryApplication",
+      "request": "launch",
+      "mainClass": "com.br.net.dac.mscontaquery.MscontaqueryApplication",
+      "vmArgs": "-Xms64m -Xmx256m",
+      "projectName": "mscontaquery"
+    },
+    {
+      "type": "java",
+      "name": "MscontaApplication",
+      "request": "launch",
+      "mainClass": "br.net.dac.msconta.MscontaApplication",
+      "vmArgs": "-Xms64m -Xmx256m",
+      "projectName": "msconta"
+    },
+    {
+      "type": "java",
+      "name": "MsgerenteApplication",
+      "request": "launch",
+      "mainClass": "br.net.dac.msgerente.MsgerenteApplication",
+      "vmArgs": "-Xms64m -Xmx256m",
+      "projectName": "msgerente"
+    },
+    {
+      "type": "java",
+      "name": "SagaApplication",
+      "request": "launch",
+      "mainClass": "br.net.dac.saga.SagaApplication",
+      "vmArgs": "-Xms64m -Xmx256m",
+      "projectName": "saga"
+    }
+  ]
+}
