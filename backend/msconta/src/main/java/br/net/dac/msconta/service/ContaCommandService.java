@@ -132,11 +132,7 @@ public class ContaCommandService {
             contaEncontrada.getData(),
             contaEncontrada.getSaldo(),
             limite,
-<<<<<<< HEAD
-            true
-=======
             contaEncontrada.getAtivo()
->>>>>>> f1a863361431a2faafecede9a074e2e7a192daee
         );
 
         Conta contaAtualizada = contaRepository.save(conta);

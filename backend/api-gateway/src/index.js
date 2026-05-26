@@ -527,28 +527,33 @@ app.get('/clientes/:cpf', validacaoToken, async (req, res) => {
     const clienteResp = await fetch(`http://localhost:8082/clientes/${cpf}`);
 
     if (!clienteResp.ok) {
-      const erro = await clienteResp.text();
-      return res.status(clienteResp.status).send(erro);
+      const erro = await clienteResp.json();
+
+      return res.status(clienteResp.status).json(erro);
     }
 
     const cliente = await clienteResp.json();
 
-    const usuarioResp = await fetch(`http://localhost:5000/auth/usuarios/${cliente.idUsuario}`);
+    const authResp = await fetch(`http://localhost:5000/auth/usuarios/${cliente.idUsuario}`);
 
-    let usuario = null;
+    if (!authResp.ok) {
+      const erro = await authResp.json();
 
-    if (usuarioResp.ok) {
-      usuario = await usuarioResp.json();
+      return res.status(authResp.status).json(erro);
     }
 
+    const usuario = await authResp.json();
+
     /*
-    const contasResp = await fetch(`http://localhost:8081/contas`);
+    const contaResp = await fetch(`http://localhost:8081/contas/cliente/${cpf}`);
 
-    const contas = await contasResp.json();
+    if (!contaResp.ok) {
+      const erro = await contaResp.json();
 
-    const conta = contas.find(c =>
-      String(c.cpfCliente) === String(cliente.cpf)
-    );
+      return res.status(contaResp.status).json(erro);
+    }
+
+    const conta = await contasResp.json();
     */
 
     let gerente = null;
@@ -557,15 +562,23 @@ app.get('/clientes/:cpf', validacaoToken, async (req, res) => {
     if (cliente.cpfGerente) {
       const gerenteResp = await fetch(`http://localhost:8083/gerentes/${cliente.cpfGerente}`);
 
-      if (gerenteResp.ok) {
-        gerente = await gerenteResp.json();
+      if (!gerenteResp.ok) {
+        const erro = await gerenteResp.json();
 
-        const usuarioGerenteResp = await fetch(`http://localhost:5000/auth/usuarios/${gerente.idUsuario}`);
-
-        if (usuarioGerenteResp.ok) {
-          usuarioGerente = await usuarioGerenteResp.json();
-        }
+        return res.status(gerenteResp.status).json(erro);
       }
+
+      gerente = await gerenteResp.json();
+
+      const usuarioGerenteResp = await fetch(`http://localhost:5000/auth/usuarios/${gerente.idUsuario}`);
+
+      if (!usuarioGerenteResp.ok) {
+        const erro = await usuarioGerenteResp.json();
+
+        return res.status(usuarioGerenteResp.status).json(erro);
+      }
+
+      usuarioGerente = await usuarioGerenteResp.json();
     }
     
 
@@ -597,7 +610,157 @@ app.get('/clientes/:cpf', validacaoToken, async (req, res) => {
   }
 });
 app.put('/clientes/:cpf', validacaoToken, async (req, res) => {
+  try {
+    const { cpf } = req.params;
 
+    const {
+      nome,
+      email,
+      salario,
+      endereco,
+      cep,
+      cidade,
+      estado
+    } = req.body;
+
+    /*
+      Endpoint para buscar dados da conta do cliente, só para validar se existe conta para esse cliente.
+
+      Pode retornar as seguintes informações se existir a conta para o cliente:
+        conta
+        saldo
+        limite
+    */
+    const contaBusca = await fetch(
+      `http://localhost:8081/contas/cliente/${cpf}`
+    );
+
+    if (!contaBusca.ok) {
+      const erro = await contaBusca.json();
+
+      return res.status(contaBusca.status).json(erro);
+    }
+
+    const conta = await contaBusca.json();
+    const numeroConta = conta.numero;
+
+    const clienteBusca = await fetch(
+      `http://localhost:8083/clientes/${cpf}`
+    );
+
+    if (!clienteBusca.ok) {
+      const erro = await clienteBusca.json();
+      return res.status(clienteBusca.status).json(erro);
+    }
+
+    const cliente = await clienteBusca.json();
+    const idUsuario = cliente.idUsuario;
+
+    const usuarioExistenteResp = await fetch(
+      `http://localhost:5000/auth/usuarios/email/${email}`
+    );
+
+    if (usuarioExistenteResp.ok) {
+      const usuarioExistente = await usuarioExistenteResp.json();
+
+      //Verifica se o email duplicado é de outra pessoa
+      if (String(usuarioExistente.id) !== String(idUsuario)) {
+        return res.status(409).json({
+          tipo: 'email',
+          message: 'Email já cadastrado. Tente novamente.'
+        });
+      }
+    }
+
+    const authResp = await fetch(
+      `http://localhost:5000/auth/usuarios`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id: idUsuario,
+          email
+        })
+      }
+    );
+
+    if (!authResp.ok) {
+      const erro = await authResp.json();
+      return res.status(authResp.status).json(erro);
+    }
+
+    const authAtualizado = await authResp.json();
+
+    const clienteResp = await fetch(
+      `http://localhost:8083/clientes/${cpf}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          nome,
+          salario,
+          endereco,
+          cep,
+          cidade,
+          estado
+        })
+      }
+    );
+
+    if (!clienteResp.ok) {
+      const erro = await clienteResp.json();
+      return res.status(clienteResp.status).json(erro);
+    }
+
+    const clienteAtualizado = await clienteResp.json();
+
+    const contaResp = await fetch(
+      `http://localhost:8081/contas/${numeroConta}/saldo`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          valor: salario
+        })
+      }
+    );
+
+    if (!contaResp.ok) {
+      const erro = await contaResp.json();
+
+      return res.status(contaResp.status).json({
+        message: 'Erro ao atualizar conta',
+        detalhe: erro
+      });
+    }
+
+    await contaResp.json();
+
+    return res.status(200).json({
+      cpf: clienteAtualizado.cpf,
+      nome: clienteAtualizado.nome,
+      email: authAtualizado.email,
+      salario: clienteAtualizado.salario,
+      endereco: clienteAtualizado.endereco,
+      cep: clienteAtualizado.cep,
+      cidade: clienteAtualizado.cidade,
+      estado: clienteAtualizado.estado
+    });
+
+  } catch (err) {
+    console.error(err);
+
+    return res.status(500).json({
+      erro: 'Erro interno no gateway',
+      detalhe: err.message
+    });
+  }
 });
 app.post('/clientes/:cpf/aprovar', validacaoToken, async (req, res) => {
   try{
