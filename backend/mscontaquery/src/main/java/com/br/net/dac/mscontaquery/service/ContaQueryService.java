@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.br.net.dac.mscontaquery.model.dto.ContaResponseDTO;
 import com.br.net.dac.mscontaquery.model.dto.ExtratoResponseDTO;
+import com.br.net.dac.mscontaquery.model.dto.MovimentacaoRequestDTO;
+import com.br.net.dac.mscontaquery.model.dto.MovimentacaoResponseDTO;
 import com.br.net.dac.mscontaquery.model.dto.SaldoResponseDTO;
 import com.br.net.dac.mscontaquery.model.entity.Conta;
 import com.br.net.dac.mscontaquery.model.entity.Movimentacao;
@@ -19,7 +21,11 @@ public class ContaQueryService {
 
     @Autowired
     private ContaRepository contaRepository;
+
+    @Autowired
     private MovimentacaoRepository movimentacaoRepository;
+
+    // Métodos de contas
 
     public List<ContaResponseDTO> buscarContas() {
         return contaRepository.findAll().stream()
@@ -57,4 +63,43 @@ public class ContaQueryService {
 
     //update, delete e create do command
 
+    // Métodos de Movimentacao
+
+    public MovimentacaoResponseDTO criarMovimentacao (MovimentacaoRequestDTO requestDTO) {
+        
+        // Busca no BD da query se existe aconta com o número
+        // Conta conta =   contaRepository.findById(requestDTO.getDestino())
+        //                 .orElseThrow(() -> new RuntimeException("Conta não encontrada " + requestDTO.findById));
+        
+        // Primeiro: Registrar a alteração na conta
+        // Buscar a conta do cliente pelo seu CPF
+        Conta contaAlterar = contaRepository.findTop1ByClienteCpf(requestDTO.getDestino());
+        // Altera o saldo e salva na conta
+        contaAlterar.setSaldo(contaAlterar.getSaldo() + requestDTO.getValor());
+        contaRepository.save(contaAlterar);
+        
+        // Segundo: Registrar a movimentação na conta
+        // Criação da movimentação a ser registrada no BD, obtendo os dados do DTO
+        Movimentacao movimentacao = new Movimentacao();
+            movimentacao.setId(requestDTO.getId());
+            movimentacao.setData(requestDTO.getData());
+            movimentacao.setTipo(requestDTO.getTipo());
+            movimentacao.setOrigem(requestDTO.getOrigem());
+            movimentacao.setDestino(requestDTO.getDestino());
+            movimentacao.setValor(requestDTO.getValor());
+
+
+            // Salva na tabela movimentação
+            Movimentacao movimentacaoAdicionada = movimentacaoRepository.save(movimentacao);
+
+            return new MovimentacaoResponseDTO(
+                movimentacao.getId(),
+                movimentacaoAdicionada.getTipo(),                
+                movimentacaoAdicionada.getValor(),
+                movimentacaoAdicionada.getData(),
+                movimentacaoAdicionada.getOrigem(),
+                movimentacaoAdicionada.getDestino()
+            );
+
+    }
 }
