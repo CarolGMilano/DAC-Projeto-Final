@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.br.net.dac.mscontaquery.model.dto.ContaResponseDTO;
+import com.br.net.dac.mscontaquery.model.dto.ContaResumoDTO;
 import com.br.net.dac.mscontaquery.model.dto.ExtratoResponseDTO;
 import com.br.net.dac.mscontaquery.model.dto.MovimentacaoRequestDTO;
 import com.br.net.dac.mscontaquery.model.dto.MovimentacaoResponseDTO;
@@ -37,6 +38,14 @@ public class ContaQueryService {
         return contaRepository.findGerenteWithLeastActiveContas()
                 .orElseThrow(() -> new RuntimeException("Nenhum gerente disponível"));
     }
+
+    public ContaResumoDTO validarClienteExiste(String cpf) {
+        Conta conta = contaRepository.findByCpfCliente(cpf)
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado para o CPF: " + cpf));
+
+        return ContaQueryMapper.toResumoDTO(conta);
+    }
+
 
     public SaldoResponseDTO consultarSaldo(String numero) {
         Conta conta = contaRepository.findById(numero)
