@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.br.net.dac.mscontaquery.model.dto.ContaResponseDTO;
+import com.br.net.dac.mscontaquery.model.dto.ContaResumoDTO;
 import com.br.net.dac.mscontaquery.model.dto.ExtratoResponseDTO;
 import com.br.net.dac.mscontaquery.model.dto.SaldoResponseDTO;
 import com.br.net.dac.mscontaquery.service.ContaQueryService;
@@ -14,30 +15,56 @@ import com.br.net.dac.mscontaquery.service.ContaQueryService;
 
 @RestController
 @CrossOrigin
+@RequestMapping()
 public class ContaQueryController {
 
     @Autowired
     private ContaQueryService service;
 
+    @GetMapping("/{numero}/saldo")
+    public ResponseEntity<SaldoResponseDTO> consultarSaldo(@PathVariable String numero) {
+        try {
+            return ResponseEntity.ok(service.consultarSaldo(numero));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 
-    @GetMapping("/contas/{numero}/saldo")
-    public ResponseEntity<SaldoResponseDTO> consultarSaldo(@PathVariable String numero) { 
-        return ResponseEntity.ok(service.consultarSaldo(numero)); 
+    @GetMapping("/{numero}/extrato")
+    public ResponseEntity<ExtratoResponseDTO> consultarExtrato(@PathVariable String numero) {
+        try {
+            return ResponseEntity.ok(service.consultarExtrato(numero));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
-    
-    @GetMapping("/contas/{numero}/extrato")
-    public ResponseEntity<ExtratoResponseDTO> consultarExtrato(@PathVariable String numero) { 
-        return ResponseEntity.ok(service.consultarExtrato(numero)); 
-    }
-    
-    @GetMapping("/contas")
+
+    @GetMapping()
     public ResponseEntity<List<ContaResponseDTO>> buscarContas() {
-        return ResponseEntity.ok(service.buscarContas());
+        try {
+            return ResponseEntity.ok(service.buscarContas());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
-    
-    @GetMapping("/contas/disponivel")
+
+    @GetMapping("/disponivel")
     public ResponseEntity<String> buscarGerenteDisponivel() {
-        return ResponseEntity.ok(service.buscarGerenteDisponivel());
+        try {
+            return ResponseEntity.ok(service.buscarGerenteDisponivel());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
+
+    @GetMapping("/cliente/{cpf}")
+    public ResponseEntity<ContaResumoDTO> validarClienteExiste(@PathVariable String cpf) {
+        try {
+            return ResponseEntity.ok(service.validarClienteExiste(cpf));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
 
 }
