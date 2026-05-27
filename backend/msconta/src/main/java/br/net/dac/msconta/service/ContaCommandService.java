@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import br.net.dac.msconta.model.dto.ContaRequestDTO;
 import br.net.dac.msconta.model.dto.ContaResponseDTO;
 import br.net.dac.msconta.model.dto.OperacaoResponseDTO;
+import br.net.dac.msconta.model.dto.GerenteRequestDTO;
 import br.net.dac.msconta.model.dto.TransferenciaRequestDTO;
 import br.net.dac.msconta.model.dto.TransferenciaResponseDTO;
 import br.net.dac.msconta.model.dto.ValorDTO;
@@ -229,10 +230,40 @@ public class ContaCommandService {
         movimentacao.setData(new Date(System.currentTimeMillis()));
         movimentacao.setTipo("TRANSFERENCIA");
 
-        contaRepository.save(destino);
-        contaRepository.save(origem);
+        // Enviar alterações para o query
+            // Conta Destino
+        Conta contaTransferenciaDestinoAlterada = contaRepository.save(destino);
+        contaProdutor.contaUpdateSucesso(
+            new ContaUpdatedEvent(
+                contaTransferenciaDestinoAlterada.getNumero(),
+                contaTransferenciaDestinoAlterada.getGerenteCpf(),
+                contaTransferenciaDestinoAlterada.getSaldo(),
+                contaTransferenciaDestinoAlterada.getLimite()
+            )
+        );
+            // Conta Origem
+        Conta contaTransferenciaOrigemAlterada = contaRepository.save(origem);
+        contaProdutor.contaUpdateSucesso(
+            new ContaUpdatedEvent(
+                contaTransferenciaOrigemAlterada.getNumero(),
+                contaTransferenciaOrigemAlterada.getGerenteCpf(),
+                contaTransferenciaOrigemAlterada.getSaldo(),
+                contaTransferenciaOrigemAlterada.getLimite()
+            )
+        );
 
-        movimentacaoRepository.save(movimentacao);
+            // Movimentação
+        Movimentacao movimentacaoTransferenciaInserida = movimentacaoRepository.save(movimentacao);
+        contaProdutor.movimentacaoCreateSucesso(
+            new MovimentacaoCreatedEvent(
+                movimentacaoTransferenciaInserida.getId(),
+                movimentacaoTransferenciaInserida.getTipo(),
+                movimentacaoTransferenciaInserida.getValor(),
+                movimentacaoTransferenciaInserida.getData(),
+                movimentacaoTransferenciaInserida.getOrigem() != null ? movimentacaoTransferenciaInserida.getOrigem().getClienteCpf() : null,
+                movimentacaoTransferenciaInserida.getDestino().getClienteCpf()
+            )
+        );
 
         return new TransferenciaResponseDTO(
             movimentacao.getOrigem().getNumero(), 
@@ -266,6 +297,7 @@ public class ContaCommandService {
         );
 
         Movimentacao movimentacaoInserida = movimentacaoRepository.save(movimentacao);
+
         contaProdutor.movimentacaoCreateSucesso(
             new MovimentacaoCreatedEvent(
                 movimentacaoInserida.getId(),
@@ -282,6 +314,7 @@ public class ContaCommandService {
             movimentacao.getData(), 
             conta.getSaldo());
     }
+
     public OperacaoResponseDTO sacar(String numero, Double valor) {
         Conta conta = contaRepository.findById(numero)
             .orElseThrow(() -> new RuntimeException("Conta não encontrada: " + numero));
@@ -299,9 +332,29 @@ public class ContaCommandService {
         movimentacao.setData(new Date(System.currentTimeMillis()));
         movimentacao.setTipo("SAQUE");
 
-        contaRepository.save(conta);
-
-        movimentacaoRepository.save(movimentacao);    
+        // Envia os dados salvos para a query
+        Conta contaAlterada = contaRepository.save(conta);
+        contaProdutor.contaUpdateSucesso(
+            new ContaUpdatedEvent(
+                contaAlterada.getNumero(),
+                contaAlterada.getGerenteCpf(),
+                contaAlterada.getSaldo(),
+                contaAlterada.getLimite()
+            )
+        );
+        
+        Movimentacao movimentacaoInserida = movimentacaoRepository.save(movimentacao);    
+            contaProdutor.movimentacaoCreateSucesso(
+                new MovimentacaoCreatedEvent(
+                movimentacaoInserida.getId(),
+                movimentacaoInserida.getTipo(),
+                movimentacaoInserida.getValor(),
+                movimentacaoInserida.getData(),
+                movimentacaoInserida.getOrigem() != null ? movimentacaoInserida.getOrigem().getClienteCpf() : null,
+                movimentacaoInserida.getDestino().getClienteCpf()
+                )
+            );
+        
 
         return new OperacaoResponseDTO(
             conta.getNumero(),
@@ -309,19 +362,28 @@ public class ContaCommandService {
             conta.getSaldo());
     }
 
-    public void redistribuiContasGerenteDeletado(String gerenteCpf) {
-        List<Conta> contas = contaRepository.findByGerenteCpf(gerenteCpf);
+    public void redistribuiContasGerenteDeletado(GerenteRequestDTO gerenteCpf) {
+        String cpf = gerenteCpf.getGerenteCpf();
+        List<Conta> contas = contaRepository.findByGerenteCpf(cpf);
         String novoGerente = contaRepository.findGerenteWithLeastActiveContas()
             .orElseThrow(() -> new RuntimeException("Nenhum gerente disponível"));
 
         for (Conta conta : contas) {
             
             conta.setGerenteCpf(novoGerente);
-            contaRepository.save(conta);
+            Conta contaGerenteDeletadoAlterado = contaRepository.save(conta);
+            contaProdutor.contaUpdateSucesso(
+                new ContaUpdatedEvent(
+                contaGerenteDeletadoAlterado.getNumero(),
+                contaGerenteDeletadoAlterado.getGerenteCpf(),
+                contaGerenteDeletadoAlterado.getSaldo(),
+                contaGerenteDeletadoAlterado.getLimite()
+                )                
+            );
         }
     }
 
-    public void distribuiContaGerenteNovo(String novoGerenteCpf) {
+    public void realocarCliente(GerenteRequestDTO GerenteCpf) {
         String gerenteCpf = contaRepository.findGerenteComMaisContasAtivasEMenorSaldoPositivo();
 
         if (gerenteCpf == null) return;
@@ -334,9 +396,17 @@ public class ContaCommandService {
         // Pega uma conta aleatória
         Conta contaSelecionada = contasDoGerente.get(new Random().nextInt(contasDoGerente.size()));
 
-        // Troca o gerente
-        contaSelecionada.setGerenteCpf(novoGerenteCpf);
-        contaRepository.save(contaSelecionada);
+        // Troca o gerente e salva para disparar para o RabbitMQ
+         Conta contaAtualizada = contaRepository.save(contaSelecionada);
+        // Dispara para o rabbitMQ
+        contaProdutor.contaUpdateSucesso(
+        new ContaUpdatedEvent(
+            contaAtualizada.getNumero(),
+            contaAtualizada.getGerenteCpf(),
+            contaAtualizada.getSaldo(),
+            contaAtualizada.getLimite()
+        )
+    );
     }
 
 
