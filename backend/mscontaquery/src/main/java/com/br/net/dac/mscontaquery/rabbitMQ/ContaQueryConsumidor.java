@@ -88,13 +88,15 @@ public class ContaQueryConsumidor {
         try {
             Map<String, Object> payload = toMap(evento.getPayload());
 
-            String  numero = (String)  payload.get("numero");
-            Boolean ativo  = (Boolean) payload.get("ativo");
+            String  numero =        (String)  payload.get("numero");
+            Boolean ativo  =        (Boolean) payload.get("ativo");
+            String gerenteCpf =     (String) payload.get("gerenteCpf");
 
             Conta conta = contaRepository.findById(numero)
                     .orElseThrow(() -> new RuntimeException("Conta não encontrada: " + numero));
 
             conta.setAtivo(ativo != null ? ativo : conta.getAtivo());
+            conta.setGerenteCpf(gerenteCpf);
 
             contaRepository.save(conta);
             System.out.println("ContaQueryConsumidor: conta atualizada no BD de leitura -> " + numero);
@@ -126,7 +128,6 @@ public class ContaQueryConsumidor {
     }
 
     private void handleMovimentacaoCriada(Evento evento) {
-        System.out.println("handleMovimentacaoCriada proccada, TA AQUI O OLHA AUQI AAAAAAAAAAAAA");
         try {
             Map<String, Object> payload = toMap(evento.getPayload());
             Long id = ((Number) payload.get("id")).longValue();
