@@ -369,7 +369,15 @@ public class ContaCommandService {
         for (Conta conta : contas) {
             
             conta.setGerenteCpf(novoGerente);
-            contaRepository.save(conta);
+            Conta contaGerenteDeletadoAlterado = contaRepository.save(conta);
+            contaProdutor.contaUpdateSucesso(
+                new ContaUpdatedEvent(
+                contaGerenteDeletadoAlterado.getNumero(),
+                contaGerenteDeletadoAlterado.getGerenteCpf(),
+                contaGerenteDeletadoAlterado.getSaldo(),
+                contaGerenteDeletadoAlterado.getLimite()
+                )                
+            );
         }
     }
 
@@ -386,9 +394,17 @@ public class ContaCommandService {
         // Pega uma conta aleatória
         Conta contaSelecionada = contasDoGerente.get(new Random().nextInt(contasDoGerente.size()));
 
-        // Troca o gerente
-        contaSelecionada.setGerenteCpf(novoGerenteCpf);
-        contaRepository.save(contaSelecionada);
+        // Troca o gerente e salva para disparar para o RabbitMQ
+         Conta contaAtualizada = contaRepository.save(contaSelecionada);
+        // Dispara para o rabbitMQ
+        contaProdutor.contaUpdateSucesso(
+        new ContaUpdatedEvent(
+            contaAtualizada.getNumero(),
+            contaAtualizada.getGerenteCpf(),
+            contaAtualizada.getSaldo(),
+            contaAtualizada.getLimite()
+        )
+    );
     }
 
 
