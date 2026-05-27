@@ -22,6 +22,6 @@ export class ClientSearch {
 
   buscar() {
     this.pesquisado = true;
-    this.cliente = this.clienteService.getByCPF(this.cpf) || null;
+    //this.cliente = this.clienteService.getByCPF(this.cpf) || null;
   }
 }

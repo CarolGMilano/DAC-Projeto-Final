@@ -26,7 +26,7 @@ export class Top3Clients {
   ) {}
 
   ngOnInit() {
-   this.clientes = this.clienteService.getTop3BySaldo();
+   //this.clientes = this.clienteService.getTop3BySaldo();
     console.log(this.clientes);
         
   }

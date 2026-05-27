@@ -4,6 +4,7 @@ export * from "./Usuario";
 export * from "./ILogin";
 
 export * from "./ICliente";
+export * from "./IClienteAprovacaoResponse";
 export * from "./IAutocadastro";
 export * from "./IEndereco";
 export * from "./ISagaStatus";

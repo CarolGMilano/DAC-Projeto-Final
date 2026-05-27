@@ -21,19 +21,19 @@ export class ClientList {
   constructor(private clienteService: ClienteService) {}
 
   ngOnInit() {
-    this.clientes = this.clienteService.get()
-      .sort((a, b) => a.nome.localeCompare(b.nome));
+    /*this.clientes = this.clienteService.get()
+      .sort((a, b) => a.nome.localeCompare(b.nome));*/
   }
-
+/*
   buscar() {
-    const todos = this.clienteService.get()
-      .sort((a, b) => a.nome.localeCompare(b.nome));
+    //const todos = this.clienteService.get()
+    //  .sort((a, b) => a.nome.localeCompare(b.nome));
 
     this.clientes = todos.filter(c =>
       c.nome.toLowerCase().includes(this.filtro.toLowerCase()) ||
       c.cpf.includes(this.filtro)
     );
-  }
+  }*/
 
   verDetalhes(cliente: ICliente) {
     this.clienteSelecionado = cliente;

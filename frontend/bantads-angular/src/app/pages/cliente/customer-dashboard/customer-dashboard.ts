@@ -33,10 +33,10 @@ export class CustomerDashboard implements OnInit {
   }
 
   carregarDados() {
-    const dados = this.clienteService.getById(this.idCliente);
+    /*const dados = this.clienteService.getById(this.idCliente);
     if (dados) {
       this.cliente = { ...dados };
-    }
+    }*/
   }
 
   mudarView(novaView: DashboardView) {
@@ -70,7 +70,7 @@ export class CustomerDashboard implements OnInit {
 
   private salvarEAtualizar() {
     if (this.cliente && this.cliente.cpf) {
-      this.clienteService.put(this.cliente.cpf, this.cliente);
+      //this.clienteService.put(this.cliente.cpf, this.cliente);
       this.mudarView('SALDO');
     }
   }

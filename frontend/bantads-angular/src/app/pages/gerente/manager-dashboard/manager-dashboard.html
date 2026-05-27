@@ -12,39 +12,43 @@ e salário do cliente, junto com dois botões "Aprovar" e "Recusar".
                 <table class="w-full table-fixed">
                     <!-- Colunas -->
                      <thead class="border-b border-gray-200">
-  <tr>
-    <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">
-      <span class="bg-white border-none text-zinc-800 text-xs font-medium pl-2 pr-1 py-0.3 rounded-full mr-1">
-        {{this.exemplos.length}}
-      </span>
-      CPF
-    </th>
-    <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Nome</th>
-    <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Salário</th>
-    <th class="w-2/6"></th>
-  </tr>
-</thead>
+                    <tr>
+                      <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">
+                        <span class="bg-white border-none text-zinc-800 text-xs font-medium pl-2 pr-1 py-0.3 rounded-full mr-1">
+                          {{this.clientes.length}}
+                        </span>
+                        CPF
+                      </th>
+                      <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Nome</th>
+                      <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Email</th>
+                      <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Salário</th>
+                      <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Endereço</th>
+                      <th class="w-2/6"></th>
+                    </tr>
+                  </thead>
 
-<tbody class="divide-y divide-gray-200">
-  @for (c of exemplos; track c.id)
-  {
-    <tr class="hover:bg-gray-700 transition-colors">
-      <td class="px-4 py-2 text-sm text-gray-300">{{ c.cpf | cpfFormatador }}</td>
-      <td class="px-4 py-2 text-sm text-gray-300">{{ c.nome }}</td>
-      <td class="px-4 py-2 text-sm text-gray-300">R${{ c.salario | moedaBr }}</td>
-      <td class="px-4 py-2 text-sm text-gray-300">
-        <div class="flex gap-2">
-          <button class="bg-green-500 hover:bg-green-500 text-white text-xs font-semibold px-3 py-1 rounded-md transition hover:cursor-pointer" (click)="aprovar(c.id)">
-            Aprovar
-          </button>
-          <button class="bg-gray-400 hover:bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-md transition hover:cursor-pointer" (click)="recusar(c.id)">
-            Recusar
-          </button>
-        </div>
-      </td>
-    </tr>
-  }
-</tbody>
+                  <tbody class="divide-y divide-gray-200">
+                    @for (c of clientes; track c.cpf)
+                    {
+                      <tr class="hover:bg-gray-700 transition-colors">
+                        <td class="px-4 py-2 text-sm text-gray-300">{{ c.cpf | cpfFormatador }}</td>
+                        <td class="px-4 py-2 text-sm text-gray-300">{{ c.nome }}</td>
+                        <td class="px-4 py-2 text-sm text-gray-300">{{ c.email }}</td>
+                        <td class="px-4 py-2 text-sm text-gray-300">{{ c.salario | currency:'BRL':'symbol':'1.2-2' }}</td>
+                        <td class="px-4 py-2 text-sm text-gray-300">{{ c.endereco }}, {{ c.cidade }} - {{ c.estado }}</td>
+                        <td class="px-4 py-2 text-sm text-gray-300">
+                          <div class="flex gap-2">
+                            <button class="bg-green-500 hover:bg-green-500 text-white text-xs font-semibold px-3 py-1 rounded-md transition hover:cursor-pointer" (click)="aprovar(c.cpf)">
+                              Aprovar
+                            </button>
+                            <button class="bg-gray-400 hover:bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-md transition hover:cursor-pointer" (click)="recusar(c.cpf)">
+                              Recusar
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
                 </table>
             </div>
         </div>

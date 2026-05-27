@@ -415,16 +415,33 @@
           }
         } @else {
           <div class="flex flex-col items-center justify-center p-6 rounded-lg col-span-6">
-            <svg xmlns="http://www.w3.org/2000/svg" height="70px" viewBox="0 -960 960 960" width="70px" fill="#16a34a">
-              <path d="m212-212 282-100-182-182-100 282Zm709-467q-9 9-21 9t-21-9l-3-3q-14-14-35-14t-35 14L603-479q-9 9-21 9t-21-9q-9-9-9-21t9-21l203-203q32-32 77-32t77 32l3 3q9 9 9 21t-9 21ZM399-799q9-9 21-9t21 9l5 5q32 32 32 76t-32 76l-3 3q-9 9-21 9t-21-9q-9-9-9-21t9-21l3-3q14-14 14-34t-14-34l-5-5q-9-9-9-21t9-21Zm162-80q9-9 21-9t21 9l43 43q32 32 32 77t-32 77L523-559q-9 9-21 9t-21-9q-9-9-9-21t9-21l123-123q14-14 14-35t-14-35l-43-43q-9-9-9-21t9-21Zm320 480q-9 9-21 9t-21-9l-43-43q-14-14-35-14t-35 14l-43 43q-9 9-21 9t-21-9q-9-9-9-21t9-21l43-43q32-32 77-32t77 32l43 43q9 9 9 21t-9 21ZM212-212Zm-104 52 151-420q5-13 15.5-20t22.5-7q8 0 15 3t13 9l270 270q6 6 9 13t3 15q0 12-7 22.5T580-259L160-108q-12 5-23 1.5T118-118q-8-8-11.5-19t1.5-23Z"/>
-            </svg>
-
-            <div class="text-center mt-10">
-              <h3 class="text-gray-200 font-semibold text-lg">Cadastro realizado com sucesso!</h3>
-              <p class="text-white mt-4 font-thin text-base">
-                Recebemos seu cadastro e já estamos analisando seus dados. Fique tranquila(o), você vai receber um e-mail assim que sua conta for aprovada. Obrigada por se cadastrar!
-              </p>
-            </div>
+            @if (!mensagemErro) {
+              <svg xmlns="http://www.w3.org/2000/svg" height="70px" viewBox="0 -960 960 960" width="70px" fill="#16a34a">
+                <path d="m212-212 282-100-182-182-100 282Zm709-467q-9 9-21 9t-21-9l-3-3q-14-14-35-14t-35 14L603-479q-9 9-21 9t-21-9q-9-9-9-21t9-21l203-203q32-32 77-32t77 32l3 3q9 9 9 21t-9 21ZM399-799q9-9 21-9t21 9l5 5q32 32 32 76t-32 76l-3 3q-9 9-21 9t-21-9q-9-9-9-21t9-21l3-3q14-14 14-34t-14-34l-5-5q-9-9-9-21t9-21Zm162-80q9-9 21-9t21 9l43 43q32 32 32 77t-32 77L523-559q-9 9-21 9t-21-9q-9-9-9-21t9-21l123-123q14-14 14-35t-14-35l-43-43q-9-9-9-21t9-21Zm320 480q-9 9-21 9t-21-9l-43-43q-14-14-35-14t-35 14l-43 43q-9 9-21 9t-21-9q-9-9-9-21t9-21l43-43q32-32 77-32t77 32l43 43q9 9 9 21t-9 21ZM212-212Zm-104 52 151-420q5-13 15.5-20t22.5-7q8 0 15 3t13 9l270 270q6 6 9 13t3 15q0 12-7 22.5T580-259L160-108q-12 5-23 1.5T118-118q-8-8-11.5-19t1.5-23Z"/>
+              </svg>
+  
+              <div class="text-center mt-10">
+                <h3 class="text-gray-200 font-semibold text-lg">Cadastro realizado com sucesso!</h3>
+                <p class="text-white mt-4 font-thin text-base">
+                  Recebemos seu cadastro e já estamos analisando seus dados. Fique tranquila(o), você vai receber um e-mail assim que sua conta for aprovada. Obrigada por se cadastrar!
+                </p>
+              </div>
+            } @else {
+              <svg xmlns="http://www.w3.org/2000/svg" height="70px" viewBox="0 -960 960 960" width="70px" fill="#F04646"><path d="m376-428.46 104-103.23 104 103.23L611.54-456 508.31-560l103.23-104L584-691.54 480-588.31 376-691.54 348.46-664l103.23 104-103.23 104L376-428.46ZM120-156.92v-618.46q0-27.62 18.5-46.12Q157-840 184.62-840h590.76q27.62 0 46.12 18.5Q840-803 840-775.38v430.76q0 27.62-18.5 46.12Q803-280 775.38-280h-532.3L120-156.92ZM226-320h549.38q9.24 0 16.93-7.69 7.69-7.69 7.69-16.93v-430.76q0-9.24-7.69-16.93-7.69-7.69-16.93-7.69H184.62q-9.24 0-16.93 7.69-7.69 7.69-7.69 16.93v521.15L226-320Zm-66 0v-480 480Z"/></svg>
+  
+              <div class="text-center mt-10">
+                <h3 class="text-gray-200 font-semibold text-lg">Opa! Não foi possível finalizar seu cadastro.</h3>
+                <p class="text-white mt-4 font-thin text-base">
+                  @if(mensagemErro == 'cpf') {
+                    O CPF <span class="text-white font-bold">{{this.cliente.cpf | cpfFormatador}}</span> já está cadastrado ou está aguardando aprovação. Verifique os dados e tente novamente.
+                  } @else if (mensagemErro == 'email') {
+                    O e-mail <span class="text-white font-bold">{{this.cliente.email}}</span> já está em uso ou aguardando aprovação. Tente utilizar outro e-mail.
+                  } @else {
+                    {{ mensagemErro }}
+                  }
+                </p>
+              </div>
+            }
           </div>
         }
       </div>

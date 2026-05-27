@@ -65,7 +65,7 @@ export class Login {
           this.loginService.usuarioLogado = usuario;
 
           if (usuario.tipo === TipoUsuario.CLIENTE) {
-            this.router.navigate(['/customerDashboard']);
+            this.router.navigate(['/cliente']);
           } else if (usuario.tipo === TipoUsuario.GERENTE) {
             this.router.navigate(['/gerente']);
           } else if (usuario.tipo === TipoUsuario.ADMIN) {

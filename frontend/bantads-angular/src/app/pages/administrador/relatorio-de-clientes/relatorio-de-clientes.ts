@@ -18,8 +18,8 @@ export class RelatorioDeClientes {
   ) {}
 
   ngOnInit() {
-    this.clientes = this.clienteService.get().sort((a, b) =>
+    /*this.clientes = this.clienteService.get().sort((a, b) =>
     a.nome.localeCompare(b.nome, 'pt-BR')
-  );
+  );*/
   }
 }

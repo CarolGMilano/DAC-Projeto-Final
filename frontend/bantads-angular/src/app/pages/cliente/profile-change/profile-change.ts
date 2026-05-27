@@ -22,10 +22,10 @@ export class ProfileChange implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const dados = this.clienteService.getById(this.idCliente);
+    /*const dados = this.clienteService.getById(this.idCliente);
     if (dados) {
       this.cliente = dados;
-    }
+    }*/
   }
 
   atualizarPerfil(): void {
@@ -43,7 +43,7 @@ export class ProfileChange implements OnInit {
 
   
       this.cliente.limite = novoLimiteCalculado;
-      this.clienteService.put(this.cliente.cpf!, this.cliente);
+      //this.clienteService.put(this.cliente.cpf!, this.cliente);
 
       alert(`Perfil atualizado!\nNovo Limite: R$ ${this.cliente.limite.toFixed(2)}\nGerente: ${this.cliente.gerenteNome}`);
       
