@@ -69,7 +69,7 @@ public class ContaCommandController {
             System.out.println("PostMapping /contas/{numero}/depositar: OperacaoResponseDTO Retornado:" + response.conta + ", " + response.data + ", " + response.saldo);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            System.out.println("EXCEÇÃO TA AQUI O TIDAL WAVE ATHADUFUHS:" + e.getMessage());
+            System.out.println("EXCEÇÃO:" + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
