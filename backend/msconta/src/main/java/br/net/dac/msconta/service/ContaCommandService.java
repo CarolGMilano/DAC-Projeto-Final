@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import br.net.dac.msconta.model.dto.ContaRequestDTO;
 import br.net.dac.msconta.model.dto.ContaResponseDTO;
 import br.net.dac.msconta.model.dto.OperacaoResponseDTO;
+import br.net.dac.msconta.model.dto.GerenteRequestDTO;
 import br.net.dac.msconta.model.dto.TransferenciaRequestDTO;
 import br.net.dac.msconta.model.dto.TransferenciaResponseDTO;
 import br.net.dac.msconta.model.dto.ValorDTO;
@@ -132,7 +133,11 @@ public class ContaCommandService {
             contaEncontrada.getData(),
             contaEncontrada.getSaldo(),
             limite,
+<<<<<<< HEAD
             true
+=======
+            contaEncontrada.getAtivo()
+>>>>>>> 6f79dc1e85c57b1b44106843c8e51cc3fa29a776
         );
 
         Conta contaAtualizada = contaRepository.save(conta);
@@ -361,8 +366,9 @@ public class ContaCommandService {
             conta.getSaldo());
     }
 
-    public void redistribuiContasGerenteDeletado(String gerenteCpf) {
-        List<Conta> contas = contaRepository.findByGerenteCpf(gerenteCpf);
+    public void redistribuiContasGerenteDeletado(GerenteRequestDTO gerenteCpf) {
+        String cpf = gerenteCpf.getGerenteCpf();
+        List<Conta> contas = contaRepository.findByGerenteCpf(cpf);
         String novoGerente = contaRepository.findGerenteWithLeastActiveContas()
             .orElseThrow(() -> new RuntimeException("Nenhum gerente disponível"));
 
@@ -381,7 +387,7 @@ public class ContaCommandService {
         }
     }
 
-    public void distribuiContaGerenteNovo(String novoGerenteCpf) {
+    public void realocarCliente(GerenteRequestDTO GerenteCpf) {
         String gerenteCpf = contaRepository.findGerenteComMaisContasAtivasEMenorSaldoPositivo();
 
         if (gerenteCpf == null) return;
@@ -394,6 +400,7 @@ public class ContaCommandService {
         // Pega uma conta aleatória
         Conta contaSelecionada = contasDoGerente.get(new Random().nextInt(contasDoGerente.size()));
 
+<<<<<<< HEAD
         // Troca o gerente e salva para disparar para o RabbitMQ
          Conta contaAtualizada = contaRepository.save(contaSelecionada);
         // Dispara para o rabbitMQ
@@ -405,6 +412,11 @@ public class ContaCommandService {
             contaAtualizada.getLimite()
         )
     );
+=======
+        // Troca o gerente
+        contaSelecionada.setGerenteCpf(gerenteCpf);
+        contaRepository.save(contaSelecionada);
+>>>>>>> 6f79dc1e85c57b1b44106843c8e51cc3fa29a776
     }
 
 
