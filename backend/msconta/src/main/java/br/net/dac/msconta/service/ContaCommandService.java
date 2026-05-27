@@ -133,11 +133,7 @@ public class ContaCommandService {
             contaEncontrada.getData(),
             contaEncontrada.getSaldo(),
             limite,
-<<<<<<< HEAD
-            true
-=======
             contaEncontrada.getAtivo()
->>>>>>> 6f79dc1e85c57b1b44106843c8e51cc3fa29a776
         );
 
         Conta contaAtualizada = contaRepository.save(conta);
@@ -400,7 +396,6 @@ public class ContaCommandService {
         // Pega uma conta aleatória
         Conta contaSelecionada = contasDoGerente.get(new Random().nextInt(contasDoGerente.size()));
 
-<<<<<<< HEAD
         // Troca o gerente e salva para disparar para o RabbitMQ
          Conta contaAtualizada = contaRepository.save(contaSelecionada);
         // Dispara para o rabbitMQ
@@ -412,11 +407,6 @@ public class ContaCommandService {
             contaAtualizada.getLimite()
         )
     );
-=======
-        // Troca o gerente
-        contaSelecionada.setGerenteCpf(gerenteCpf);
-        contaRepository.save(contaSelecionada);
->>>>>>> 6f79dc1e85c57b1b44106843c8e51cc3fa29a776
     }
 
 
