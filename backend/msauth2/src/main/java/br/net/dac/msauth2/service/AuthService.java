@@ -305,20 +305,20 @@ public class AuthService {
     List<RespostaDTO> resposta = new ArrayList<>();
 
     for (Usuario usuario : usuarios) {
-      if (StatusUsuarioEnum.PENDENTE.name().equals(usuario.getAtivo())) {
-        TipoUsuarioEnum tipo = TipoUsuarioEnum.CLIENTE;
-
-        if (!usuario.getAtivo().equals(tipo.name())) {
-          continue;
-        }
-
-        RespostaDTO dto = new RespostaDTO();
-        dto.setId(usuario.getId());
-        dto.setEmail(usuario.getEmail());
-        dto.setTipo(usuario.getAtivo());
-  
-        resposta.add(dto);
+      if (!StatusUsuarioEnum.PENDENTE.name().equals(usuario.getAtivo())) {
+        continue;
       }
+
+      if (!TipoUsuarioEnum.CLIENTE.name().equals(usuario.getTipo())) {
+        continue;
+      }
+
+      RespostaDTO dto = new RespostaDTO();
+      dto.setId(usuario.getId());
+      dto.setEmail(usuario.getEmail());
+      dto.setTipo(usuario.getTipo());
+
+      resposta.add(dto);
     }
 
     return resposta;
@@ -329,20 +329,20 @@ public class AuthService {
     List<RespostaDTO> resposta = new ArrayList<>();
 
     for (Usuario usuario : usuarios) {
-      if (StatusUsuarioEnum.ATIVO.name().equals(usuario.getAtivo())) {
-        TipoUsuarioEnum tipo = TipoUsuarioEnum.CLIENTE;
-
-        if (!usuario.getAtivo().equals(tipo.name())) {
-          continue;
-        }
-        
-        RespostaDTO dto = new RespostaDTO();
-        dto.setId(usuario.getId());
-        dto.setEmail(usuario.getEmail());
-        dto.setTipo(usuario.getAtivo());
-  
-        resposta.add(dto);
+      if (!StatusUsuarioEnum.ATIVO.name().equals(usuario.getAtivo())) {
+        continue;
       }
+
+      if (!TipoUsuarioEnum.CLIENTE.name().equals(usuario.getTipo())) {
+        continue;
+      }
+
+      RespostaDTO dto = new RespostaDTO();
+      dto.setId(usuario.getId());
+      dto.setEmail(usuario.getEmail());
+      dto.setTipo(usuario.getTipo());
+
+      resposta.add(dto);
     }
 
     return resposta;

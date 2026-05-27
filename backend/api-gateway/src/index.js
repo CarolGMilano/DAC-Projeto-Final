@@ -205,26 +205,54 @@ app.post("/logout", validacaoToken, async (req, res) => {
     const token = req.headers.authorization?.split(" ")[1];
     const payload = jwt.decode(token);
 
-    //sub do JWT é o email
     const email = payload.sub;
 
-    const usuarioResp = await fetch(`http://localhost:5000/auth/usuarios/email/${email}`);
-    const usuario = await usuarioResp.json();
+    const authResp = await fetch(`http://localhost:5000/auth/usuarios/email/${email}`);
 
-    const gerenteResp = await fetch(`http://localhost:8083/gerentes/usuario/${usuario.id}`);
-    const gerente = await gerenteResp.json();
+    if (!authResp.ok) {
+      const erro = await authResp.json();
+
+      return res.status(authResp.status).json(erro);
+    }
+
+    const usuario = await authResp.json();
+
+    let dados;
+
+    if (usuario.tipo === "GERENTE" || usuario.tipo === "ADMIN") {
+      const gerenteResp = await fetch(`http://localhost:8083/gerentes/usuario/${usuario.id}`);
+
+      if (!gerenteResp.ok) {
+        const erro = await gerenteResp.json();
+
+        return res.status(gerenteResp.status).json(erro);
+      }
+
+      dados = await gerenteResp.json();
+    } else if (usuario.tipo === "CLIENTE") {
+      const clienteResp = await fetch(`http://localhost:8082/clientes/usuario/${usuario.id}`);
+
+      if (!clienteResp.ok) {
+        const erro = await clienteResp.json();
+
+        return res.status(clienteResp.status).json(erro);
+      }
+
+      dados = await clienteResp.json();
+    }
 
     return res.status(200).json({
-      nome: gerente.nome,
-      cpf: gerente.cpf,
+      nome: dados.nome,
+      cpf: dados.cpf,
       email: usuario.email,
       tipo: usuario.tipo
     });
-  } catch (err) {
-    console.error(err);
+  } catch (erro) {
+    console.error(erro);
+
     return res.status(500).json({
       message: "Erro na API Composition logout",
-      error: err.message
+      error: erro.message
     });
   }
 });
@@ -255,9 +283,36 @@ app.get('/clientes', validacaoToken, async (req,res)=>{
       fetch("http://localhost:8083/gerentes")
     ]);
 
+    if (!clientesResp.ok) {
+      const erro = await clientesResp.json();
+
+      return res.status(clientesResp.status).json(erro);
+    }
+    
     const clientes = await clientesResp.json();
+
+    if (!usuariosCResp.ok) {
+      const erro = await usuariosCResp.json();
+
+      return res.status(usuariosCResp.status).json(erro);
+    }
+    
     const usuariosC = await usuariosCResp.json();
+    
+    if (!usuariosFResp.ok) {
+      const erro = await usuariosFResp.json();
+
+      return res.status(usuariosFResp.status).json(erro);
+    }
+
     const usuariosF = await usuariosFResp.json();
+    
+    if (!gerentesResp.ok) {
+      const erro = await gerentesResp.json();
+
+      return res.status(gerentesResp.status).json(erro);
+    }
+
     const gerentes = await gerentesResp.json();
 
     const emailLogado = req.usuario.sub;
@@ -274,33 +329,32 @@ app.get('/clientes', validacaoToken, async (req,res)=>{
 
     const cpfGerente = gerenteLogado?.cpf;
 
-    console.log("EMAIL LOGADO:", emailLogado);
-    console.log("USUARIO LOGADO:", usuarioLogado);
-    console.log("GERENTE LOGADO:", gerenteLogado);
-    console.log("CPF GERENTE:", cpfGerente);
+    if (filtro === "para_aprovar") {
+      if (!cpfGerente) {
+        return res.json([]);
+      }
 
-    if(filtro==="para_aprovar"){
-      return res.json(
-        clientes.filter(cliente =>
+      const resultado = clientes.filter(cliente =>
           String(cliente.cpfGerente) === String(cpfGerente)
-        ).map(cliente=>{
-          const usuario =  usuariosC.find(usuario =>
-            String(usuario.id) === String(cliente.idUsuario)
-          );
+        ).map(cliente => {
+        const usuario = usuariosC.find(usuario =>
+          String(usuario.id) === String(cliente.idUsuario)
+        );
 
-          return{
-            cpf:cliente.cpf,
-            nome:cliente.nome,
+        return {
+          cpf: cliente.cpf,
+          nome: cliente.nome,
+          email: usuario?.email,
+          salario: cliente.salario,
+          endereco: cliente.endereco,
+          cidade: cliente.cidade,
+          estado: cliente.estado
+        };
+      });
 
-            email:usuario?.email,
+      console.log("RESULTADO:", resultado);
 
-            salario:cliente.salario,
-            endereco:cliente.endereco,
-            cidade:cliente.cidade,
-            estado:cliente.estado
-          };
-        })
-      );
+      return res.json(resultado);
     }
 
     if(filtro==="adm_relatorio_clientes"){
@@ -455,7 +509,7 @@ app.post('/clientes', async (req, res) => {
 
     const { cpfGerente } = await gerenteResp.json();
     */
-    const cpfGerente = '12345678910';
+    const cpfGerente = '98574307084';
     const authResp = await fetch(
       "http://localhost:5000/auth/usuarios",
       {

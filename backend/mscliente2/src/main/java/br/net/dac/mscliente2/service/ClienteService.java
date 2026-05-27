@@ -210,4 +210,21 @@ public class ClienteService {
       clienteEncontrado.getAtivo()
     );
   }
+
+  public ClienteAprovacaoDTO consultarClientePorIdUsuario(String idUsuario) {
+    //O findById retorna um Optional<Gerente> que pode ser nulo e pra evitar um NullPointerException ele te obriga a tratar a saída.
+    Cliente clienteEncontrado = clienteRepository.findByIdUsuario(idUsuario);
+
+    if (clienteEncontrado == null || !StatusClienteEnum.ATIVO.name().equals(clienteEncontrado.getAtivo())) {
+      throw new ClienteNaoEncontradoException();
+    }
+
+    return new ClienteAprovacaoDTO(
+      clienteEncontrado.getIdUsuario(),
+      clienteEncontrado.getCpf(),
+      clienteEncontrado.getCpfGerente(),
+      clienteEncontrado.getSalario(),
+      clienteEncontrado.getAtivo()
+    );
+  }
 }

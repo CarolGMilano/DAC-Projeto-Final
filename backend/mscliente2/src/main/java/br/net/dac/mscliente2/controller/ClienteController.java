@@ -104,4 +104,18 @@ public class ClienteController {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao aprovar cliente: " + e.getMessage());
     }
   }
+
+  
+  @GetMapping("/usuario/{idUsuario}")
+  public ResponseEntity<?> consultarPorIdUsuario(@PathVariable String idUsuario) {
+    try {
+      ClienteAprovacaoDTO clienteEncontrado = clienteService.consultarClientePorIdUsuario(idUsuario);
+
+      return ResponseEntity.ok(clienteEncontrado);
+    } catch (ClienteNaoEncontradoException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    } catch (Exception e){
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao encontrar gerente: " + e.getMessage());
+    }
+  }
 }
