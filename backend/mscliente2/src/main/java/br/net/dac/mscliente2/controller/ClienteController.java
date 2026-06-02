@@ -11,19 +11,25 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.net.dac.mscliente2.model.dto.ClienteAlterarGerenteDTO;
 import br.net.dac.mscliente2.model.dto.ClienteAprovacaoDTO;
+import br.net.dac.mscliente2.model.dto.ClienteAtualizacaoDTO;
 import br.net.dac.mscliente2.model.dto.ClienteInsercaoDTO;
 import br.net.dac.mscliente2.model.dto.ClienteRejeicaoDTO;
+import br.net.dac.mscliente2.model.dto.ClienteRetornoDTO;
+import br.net.dac.mscliente2.model.dto.RebootResponseDTO;
 import br.net.dac.mscliente2.model.dto.RejeicaoDTO;
 import br.net.dac.mscliente2.model.exception.CPFDuplicadoException;
 import br.net.dac.mscliente2.model.exception.ClienteNaoEncontradoException;
 import br.net.dac.mscliente2.model.exception.UsuarioDuplicadoException;
 import br.net.dac.mscliente2.service.ClienteService;
+import br.net.dac.mscliente2.service.RebootService;
 
 @CrossOrigin
 @RestController
@@ -31,6 +37,20 @@ import br.net.dac.mscliente2.service.ClienteService;
 public class ClienteController {
   @Autowired
   private ClienteService clienteService;
+
+  @Autowired
+  private RebootService rebootService;
+
+  @PostMapping("/reboot")
+  public ResponseEntity<?> rebook(@RequestBody List<RebootResponseDTO> usuarios) {
+    try {
+      rebootService.reboot(usuarios);
+
+      return ResponseEntity.ok().build();
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("erro", "Erro no REBOOT de CLIENTE: " + e.getMessage()));
+    }
+  }
 
   @PostMapping
   public ResponseEntity<?> inserir(@RequestBody ClienteInsercaoDTO clienteInsercaoDTO){
@@ -94,7 +114,6 @@ public class ClienteController {
   @PostMapping("/{cpf}/rejeitar")
   public ResponseEntity<?> rejeitar(@PathVariable String cpf, @RequestBody RejeicaoDTO dto) {
     try {
-      System.out.println(dto);
       ClienteRejeicaoDTO clienteRejeitado = clienteService.rejeitarCliente(cpf, dto);
 
       return ResponseEntity.ok(clienteRejeitado);
@@ -109,13 +128,39 @@ public class ClienteController {
   @GetMapping("/usuario/{idUsuario}")
   public ResponseEntity<?> consultarPorIdUsuario(@PathVariable String idUsuario) {
     try {
-      ClienteAprovacaoDTO clienteEncontrado = clienteService.consultarClientePorIdUsuario(idUsuario);
+      ClienteRetornoDTO clienteEncontrado = clienteService.consultarClientePorIdUsuario(idUsuario);
 
       return ResponseEntity.ok(clienteEncontrado);
     } catch (ClienteNaoEncontradoException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     } catch (Exception e){
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao encontrar gerente: " + e.getMessage());
+    }
+  }
+
+  @PutMapping("/{cpf}")
+  public ResponseEntity<?> alterar(@PathVariable String cpf, @RequestBody ClienteAtualizacaoDTO dto) {
+    try {
+      ClienteAtualizacaoDTO clienteEncontrado = clienteService.atualizar(cpf, dto);
+
+      return ResponseEntity.ok(clienteEncontrado);
+    } catch (ClienteNaoEncontradoException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    } catch (Exception e){
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao encontrar cliente: " + e.getMessage());
+    }
+  }
+
+  @PutMapping("/trocar-gerente")
+  public ResponseEntity<?> trocarGerente(@RequestBody ClienteAlterarGerenteDTO dto) {
+    try {
+      clienteService.trocarGerente(dto);
+
+      return ResponseEntity.ok().build();
+    } catch (ClienteNaoEncontradoException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    } catch (Exception e){
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao encontrar cliente: " + e.getMessage());
     }
   }
 }

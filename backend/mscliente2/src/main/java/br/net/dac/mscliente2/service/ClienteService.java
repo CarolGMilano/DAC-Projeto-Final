@@ -7,9 +7,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.net.dac.mscliente2.model.dto.ClienteAlterarGerenteDTO;
 import br.net.dac.mscliente2.model.dto.ClienteAprovacaoDTO;
+import br.net.dac.mscliente2.model.dto.ClienteAtualizacaoDTO;
 import br.net.dac.mscliente2.model.dto.ClienteInsercaoDTO;
 import br.net.dac.mscliente2.model.dto.ClienteRejeicaoDTO;
+import br.net.dac.mscliente2.model.dto.ClienteRetornoDTO;
 import br.net.dac.mscliente2.model.dto.RejeicaoDTO;
 import br.net.dac.mscliente2.model.entity.Cliente;
 import br.net.dac.mscliente2.model.enums.StatusClienteEnum;
@@ -46,6 +49,10 @@ public class ClienteService {
   }
 
   public ClienteInsercaoDTO inserirCliente(ClienteInsercaoDTO dto)  {
+    String telefoneLimpo = dto.getTelefone().replaceAll("[^0-9]", "");
+
+    dto.setTelefone(telefoneLimpo);
+
     validarClienteInsercao(dto);
 
     Cliente cpfExistente = clienteRepository.findByCpf(dto.getCpf());
@@ -74,6 +81,9 @@ public class ClienteService {
     cliente.setCpfGerente(dto.getCpfGerente());
     cliente.setAtivo(StatusClienteEnum.PENDENTE.name());
 
+    System.out.println("CEP DTO: " + dto.getCep());
+    System.out.println("CEP ENTITY: " + cliente.getCep());
+
     Cliente clienteAdicionado = clienteRepository.save(cliente);
 
     return new ClienteInsercaoDTO(
@@ -94,6 +104,10 @@ public class ClienteService {
 
   public ClienteInsercaoDTO consultarClientePorCPF(String cpfCliente) {
     Cliente clienteEncontrado = clienteRepository.findByCpf(cpfCliente);
+
+    if (clienteEncontrado == null) {
+      throw new ClienteNaoEncontradoException();
+    }
 
     if (!StatusClienteEnum.ATIVO.name().equals(clienteEncontrado.getAtivo())) {
       throw new ClienteNaoEncontradoException();
@@ -211,7 +225,7 @@ public class ClienteService {
     );
   }
 
-  public ClienteAprovacaoDTO consultarClientePorIdUsuario(String idUsuario) {
+  public ClienteRetornoDTO consultarClientePorIdUsuario(String idUsuario) {
     //O findById retorna um Optional<Gerente> que pode ser nulo e pra evitar um NullPointerException ele te obriga a tratar a saída.
     Cliente clienteEncontrado = clienteRepository.findByIdUsuario(idUsuario);
 
@@ -219,12 +233,70 @@ public class ClienteService {
       throw new ClienteNaoEncontradoException();
     }
 
-    return new ClienteAprovacaoDTO(
+    return new ClienteRetornoDTO(
       clienteEncontrado.getIdUsuario(),
+      clienteEncontrado.getNome(),
       clienteEncontrado.getCpf(),
       clienteEncontrado.getCpfGerente(),
       clienteEncontrado.getSalario(),
       clienteEncontrado.getAtivo()
     );
+  }
+
+  public ClienteAtualizacaoDTO atualizar(String cpf, ClienteAtualizacaoDTO dto) {
+    Cliente clienteEncontrado = clienteRepository.findByCpf(cpf);
+
+    if (clienteEncontrado == null || !StatusClienteEnum.ATIVO.name().equals(clienteEncontrado.getAtivo())) {
+      throw new ClienteNaoEncontradoException();
+    }
+
+    clienteEncontrado.setNome(dto.getNome());
+    clienteEncontrado.setSalario(dto.getSalario());
+    clienteEncontrado.setCep(dto.getCep());
+    clienteEncontrado.setEndereco(dto.getEndereco());
+    clienteEncontrado.setCidade(dto.getCidade());
+    clienteEncontrado.setEstado(dto.getEstado());
+
+    Cliente clienteAtualizado = clienteRepository.save(clienteEncontrado);
+
+    return new ClienteAtualizacaoDTO(
+      clienteAtualizado.getCpf(),
+      clienteAtualizado.getNome(),
+      clienteAtualizado.getSalario(),
+      clienteAtualizado.getCep(),
+      clienteAtualizado.getEndereco(),
+      clienteAtualizado.getCidade(),
+      clienteAtualizado.getEstado()
+    );
+  }
+
+  public void trocarGerente(ClienteAlterarGerenteDTO dto) {
+    for (Cliente cliente : clienteRepository.findAll()) {
+      if (StatusClienteEnum.ATIVO.name().equals(cliente.getAtivo()) &&
+      cliente.getCpfGerente().equals(dto.getGerenteAntigo())) {
+        
+        cliente.setCpfGerente(dto.getGerenteNovo());
+        System.out.println("ENTROU: " + cliente);
+
+        clienteRepository.save(cliente);
+      }
+    }
+  }
+
+  public void trocarGerenteInsercao(ClienteAlterarGerenteDTO dto) {
+    for (Cliente cliente : clienteRepository.findAll()) {
+      if (StatusClienteEnum.ATIVO.name().equals(cliente.getAtivo()) &&
+      cliente.getCpf().equals(dto.getGerenteAntigo())) {
+        
+        cliente.setCpfGerente(dto.getGerenteNovo());
+        System.out.println("ENTROU: " + cliente);
+
+        clienteRepository.save(cliente);
+      }
+    }
+  }
+
+  public void rollback(ClienteAlterarGerenteDTO clienteAlterarGerenteDTO) throws Exception {
+    trocarGerente(clienteAlterarGerenteDTO);
   }
 }
