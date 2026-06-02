@@ -1,57 +1,120 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ClienteService } from '../../../services';
-import { ICliente } from '../../../shared';
+import { ClienteService, LoginService } from '../../../services';
+import { ICliente, IClienteCompletoResponse, SharedModule, IClienteAtualizacao } from '../../../shared';
+import { Loading } from '../../../components';
 
 @Component({
   selector: 'app-profile-change',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SharedModule, Loading],
   templateUrl: './profile-change.html',
   styleUrl: './profile-change.css',
 })
 export class ProfileChange implements OnInit {
-  idCliente: number = 1; 
-  cliente!: ICliente;
+  private clienteService = inject(ClienteService);
+  private loginService = inject(LoginService);
+  private router = inject(Router);
+  
+  cliente!: IClienteCompletoResponse;
+  clienteAtualizado!: IClienteAtualizacao;
+  usuarioLogado = this.loginService.usuarioLogado;
+  
+  mensagemErro: string = '';
 
-  constructor(
-    private clienteService: ClienteService,
-    private router: Router
-  ) {}
+  valorFormatado: string = '';
+  loading: boolean = false;
 
   ngOnInit(): void {
-    /*const dados = this.clienteService.getById(this.idCliente);
-    if (dados) {
-      this.cliente = dados;
-    }*/
+    this.buscar();
   }
 
-  atualizarPerfil(): void {
-    if (this.cliente) {
-      let novoLimiteCalculado = (this.cliente.salario || 0) * 0.5;
-      const saldoAtual = this.cliente.saldo || 0;
-      
-      if (saldoAtual < 0) {
-        const dividaAbsoluta = Math.abs(saldoAtual);
+  valorParaNumero(valor: string): number {
+    if (!valor) return 0;
 
-        if (novoLimiteCalculado < dividaAbsoluta) {
-          novoLimiteCalculado = dividaAbsoluta;
-        }
-      }
+    return Number(valor.replace(/\D/g, '')) / 100;
+  }
 
-  
-      this.cliente.limite = novoLimiteCalculado;
-      //this.clienteService.put(this.cliente.cpf!, this.cliente);
+  valorParaString(valor: number): string {
+    return valor.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
 
-      alert(`Perfil atualizado!\nNovo Limite: R$ ${this.cliente.limite.toFixed(2)}\nGerente: ${this.cliente.gerenteNome}`);
-      
-      this.voltar();
+  buscar() {
+    const usuario = this.usuarioLogado;
+
+    if (!usuario) return;
+
+    this.loading = true;
+
+    const cpf = this.usuarioLogado?.usuario.cpf;
+
+    if (!cpf) {
+      this.mensagemErro = 'Usuário não autenticado.';
+      this.loading = false;
+      return;
     }
+
+    this.clienteService.buscar(cpf, "para_alterar").subscribe({
+      next: (cliente) => {
+        console.log(cliente)
+        this.cliente = cliente;
+        this.valorFormatado = this.valorParaString(cliente.salario);
+        this.loading = false;
+        this.cliente = cliente;
+
+        this.clienteAtualizado = {
+          nome: cliente.nome,
+          email: cliente.email,
+          salario: cliente.salario,
+          cep: cliente.cep,
+          endereco: cliente.endereco,
+          cidade: cliente.cidade,
+          estado: cliente.estado
+        };
+        console.log(this.clienteAtualizado)
+      },
+      error: (erro) => {
+        this.mensagemErro = erro.error?.message ?? 'Erro ao buscar cliente.';
+
+        this.loading = false;
+      }
+    });
   }
 
-  voltar(): void {
-    this.router.navigate(['/customerDashboard']);
+ atualizar() {
+  if (!this.clienteAtualizado) return;
+
+  this.loading = true;
+
+  console.log("SALARIO ANTES" + this.valorFormatado)
+  console.log("SALARIO DEPOIS" + this.valorParaNumero(this.valorFormatado))
+
+  const clienteAtualizado = {
+    ...this.clienteAtualizado,
+    salario: this.valorParaNumero(this.valorFormatado)
+  };
+
+  console.log(clienteAtualizado);
+
+  this.clienteService.atualizar(this.cliente.cpf, clienteAtualizado).subscribe({
+      next: () => {
+        this.loading = false;
+      },
+
+      error: (erro) => {
+        console.log('ERRO COMPLETO:', erro);
+        console.log('STATUS:', erro.status);
+        console.log('BODY:', erro.error);
+
+        this.mensagemErro = JSON.stringify(erro.error);
+
+        this.loading = false;
+      }
+    });
   }
 }
