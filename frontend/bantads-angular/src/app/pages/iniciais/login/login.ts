@@ -5,10 +5,11 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { LoginService } from '../../../services';
 import { ILogin, TipoUsuario, UsuarioStatus } from '../../../shared';
+import { Loading } from '../../../components/loading/loading';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, Loading],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -37,7 +38,7 @@ export class Login {
       const rotasPorTipo = {
         [TipoUsuario.CLIENTE]: '/cliente',
         [TipoUsuario.GERENTE]: '/gerente',
-        [TipoUsuario.ADMIN]: '/admin'
+        [TipoUsuario.ADMINISTRADOR]: '/admin'
       };
 
       const rota = rotasPorTipo[usuario.tipo];
@@ -58,9 +59,13 @@ export class Login {
 
   logar() {
     if (!this.formLogin.form.valid) return;
+    this.loading = true;
 
     this.loginService.login(this.login).subscribe({
       next: (usuario) => {
+        console.log(usuario);
+        this.loading = false;
+
         if(usuario != null) {
           this.loginService.usuarioLogado = usuario;
 
@@ -68,13 +73,13 @@ export class Login {
             this.router.navigate(['/cliente']);
           } else if (usuario.tipo === TipoUsuario.GERENTE) {
             this.router.navigate(['/gerente']);
-          } else if (usuario.tipo === TipoUsuario.ADMIN) {
+          } else if (usuario.tipo === TipoUsuario.ADMINISTRADOR) {
             this.router.navigate(['/admin']);
           }
         }
       },
       error: (erro) => {
-
+        this.loading = false;
         if (erro.status === 401 || erro.status === 404) {
           this.mensagem = erro.error;
           this.usuarioStatus = UsuarioStatus.Invalido;

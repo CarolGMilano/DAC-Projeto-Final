@@ -64,7 +64,8 @@
                 [numericos]="'cpf'" 
                 maxlength="14" 
                 #cpf="ngModel"
-                CpfValidator placeholder="123.456.789-10"
+                CpfValidator 
+                placeholder="123.456.789-10"
                 class="block w-full rounded-md bg-zinc-700 px-3 py-1.5 text-base text-gray-100 placeholder:text-zinc-500 sm:text-sm/6 border border-1 outline-none focus:border-gray-400" 
                 required 
                 [ngClass]="{
@@ -168,7 +169,7 @@
                 >CEP</label>
               <input 
                 name="cep" 
-                [(ngModel)]="cliente.cep"
+                [(ngModel)]="cliente.CEP"
                 (ngModelChange)="validaCEP($event)"
                 placeholder="80000-000"
                 [numericos]="'cep'"
@@ -378,7 +379,7 @@
       
                 <div class="col-span-4 flex flex-col">
                   <span class="font-medium text-xs text-gray-200">CEP</span>
-                  <p class="text-white font-thin text-base">{{ cliente.cep | cepFormatador }}</p>
+                  <p class="text-white font-thin text-base">{{ cliente.CEP | cepFormatador }}</p>
                 </div>
       
                 <div class="col-span-3 flex flex-col">

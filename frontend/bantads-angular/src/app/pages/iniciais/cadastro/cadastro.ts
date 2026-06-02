@@ -36,7 +36,7 @@ export class Cadastro {
     telefone: '',
     salario: null,
     endereco: '',
-    cep: '',
+    CEP: '',
     cidade: '',
     estado: '',
   };
@@ -142,7 +142,7 @@ export class Cadastro {
       telefone: this.cliente.telefone,
       salario: this.salarioParaNumero(this.salarioFormatado),
       endereco: `${this.cliente.endereco}${this.numero !== undefined ? ', ' + this.numero : ''}`,
-      cep: this.cliente.cep,
+      CEP: this.cliente.CEP,
       cidade: this.cliente.cidade,
       estado: this.cliente.estado,
     }
@@ -166,6 +166,7 @@ export class Cadastro {
 
         } else if (erro.status === 500) {
           this.mensagemErro = 'Erro interno no servidor. Tente novamente mais tarde.';
+          console.log(erro)
 
         } else {
           this.mensagemErro = 'Erro inesperado ao cadastrar cliente.';
