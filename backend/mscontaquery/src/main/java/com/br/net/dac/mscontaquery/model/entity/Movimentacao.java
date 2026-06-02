@@ -1,7 +1,8 @@
 package com.br.net.dac.mscontaquery.model.entity;
 
+import java.time.LocalDateTime;
 
-import java.sql.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,7 +17,8 @@ public class Movimentacao {
 private Long id;
 
 @Column(name = "data")
-private Date data;
+@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+private LocalDateTime data;
 
 @Column(name = "tipo")
 private String tipo;
@@ -54,11 +56,11 @@ public void setDestino(String destino) {
     this.destino = destino;
 }
 
-public Date getData() {
+public LocalDateTime getData() {
     return data;
 }
 
-public void setData(Date data) {
+public void setData(LocalDateTime data) {
     this.data = data;
 }
 

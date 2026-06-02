@@ -1,0 +1,41 @@
+package br.net.dac.msconta.model.dto;
+
+import java.time.LocalDateTime;
+
+public class MovimentacaoRequestDTO {
+    private Long id;
+    private String tipo;
+    private Double valor;
+    private LocalDateTime data;
+    private String origem;
+    private String destino;
+    
+    public MovimentacaoRequestDTO() { }
+
+    public MovimentacaoRequestDTO(Long id, String tipo, Double valor, LocalDateTime data, String origem, String destino) {
+        this.id = id;
+        this.tipo = tipo;
+        this.valor = valor;
+        this.data = data;
+        this.origem = origem;
+        this.destino = destino;
+    }
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
+
+    public Double getValor() { return valor; }
+    public void setValor(Double valor) { this.valor = valor; }
+
+    public LocalDateTime getData() { return data; }
+    public void setData(LocalDateTime data) { this.data = data; }
+
+    public String getOrigem() { return origem; }
+    public void setOrigem(String origem) { this.origem = origem; }
+
+    public String getDestino() { return destino; }
+    public void setDestino(String destino) { this.destino = destino; }
+}

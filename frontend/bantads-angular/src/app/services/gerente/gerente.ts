@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
 
-import { IGerente, ISagaStatus } from '../../shared';
+import { IDashboardAdminResponse, IGerente, ISagaStatus } from '../../shared';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +31,20 @@ export class GerenteService {
     );
   }
 
+  listarTodosDashboard(): Observable<IDashboardAdminResponse[] | null> {
+    return this._httpClient.get<IDashboardAdminResponse[]>(this.BASE_URL, {
+      params: {
+          filtro: 'dashboard'
+        },
+      observe: 'response'
+    }).pipe(
+      map((resposta: HttpResponse<IDashboardAdminResponse[]>) => {
+        return resposta.body ?? [];
+      }),
+      catchError((erro) => throwError(() => erro))
+    );
+  }
+/*
   //Verifica o status da SAGA
   verificarStatus(id: number): Observable<ISagaStatus | null> {
     return this._httpClient.get<ISagaStatus>(
@@ -41,7 +55,7 @@ export class GerenteService {
       catchError(err => throwError(() => err))
     );
   }
-
+*/
   buscar(cpf: string): Observable<IGerente> {
     return this._httpClient.get<IGerente>(
       `${this.BASE_URL}/${cpf}`

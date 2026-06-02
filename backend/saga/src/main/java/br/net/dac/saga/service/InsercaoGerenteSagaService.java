@@ -119,19 +119,20 @@ public class InsercaoGerenteSagaService {
 
     System.out.println("Vinculando conta ao gerente: " + resumo.toString());
 
-    sagaProdutor.enviar(
-      RabbitMQConfig.CONTA_QUEUE_SUCESSO,
-      "VINCULAR_GERENTE_SUCESSO",
-      resumo
-    );
-
-    /*
+    if(contexto.getTipo().equals("ADMIN")){
+      //Pula a vinculação, porque não é gerente.
+      sagaProdutor.enviar(
+        RabbitMQConfig.CONTA_QUEUE_SUCESSO,
+        "VINCULAR_GERENTE_SUCESSO",
+        resumo
+      );
+    } else {
       sagaProdutor.enviar(
         RabbitMQConfig.CONTA_QUEUE_COMANDO,
         "VINCULAR_CONTA",
         resumo
       );
-    */
+    }
   }
   
   //Em caso de falha

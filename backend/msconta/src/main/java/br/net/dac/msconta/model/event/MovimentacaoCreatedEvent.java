@@ -1,18 +1,18 @@
 package br.net.dac.msconta.model.event;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 public class MovimentacaoCreatedEvent {
     private Long id;
     private String tipo;
     private Double valor;
-    private Date data;
+    private LocalDateTime data;
     private String origem;
     private String destino;
     
     public MovimentacaoCreatedEvent() { }
 
-    public MovimentacaoCreatedEvent(Long id, String tipo, Double valor, Date data, String origem, String destino) {
+    public MovimentacaoCreatedEvent(Long id, String tipo, Double valor, LocalDateTime data, String origem, String destino) {
         this.id = id;
         this.tipo = tipo;
         this.valor = valor;
@@ -30,8 +30,8 @@ public class MovimentacaoCreatedEvent {
     public Double getValor() { return valor; }
     public void setValor(Double valor) { this.valor = valor; }
 
-    public Date getData() { return data; }
-    public void setData(Date data) { this.data = data; }
+    public LocalDateTime getData() { return data; }
+    public void setData(LocalDateTime data) { this.data = data; }
 
     public String getOrigem() { return origem; }
     public void setOrigem(String origem) { this.origem = origem; }

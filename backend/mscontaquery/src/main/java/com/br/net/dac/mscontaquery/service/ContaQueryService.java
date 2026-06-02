@@ -40,7 +40,7 @@ public class ContaQueryService {
     }
 
     public ContaResumoDTO validarClienteExiste(String cpf) {
-        Conta conta = contaRepository.findByCpfCliente(cpf)
+        Conta conta = contaRepository.findByClienteCpf(cpf)
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado para o CPF: " + cpf));
 
         return ContaQueryMapper.toResumoDTO(conta);
@@ -58,7 +58,7 @@ public class ContaQueryService {
         Conta conta = contaRepository.findById(numero)
                 .orElseThrow(() -> new RuntimeException("Conta não encontrada: " + numero));
 
-        List<Movimentacao> movimentacoes = movimentacaoRepository.findByOrigemOrDestinoOrderByDataAsc(numero, numero);
+        List<Movimentacao> movimentacoes = movimentacaoRepository.findByOrigemOrDestinoOrderByDataAsc(conta.getNumero(), conta.getNumero());
 
         ExtratoResponseDTO extrato = new ExtratoResponseDTO();
         extrato.conta = conta.getNumero();
@@ -82,10 +82,7 @@ public class ContaQueryService {
         
         switch (requestDTO.getTipo()) {
             case "SAQUE":
-                // Retira do saldo da conta
-                Conta contaSacar = contaRepository.findTop1ByClienteCpf(requestDTO.getDestino());
-                contaSacar.setSaldo(contaSacar.getSaldo() - requestDTO.getValor());
-                contaRepository.save(contaSacar);
+
 
                 // Criação da movimentação a ser registrada
                 Movimentacao movimentacaoSaque = new Movimentacao();
@@ -108,11 +105,7 @@ public class ContaQueryService {
             );
                 
             case "DEPOSITO":
-                // Deposita no saldo da conta
-                Conta contaDepositar = contaRepository.findTop1ByClienteCpf(requestDTO.getDestino());
-                contaDepositar.setSaldo(contaDepositar.getSaldo() + requestDTO.getValor());
-                contaRepository.save(contaDepositar);
-                
+               
                 // Criação da movimentação a ser registrada
                 Movimentacao movimentacaoDeposito = new Movimentacao();
                 movimentacaoDeposito.setId(requestDTO.getId());
@@ -134,15 +127,7 @@ public class ContaQueryService {
             );
 
             case "TRANSFERENCIA":
-                // Deposita no saldo da conta destino
-                Conta contaTransferenciaDestino = contaRepository.findTop1ByClienteCpf(requestDTO.getDestino());
-                contaTransferenciaDestino.setSaldo(contaTransferenciaDestino.getSaldo() + requestDTO.getValor());
-                contaRepository.save(contaTransferenciaDestino);
-                
-                // Retira no saldo da conta origem
-                Conta contaTransferenciaOrigem = contaRepository.findTop1ByClienteCpf(requestDTO.getOrigem());
-                contaTransferenciaOrigem.setSaldo(contaTransferenciaOrigem.getSaldo() - requestDTO.getValor());
-                contaRepository.save(contaTransferenciaOrigem);
+
 
                 // Salva a movimentação
                 Movimentacao movimentacaoTransferencia = new Movimentacao();

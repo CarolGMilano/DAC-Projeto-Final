@@ -1,7 +1,5 @@
 package com.br.net.dac.mscontaquery.model.event;
 
-import java.sql.Date;
-
 public class ContaUpdatedEvent {
     private String numeroConta;
     private boolean ativo; 

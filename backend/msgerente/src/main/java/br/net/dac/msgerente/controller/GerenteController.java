@@ -18,10 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.net.dac.msgerente.model.dto.GerenteDTO;
 import br.net.dac.msgerente.model.dto.GerenteResumoDTO;
+import br.net.dac.msgerente.model.dto.RebootResponseDTO;
 import br.net.dac.msgerente.model.exception.CPFDuplicadoException;
 import br.net.dac.msgerente.model.exception.GerenteNaoEncontradoException;
 import br.net.dac.msgerente.model.exception.UsuarioDuplicadoException;
 import br.net.dac.msgerente.service.GerenteService;
+import br.net.dac.msgerente.service.RebootService;
 
 @CrossOrigin
 @RestController
@@ -29,6 +31,20 @@ import br.net.dac.msgerente.service.GerenteService;
 public class GerenteController {
   @Autowired
   private GerenteService gerenteService;
+
+  @Autowired
+  private RebootService rebootService;
+
+  @PostMapping("/reboot")
+  public ResponseEntity<?> rebook(@RequestBody List<RebootResponseDTO> usuarios) {
+    try {
+      rebootService.reboot(usuarios);
+
+      return ResponseEntity.ok().build();
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("erro", "Erro no REBOOT de GERENTE: " + e.getMessage()));
+    }
+  }
 
   @GetMapping
   public ResponseEntity<?> listar() {

@@ -25,7 +25,7 @@ public class SagaController {
   private InsercaoGerenteSagaService insercaoGerenteSagaService;
 
   //O Spring aceita multiplas rotas para o mesmo endpoint. É só mandar uma listinha.
-  @PostMapping({"/gerentes", "/reboot/gerentes"})
+  @PostMapping("/gerentes")
   public ResponseEntity<?> inserir(@RequestBody GerenteDTO dto) {
     SagaInsercaoContexto contexto = insercaoGerenteSagaService.iniciar(dto);
 
@@ -74,12 +74,13 @@ public class SagaController {
       }
     }
 
-    return ResponseEntity.ok(
-      new GerenteCriacaoRespostaDTO (
-      contexto.getCpf(),
-      contexto.getNome(),
-      contexto.getEmail(),
-      contexto.getTipo()
-    ));
+    return ResponseEntity.status(HttpStatus.CREATED).body(
+      new GerenteCriacaoRespostaDTO(
+        contexto.getCpf(),
+        contexto.getNome(),
+        contexto.getEmail(),
+        contexto.getTipo()
+      )
+    );
   }
 }

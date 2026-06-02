@@ -26,6 +26,7 @@ public class TokenService {
       String token = JWT.create()
         .withIssuer("msauth")
         .withSubject(usuario.getEmail())
+        .withClaim("tipo", usuario.getTipo())
         .withExpiresAt(gerarTempo())
         .sign(algoritmo);
 

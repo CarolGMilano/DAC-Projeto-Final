@@ -36,12 +36,14 @@ export class Cadastro {
     telefone: '',
     salario: null,
     endereco: '',
-    cep: '',
+    CEP: '',
     cidade: '',
     estado: '',
   };
 
   salarioFormatado: string = '';
+
+  mensagemErro: string | null = null;
 
   cepStatus: CepStatus = CepStatus.Vazio;
   status = CepStatus;
@@ -140,7 +142,7 @@ export class Cadastro {
       telefone: this.cliente.telefone,
       salario: this.salarioParaNumero(this.salarioFormatado),
       endereco: `${this.cliente.endereco}${this.numero !== undefined ? ', ' + this.numero : ''}`,
-      cep: this.cliente.cep,
+      CEP: this.cliente.CEP,
       cidade: this.cliente.cidade,
       estado: this.cliente.estado,
     }
@@ -148,18 +150,26 @@ export class Cadastro {
     this.clienteService.inserir(novoCliente).subscribe({
       next: () => {
         this.cadastroConcluido = true;
+        this.mensagemErro = null;
       },
       error: (erro) => {
+        this.cadastroConcluido = true;
+
         if (erro.status === 409) {
           if (erro.error.tipo === 'cpf') {
-            this.cpfModel.control.setErrors({ cpfConflito: true });
+            this.mensagemErro = 'cpf';
           } else if (erro.error.tipo === 'email') {
-            this.emailModel.control.setErrors({ emailConflito: true });
+            this.mensagemErro = 'email';
+          } else {
+            this.mensagemErro = 'Conflito de dados.';
           }
+
         } else if (erro.status === 500) {
-          alert(`Erro interno: ${erro.error}`);
+          this.mensagemErro = 'Erro interno no servidor. Tente novamente mais tarde.';
+          console.log(erro)
+
         } else {
-          alert('Erro inesperado ao cadastrar gerente.');
+          this.mensagemErro = 'Erro inesperado ao cadastrar cliente.';
         }
       }
     });

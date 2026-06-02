@@ -1,12 +1,14 @@
 package br.net.dac.msconta.service;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.net.dac.msconta.model.dto.ClienteAlterarGerenteDTO;
 import br.net.dac.msconta.model.dto.ContaRequestDTO;
 import br.net.dac.msconta.model.dto.ContaResponseDTO;
 import br.net.dac.msconta.model.dto.OperacaoResponseDTO;
@@ -14,6 +16,7 @@ import br.net.dac.msconta.model.dto.GerenteRequestDTO;
 import br.net.dac.msconta.model.dto.TransferenciaRequestDTO;
 import br.net.dac.msconta.model.dto.TransferenciaResponseDTO;
 import br.net.dac.msconta.model.dto.ValorDTO;
+import br.net.dac.msconta.model.dto.VinculoRequestDTO;
 import br.net.dac.msconta.model.entity.Conta;
 import br.net.dac.msconta.model.entity.Movimentacao;
 import br.net.dac.msconta.model.event.ContaCreatedEvent;
@@ -174,6 +177,15 @@ public class ContaCommandService {
 
         Conta contaAtualizada = contaRepository.save(conta);
 
+        contaProdutor.contaUpdateSucesso(
+            new ContaUpdatedEvent(
+                conta.getNumero(), 
+                conta.getGerenteCpf(), 
+                conta.getSaldo(),
+                conta.getLimite()
+            )
+        );
+
         return new ValorDTO(contaAtualizada.getLimite());
         
     }
@@ -220,14 +232,19 @@ public class ContaCommandService {
             throw new RuntimeException("Saldo insuficiente");
         }
 
-        origem.setSaldo(origem.getSaldo() - dto.getValor());
-        destino.setSaldo(destino.getSaldo() + dto.getValor());
+        origem.setSaldo(
+            Math.round((origem.getSaldo() - dto.getValor()) * 100.0) / 100.0
+        );
+
+        destino.setSaldo(
+            Math.round((destino.getSaldo() + dto.getValor()) * 100.0) / 100.0
+        );
 
         Movimentacao movimentacao = new Movimentacao();
         movimentacao.setOrigem(origem);
         movimentacao.setDestino(destino);
         movimentacao.setValor(dto.getValor());
-        movimentacao.setData(new Date(System.currentTimeMillis()));
+        movimentacao.setData(LocalDateTime.now().withNano((LocalDateTime.now().getNano()/1000)*1000));
         movimentacao.setTipo("TRANSFERENCIA");
 
         // Enviar alterações para o query
@@ -260,8 +277,8 @@ public class ContaCommandService {
                 movimentacaoTransferenciaInserida.getTipo(),
                 movimentacaoTransferenciaInserida.getValor(),
                 movimentacaoTransferenciaInserida.getData(),
-                movimentacaoTransferenciaInserida.getOrigem() != null ? movimentacaoTransferenciaInserida.getOrigem().getClienteCpf() : null,
-                movimentacaoTransferenciaInserida.getDestino().getClienteCpf()
+                movimentacaoTransferenciaInserida.getOrigem() != null ? movimentacaoTransferenciaInserida.getOrigem().getNumero() : null,
+                movimentacaoTransferenciaInserida.getDestino().getNumero()
             )
         );
 
@@ -277,13 +294,15 @@ public class ContaCommandService {
         Conta conta = contaRepository.findById(numero)
             .orElseThrow(() -> new RuntimeException("Conta não encontrada: " + numero));
 
-        conta.setSaldo(conta.getSaldo() + valor);
+        conta.setSaldo(
+            Math.round((conta.getSaldo() + valor) * 100.0) / 100.0
+        );
 
         Movimentacao movimentacao = new Movimentacao();
-        movimentacao.setOrigem(null);
-        movimentacao.setDestino(conta);
+        movimentacao.setOrigem(conta);
+        movimentacao.setDestino(null);
         movimentacao.setValor(valor);
-        movimentacao.setData(new Date(System.currentTimeMillis()));
+        movimentacao.setData(LocalDateTime.now().withNano((LocalDateTime.now().getNano()/1000)*1000));
         movimentacao.setTipo("DEPOSITO");
 
         Conta contaAlterada = contaRepository.save(conta);
@@ -304,8 +323,8 @@ public class ContaCommandService {
                 movimentacaoInserida.getTipo(),
                 movimentacaoInserida.getValor(),
                 movimentacaoInserida.getData(),
-                movimentacaoInserida.getOrigem() != null ? movimentacaoInserida.getOrigem().getClienteCpf() : null,
-                movimentacaoInserida.getDestino().getClienteCpf()
+                movimentacaoInserida.getOrigem().getNumero(),
+                movimentacaoInserida.getDestino() != null ? movimentacaoInserida.getOrigem().getNumero() : null
             )
         );
 
@@ -323,13 +342,15 @@ public class ContaCommandService {
             throw new RuntimeException("Saldo insuficiente");
         }
 
-        conta.setSaldo(conta.getSaldo() - valor);
+        conta.setSaldo(
+            Math.round((conta.getSaldo() - valor) * 100.0) / 100.0
+        );
 
         Movimentacao movimentacao = new Movimentacao();
-        movimentacao.setOrigem(null);
-        movimentacao.setDestino(conta);
+        movimentacao.setOrigem(conta);
+        movimentacao.setDestino(null);
         movimentacao.setValor(valor);
-        movimentacao.setData(new Date(System.currentTimeMillis()));
+        movimentacao.setData(LocalDateTime.now().withNano((LocalDateTime.now().getNano()/1000)*1000));
         movimentacao.setTipo("SAQUE");
 
         // Envia os dados salvos para a query
@@ -350,8 +371,8 @@ public class ContaCommandService {
                 movimentacaoInserida.getTipo(),
                 movimentacaoInserida.getValor(),
                 movimentacaoInserida.getData(),
-                movimentacaoInserida.getOrigem() != null ? movimentacaoInserida.getOrigem().getClienteCpf() : null,
-                movimentacaoInserida.getDestino().getClienteCpf()
+                movimentacaoInserida.getOrigem().getNumero(),
+                movimentacaoInserida.getDestino() != null ? movimentacaoInserida.getOrigem().getNumero() : null
                 )
             );
         
@@ -362,10 +383,10 @@ public class ContaCommandService {
             conta.getSaldo());
     }
 
-    public void redistribuiContasGerenteDeletado(GerenteRequestDTO gerenteCpf) {
+    public GerenteRequestDTO redistribuiContasGerenteDeletado(GerenteRequestDTO gerenteCpf) {
         String cpf = gerenteCpf.getGerenteCpf();
         List<Conta> contas = contaRepository.findByGerenteCpf(cpf);
-        String novoGerente = contaRepository.findGerenteWithLeastActiveContas()
+        String novoGerente = contaRepository.findGerenteWithLeastActiveContas(gerenteCpf.getGerenteCpf())
             .orElseThrow(() -> new RuntimeException("Nenhum gerente disponível"));
 
         for (Conta conta : contas) {
@@ -381,33 +402,45 @@ public class ContaCommandService {
                 )                
             );
         }
+
+        return new GerenteRequestDTO (
+            novoGerente
+        );
     }
 
-    public void realocarCliente(GerenteRequestDTO GerenteCpf) {
+    public boolean realocarCliente(VinculoRequestDTO vinculoDTO) {
+        if (vinculoDTO == null || vinculoDTO.getCpf() == null) return false;
+
         String gerenteCpf = contaRepository.findGerenteComMaisContasAtivasEMenorSaldoPositivo();
 
-        if (gerenteCpf == null) return;
+        if (gerenteCpf == null) return false;
 
-        // Busca todas as contas ativas do gerente encontrado
         List<Conta> contasDoGerente = contaRepository.findByGerenteCpfAndAtivoTrue(gerenteCpf);
 
-        if (contasDoGerente.isEmpty()) return;
+        if (contasDoGerente.isEmpty()) return false;
 
-        // Pega uma conta aleatória
         Conta contaSelecionada = contasDoGerente.get(new Random().nextInt(contasDoGerente.size()));
 
-        // Troca o gerente e salva para disparar para o RabbitMQ
-         Conta contaAtualizada = contaRepository.save(contaSelecionada);
-        // Dispara para o rabbitMQ
+        contaSelecionada.setGerenteCpf(vinculoDTO.getCpf());
+
+        Conta contaAtualizada = contaRepository.save(contaSelecionada);
+
+        contaProdutor.atualizarGerenteCliente(
+            new ClienteAlterarGerenteDTO(
+                contaAtualizada.getClienteCpf(),
+                vinculoDTO.getCpf()
+            )
+        );
+
         contaProdutor.contaUpdateSucesso(
-        new ContaUpdatedEvent(
-            contaAtualizada.getNumero(),
-            contaAtualizada.getGerenteCpf(),
-            contaAtualizada.getSaldo(),
-            contaAtualizada.getLimite()
-        )
-    );
+            new ContaUpdatedEvent(
+                contaAtualizada.getNumero(),
+                contaAtualizada.getGerenteCpf(),
+                contaAtualizada.getSaldo(),
+                contaAtualizada.getLimite()
+            )
+        );
+
+        return true;
     }
-
-
 }

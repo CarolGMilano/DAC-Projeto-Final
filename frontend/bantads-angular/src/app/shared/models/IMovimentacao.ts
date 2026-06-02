@@ -1,9 +1,10 @@
 import { TipoMovimentacao } from "./EnumTipoMovimentacao";
 
 export interface IMovimentacao {
-  dataHora: Date;
-  tipo: TipoMovimentacao;
-  clienteOrigem?: string;
-  clienteDestino?: string;
+  id: BigInteger;
+  tipo: String;
   valor: number;
+  data: Date;
+  origem: string;
+  destino: string;
 }

@@ -15,7 +15,7 @@ import com.br.net.dac.mscontaquery.service.ContaQueryService;
 
 @RestController
 @CrossOrigin
-@RequestMapping()
+@RequestMapping("/contas")
 public class ContaQueryController {
 
     @Autowired
@@ -39,7 +39,7 @@ public class ContaQueryController {
         }
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<ContaResponseDTO>> buscarContas() {
         try {
             return ResponseEntity.ok(service.buscarContas());

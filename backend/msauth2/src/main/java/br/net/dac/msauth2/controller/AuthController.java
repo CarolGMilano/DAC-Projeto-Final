@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import br.net.dac.msauth2.model.dto.LoginDTO;
+import br.net.dac.msauth2.model.dto.RebootResponseDTO;
 import br.net.dac.msauth2.model.dto.RejeicaoDTO;
 import br.net.dac.msauth2.model.dto.RespostaDTO;
 import br.net.dac.msauth2.model.dto.UsuarioAlteracaoDTO;
@@ -21,6 +22,7 @@ import br.net.dac.msauth2.model.exception.EmailDuplicadoException;
 import br.net.dac.msauth2.model.exception.SenhaIncorretaException;
 import br.net.dac.msauth2.model.exception.UsuarioNaoEncontradoException;
 import br.net.dac.msauth2.service.AuthService;
+import br.net.dac.msauth2.service.RebootService;
 
 @CrossOrigin
 @RestController
@@ -30,6 +32,20 @@ public class AuthController {
   @Autowired
   private AuthService authService;
 
+  @Autowired
+  private RebootService rebootService;
+
+  @PostMapping("/reboot")
+  public ResponseEntity<?> rebook() {
+    try {
+      List<RebootResponseDTO> usuariosCriados = rebootService.reboot();
+
+      return ResponseEntity.ok(usuariosCriados);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("erro", "Erro no REBOOT: " + e.getMessage()));
+    }
+  }
+
   @PostMapping("/login")
   public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
     try {
@@ -37,7 +53,7 @@ public class AuthController {
 
       return ResponseEntity.ok(usuario);
     } catch (UsuarioNaoEncontradoException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("erro", e.getMessage()));
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("erro", e.getMessage()));
     } catch (SenhaIncorretaException e) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("erro", e.getMessage()));
     } catch (Exception e) {
@@ -45,7 +61,7 @@ public class AuthController {
     }
   }
 
-  @PostMapping("auth/usuarios")
+  @PostMapping("/auth/usuarios")
   public ResponseEntity<?> criarUsuario(@RequestBody UsuarioCriacaoDTO usuarioDTO) {
     try {
       RespostaDTO usuarioCriado = authService.criarUsuario(usuarioDTO);
@@ -58,7 +74,7 @@ public class AuthController {
     }
   }
 
-  @PutMapping("auth/usuarios")
+  @PutMapping("/auth/usuarios")
   public ResponseEntity<?> atualizarUsuario(@RequestBody UsuarioAlteracaoDTO usuarioDTO) {
     try {
       RespostaDTO usuarioAtualizado = authService.atualizarUsuario(usuarioDTO);
@@ -73,7 +89,7 @@ public class AuthController {
     }
   }
 
-  @PostMapping("auth/usuarios/{id}/aprovar")
+  @PostMapping("/auth/usuarios/{id}/aprovar")
   public ResponseEntity<?> aprovar(@PathVariable String id) {
     try {
       UsuarioAprovacaoRejeicaoDTO usuarioAprovado = authService.aprovarCliente(id);
@@ -86,7 +102,7 @@ public class AuthController {
     }
   }
 
-  @PostMapping("auth/usuarios/{id}/rejeitar")
+  @PostMapping("/auth/usuarios/{id}/rejeitar")
   public ResponseEntity<?> rejeitar(@PathVariable String id, @RequestBody RejeicaoDTO dto) {
     try {
       UsuarioAprovacaoRejeicaoDTO usuarioRejeitadp = authService.rejeitarCliente(id, dto);
@@ -99,7 +115,7 @@ public class AuthController {
     }
   }
 
-  @PutMapping("auth/usuarios/desativar")
+  @PutMapping("/auth/usuarios/desativar")
   public ResponseEntity<?> desativarUsuario(@RequestBody UsuarioDesativacaoDTO usuarioDTO) {
     try {
       RespostaDTO usuarioDesativado = authService.desativarUsuario(usuarioDTO);
@@ -112,7 +128,7 @@ public class AuthController {
     }
   }
 
-  @GetMapping("auth/usuarios/{id}")
+  @GetMapping("/auth/usuarios/{id}")
   public ResponseEntity<?> buscarPorId(@PathVariable String id) {
     try {
       RespostaDTO usuario = authService.buscarPorId(id);
@@ -126,7 +142,7 @@ public class AuthController {
     }
   }
 
-  @GetMapping("auth/usuarios/email/{email}")
+  @GetMapping("/auth/usuarios/email/{email}")
   public ResponseEntity<?> buscarPorEmail(@PathVariable String email) {
     try {
       RespostaDTO usuario = authService.buscarPorEmail(email);
@@ -140,11 +156,11 @@ public class AuthController {
     }
   }
 
-  @GetMapping("auth/usuarios/funcionarios")
+  @GetMapping("/auth/usuarios/funcionarios")
   public ResponseEntity<?> listarFuncionarios() {
     try {
       List<RespostaDTO> usuarios =  authService.listarUsuarios(
-        List.of(TipoUsuarioEnum.ADMIN, TipoUsuarioEnum.GERENTE)
+        List.of(TipoUsuarioEnum.ADMINISTRADOR, TipoUsuarioEnum.GERENTE)
       );
 
       return ResponseEntity.ok(usuarios);
@@ -153,7 +169,7 @@ public class AuthController {
     }
   }
 
-  @GetMapping("auth/usuarios/clientes")
+  @GetMapping("/auth/usuarios/clientes")
   public ResponseEntity<?> listarClientes(@RequestParam(required = false) String filtro) {
     try {
       List<RespostaDTO> usuarios = new ArrayList<>();
@@ -169,7 +185,7 @@ public class AuthController {
     }
   }
 
-  @DeleteMapping("auth/usuarios/{id}")
+  @DeleteMapping("/auth/usuarios/{id}")
   public ResponseEntity<?> rollback(@PathVariable String id) {
     try {
       UsuarioDesativacaoDTO usuarioDeletado = new UsuarioDesativacaoDTO();

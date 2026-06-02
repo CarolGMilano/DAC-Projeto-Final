@@ -5,7 +5,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
@@ -38,6 +37,9 @@ public class AuthService {
 
   @Autowired
   private TokenService tokenService;
+
+  @Autowired
+  private EmailService emailService;
 
   private String gerarSalt() {
     //Cria um array de bytes
@@ -142,6 +144,30 @@ public class AuthService {
 
     System.out.println(senhaAleatoria);
 
+    if(tipo == TipoUsuarioEnum.CLIENTE){
+      String mensagem = """
+      Olá, %s!
+
+      Recebemos sua solicitação de cadastro no BanTADS.
+
+      Seu perfil foi encaminhado para análise pela nossa equipe. Assim que o processo for concluído, você receberá uma nova notificação por e-mail informando o resultado.
+
+      Obrigado pelo interesse em fazer parte do nosso banco!
+
+      Atenciosamente,
+      Equipe BanTADS
+      """.formatted(
+        usuario.getEmail()
+      );
+
+      emailService.enviarEmail(
+        "BanTADS - Cadastro recebido para análise",
+        mensagem,
+        //Mudar aqui na defesa
+        "carolinamilano@ufpr.br"
+      );
+    }
+
     return new RespostaDTO(
       usuarioSalvo.getId(),
       usuarioSalvo.getEmail(),
@@ -216,10 +242,36 @@ public class AuthService {
     usuarioEncontrado.setSenha(senhaHash);
     usuarioEncontrado.setAtivo(StatusUsuarioEnum.ATIVO.name());
 
-    System.out.println("\n===== EMAIL =====");
-    System.out.println("ASSUNTO: Aprovação de conta");
-    System.out.println("MENSAGEM: Bem-vindo ao banco. Sua senha é " + senhaAleatoria);
-    System.out.println("=================\n");
+    if(TipoUsuarioEnum.CLIENTE.name().equals(usuarioEncontrado.getTipo())){
+      String mensagem = """
+        Olá, %s!
+
+        Temos uma ótima notícia: seu cadastro foi APROVADO!
+
+        Sua conta já está disponível para acesso ao sistema BanTADS.
+
+        Dados de acesso:
+
+        Login: %s
+        Senha: %s
+
+        Obrigado por escolher o BanTADS!
+
+        Atenciosamente,
+        Equipe BanTADS
+        """.formatted(
+            usuarioEncontrado.getEmail(),
+            usuarioEncontrado.getEmail(),
+            senhaAleatoria
+        );
+
+      emailService.enviarEmail(
+        "Bem-vindo ao BanTADS",
+        mensagem,
+        //Mudar aqui na defesa
+        "carolinamilano@ufpr.br"
+      );
+    }
 
     usuarioRepository.save(usuarioEncontrado);
 
@@ -234,10 +286,35 @@ public class AuthService {
 
     usuarioEncontrado.setAtivo(StatusUsuarioEnum.REJEITADO.name());
 
-    System.out.println("\n===== EMAIL =====");
-    System.out.println("ASSUNTO: Rejeição de conta");
-    System.out.println("MENSAGEM: Sentimos muito. Sua conta foi rejeitada pelo motivo de " + dto.getMotivo());
-    System.out.println("=================\n");
+    if(TipoUsuarioEnum.CLIENTE.name().equals(usuarioEncontrado.getTipo())){
+      String mensagem = """
+        Olá, %s!
+
+        Finalizamos a análise da sua solicitação de cadastro no BanTADS.
+
+        Infelizmente, sua solicitação não foi aprovada no momento.
+
+        Motivo da decisão:
+        %s
+
+        Se tiver dúvidas ou precisar de informações adicionais, entre em contato com nossa equipe de suporte.
+
+        Agradecemos seu interesse e o tempo dedicado ao processo.
+
+        Atenciosamente,
+        Equipe BanTADS
+        """.formatted(
+            usuarioEncontrado.getEmail(),
+            dto.getMotivo()
+        );
+
+      emailService.enviarEmail(
+        "BanTADS - Atualização da sua solicitação de cadastro",
+        mensagem,
+        //Mudar aqui na defesa
+        "carolinamilano@ufpr.br"
+      );
+    }
 
     usuarioRepository.save(usuarioEncontrado);
 
@@ -305,20 +382,20 @@ public class AuthService {
     List<RespostaDTO> resposta = new ArrayList<>();
 
     for (Usuario usuario : usuarios) {
-      if (StatusUsuarioEnum.PENDENTE.name().equals(usuario.getAtivo())) {
-        TipoUsuarioEnum tipo = TipoUsuarioEnum.CLIENTE;
-
-        if (!usuario.getAtivo().equals(tipo.name())) {
-          continue;
-        }
-
-        RespostaDTO dto = new RespostaDTO();
-        dto.setId(usuario.getId());
-        dto.setEmail(usuario.getEmail());
-        dto.setTipo(usuario.getAtivo());
-  
-        resposta.add(dto);
+      if (!StatusUsuarioEnum.PENDENTE.name().equals(usuario.getAtivo())) {
+        continue;
       }
+
+      if (!TipoUsuarioEnum.CLIENTE.name().equals(usuario.getTipo())) {
+        continue;
+      }
+
+      RespostaDTO dto = new RespostaDTO();
+      dto.setId(usuario.getId());
+      dto.setEmail(usuario.getEmail());
+      dto.setTipo(usuario.getTipo());
+
+      resposta.add(dto);
     }
 
     return resposta;
@@ -329,20 +406,20 @@ public class AuthService {
     List<RespostaDTO> resposta = new ArrayList<>();
 
     for (Usuario usuario : usuarios) {
-      if (StatusUsuarioEnum.ATIVO.name().equals(usuario.getAtivo())) {
-        TipoUsuarioEnum tipo = TipoUsuarioEnum.CLIENTE;
-
-        if (!usuario.getAtivo().equals(tipo.name())) {
-          continue;
-        }
-        
-        RespostaDTO dto = new RespostaDTO();
-        dto.setId(usuario.getId());
-        dto.setEmail(usuario.getEmail());
-        dto.setTipo(usuario.getAtivo());
-  
-        resposta.add(dto);
+      if (!StatusUsuarioEnum.ATIVO.name().equals(usuario.getAtivo())) {
+        continue;
       }
+
+      if (!TipoUsuarioEnum.CLIENTE.name().equals(usuario.getTipo())) {
+        continue;
+      }
+
+      RespostaDTO dto = new RespostaDTO();
+      dto.setId(usuario.getId());
+      dto.setEmail(usuario.getEmail());
+      dto.setTipo(usuario.getTipo());
+
+      resposta.add(dto);
     }
 
     return resposta;

@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ClienteService } from '../../../services';
-import { ICliente, SharedModule } from '../../../shared';
+import { ICliente, IClienteCompletoResponse, SharedModule } from '../../../shared';
 import { MoedaBrPipe } from '../../../shared/pipes/moedaBr/moeda-br-pipe';
 
 @Component({
@@ -10,16 +10,29 @@ import { MoedaBrPipe } from '../../../shared/pipes/moedaBr/moeda-br-pipe';
   styleUrl: './relatorio-de-clientes.css',
 })
 export class RelatorioDeClientes {
-  clientes!: ICliente[];
-
-  constructor(
-    private clienteService: ClienteService,
+  private clienteService = inject(ClienteService);
   
-  ) {}
+  clientes?: IClienteCompletoResponse[];
 
   ngOnInit() {
-    this.clientes = this.clienteService.get().sort((a, b) =>
-    a.nome.localeCompare(b.nome, 'pt-BR')
-  );
+    this.listarClientes();
+  }
+
+  listarClientes() {
+    this.clienteService.listarDashboard().subscribe({
+      next: (clientes) => {
+        this.clientes = (clientes ?? []).sort((cliente1, cliente2) =>
+          (cliente1.nome ?? '').localeCompare(cliente2.nome ?? '')
+        );
+      },
+      error: (erro) => {
+        if (erro.status === 500) {
+          alert(`Erro interno: ${erro.error}`);
+        } else {
+          alert('Erro inesperado ao listar funcionários.');
+          console.log(erro);
+        }
+      }
+    });
   }
 }

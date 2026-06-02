@@ -10,43 +10,98 @@ e salário do cliente, junto com dois botões "Aprovar" e "Recusar".
         <div class="flex min-w-2/3 place-content-between">
             <div class="overflow-x-auto max-h-100 overflow-y-auto">
                 <table class="w-full table-fixed">
-                    <!-- Colunas -->
-                     <thead class="border-b border-gray-200">
-  <tr>
-    <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">
-      <span class="bg-white border-none text-zinc-800 text-xs font-medium pl-2 pr-1 py-0.3 rounded-full mr-1">
-        {{this.exemplos.length}}
-      </span>
-      CPF
-    </th>
-    <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Nome</th>
-    <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Salário</th>
-    <th class="w-2/6"></th>
-  </tr>
-</thead>
+                  <thead class="border-b border-gray-200">
+                    <tr>
+                      <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">
+                        <span class="bg-white border-none text-zinc-800 text-xs font-medium pl-2 pr-1 py-0.3 rounded-full mr-1">
+                          {{this.clientes.length}}
+                        </span>
+                        CPF
+                      </th>
+                      <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Nome</th>
+                      <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Email</th>
+                      <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Salário</th>
+                      <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Endereço</th>
+                      <th class="w-2/6"></th>
+                    </tr>
+                  </thead>
 
-<tbody class="divide-y divide-gray-200">
-  @for (c of exemplos; track c.id)
-  {
-    <tr class="hover:bg-gray-700 transition-colors">
-      <td class="px-4 py-2 text-sm text-gray-300">{{ c.cpf | cpfFormatador }}</td>
-      <td class="px-4 py-2 text-sm text-gray-300">{{ c.nome }}</td>
-      <td class="px-4 py-2 text-sm text-gray-300">R${{ c.salario | moedaBr }}</td>
-      <td class="px-4 py-2 text-sm text-gray-300">
-        <div class="flex gap-2">
-          <button class="bg-green-500 hover:bg-green-500 text-white text-xs font-semibold px-3 py-1 rounded-md transition hover:cursor-pointer" (click)="aprovar(c.id)">
-            Aprovar
-          </button>
-          <button class="bg-gray-400 hover:bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-md transition hover:cursor-pointer" (click)="recusar(c.id)">
-            Recusar
-          </button>
-        </div>
-      </td>
-    </tr>
-  }
-</tbody>
+                  <tbody class="divide-y divide-gray-200">
+                    @for (c of clientes; track c.cpf)
+                    {
+                      <tr class="hover:bg-gray-700 transition-colors">
+                        <td class="px-4 py-2 text-sm text-gray-300">{{ c.cpf | cpfFormatador }}</td>
+                        <td class="px-4 py-2 text-sm text-gray-300">{{ c.nome }}</td>
+                        <td class="px-4 py-2 text-sm text-gray-300">{{ c.email }}</td>
+                        <td class="px-4 py-2 text-sm text-gray-300">{{ c.salario | currency:'BRL':'symbol':'1.2-2' }}</td>
+                        <td class="px-4 py-2 text-sm text-gray-300">{{ c.endereco }}, {{ c.cidade }} - {{ c.estado }}</td>
+                        <td class="px-4 py-2 text-sm text-gray-300">
+                          <div class="flex gap-2">
+                            <button class="bg-green-500 hover:bg-green-500 text-white text-xs font-semibold px-3 py-1 rounded-md transition hover:cursor-pointer" (click)="aprovar(c.cpf)">
+                              Aprovar
+                            </button>
+                            <button class="bg-gray-400 hover:bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-md transition hover:cursor-pointer" (click)="abrirPopup(c.cpf)">
+                              Recusar
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
                 </table>
             </div>
         </div>
     </div>
+
+    @if (mostrarFormulario) {
+      <div class="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
+        <div class="bg-zinc-800 rounded-lg shadow-xl p-6 w-full max-w-md">
+
+          <form #formRejeicao="ngForm" (ngSubmit)="recusar()">
+            <div class="flex flex-col gap-2">
+              <label for="motivo" class="block text-sm text-gray-100 mb-1">
+                Motivo da rejeição
+              </label>
+
+              <textarea
+                id="motivo"
+                name="motivo"
+                [(ngModel)]="this.motivoRejeicao"
+                #motivo="ngModel"
+                required
+                rows="4"
+                placeholder="Descreva o motivo..."
+                class="block w-full rounded-md bg-zinc-700 px-3 py-2 text-base text-gray-100 placeholder:text-zinc-500 border border-zinc-600 outline-none focus:border-gray-400"
+                [ngClass]="{
+                  'border-red-500': motivo.errors?.['required'] && (motivo.touched || formRejeicao.submitted),
+                  'border-green-500': motivo.valid && motivo.touched
+                }">
+              </textarea>
+
+              @if (motivo.errors?.['required'] && (motivo.touched || formRejeicao.submitted)) {
+                <span class="pl-2 text-red-600 text-xs">
+                  O motivo é obrigatório
+                </span>
+              }
+            </div>
+
+            <div class="mt-6 flex items-center justify-end gap-x-6">
+              <button
+                type="button"
+                (click)="cancelar()"
+                class="px-4 py-2 text-sm rounded-lg border border-gray-500 text-gray-300 hover:bg-[#313133] hover:cursor-pointer transition">
+                Cancelar
+              </button>
+
+              <button
+                type="submit"
+                [disabled]="!formRejeicao.valid"
+                class="px-4 py-2 text-sm rounded-lg bg-red-500 text-white hover:bg-red-400 disabled:bg-gray-400 disabled:cursor-not-allowed">
+                Recusar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    }
  </div>

@@ -5,17 +5,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import br.net.dac.msconta.model.dto.ComandoConta;
+import br.net.dac.msconta.model.dto.ComandoVinculo;
 import br.net.dac.msconta.model.dto.ContaResponseDTO;
+import br.net.dac.msconta.model.dto.VinculoRequestDTO;
 import br.net.dac.msconta.model.dto.ContaRequestDTO;
-import br.net.dac.msconta.model.dto.ContaResponseDTO;
 import br.net.dac.msconta.model.event.ContaCreateFailedEvent;
 import br.net.dac.msconta.model.event.ContaCreatedEvent;
 import br.net.dac.msconta.model.event.ContaDeleteFailedEvent;
 import br.net.dac.msconta.model.event.ContaDeletedEvent;
 import br.net.dac.msconta.model.event.ContaUpdateFailedEvent;
 import br.net.dac.msconta.model.event.ContaUpdatedEvent;
-import br.net.dac.msconta.model.exception.ContaInativaException;
+import br.net.dac.msconta.model.event.VinculoFalhaEvent;
+import br.net.dac.msconta.model.event.VinculoSucessoEvent;
 import br.net.dac.msconta.service.ContaCommandService;
+import tools.jackson.databind.ObjectMapper;
 
     // 
 @Component
@@ -26,7 +29,9 @@ public class ContaConsumidor {
 
     @Autowired
     private ContaProdutor contaProdutor;
-    
+
+    private final ObjectMapper mapper = new ObjectMapper();
+
     // MÉTODOS
         // 1. RECEBE COMANDO E DECIDE QUAL MÉTODO SERÁ UTILIZADO
     @RabbitListener(queues = "msconta.queue.comando")
@@ -60,6 +65,51 @@ public class ContaConsumidor {
                 System.out.println("Tipo desconhecido: " + comando.getTipo());
         }
     }
+
+    @RabbitListener(queues = "msconta.queue.vinculo")
+    public void processar(ComandoVinculo comando) {
+        switch (comando.getTipo()) {
+        case "VINCULAR_CONTA":
+            VinculoRequestDTO dtoVincular = mapper.convertValue(
+            comando.getPayload(),
+            VinculoRequestDTO.class
+            );
+
+            vincular(dtoVincular);
+        break;
+
+        default:
+            System.out.println("Tipo desconhecido: " + comando.getTipo());
+        }
+    }
+
+    public void vincular(VinculoRequestDTO vinculoDTO) {
+        try {
+            boolean sucesso = contaCommandService.realocarCliente(vinculoDTO);
+
+            if (sucesso) {
+                contaProdutor.vinculacaoSucesso(
+                    new VinculoSucessoEvent(vinculoDTO.getCpf())
+                );
+            } else {
+                contaProdutor.vinculacaoFalha(
+                    new VinculoFalhaEvent(
+                        "SEM_CONDICAO_DE_REALOCACAO",
+                        "Não foi possível realocar cliente"
+                    )
+                );
+            }
+
+        } catch (Exception e) {
+            contaProdutor.vinculacaoFalha(
+                new VinculoFalhaEvent(
+                    "ERRO_INTERNO",
+                    e.getMessage()
+                )
+            );
+        }
+    }
+    
 
         // 2. MÉTODOS DE RESPOSTA A SAGA
             // 2.1 CREATE
