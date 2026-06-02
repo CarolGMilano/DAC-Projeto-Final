@@ -12,6 +12,13 @@ import { LOCALE_ID } from '@angular/core';
 
 registerLocaleData(localePt);
 
+if (!sessionStorage.getItem('storageLimpo')) {
+  localStorage.removeItem('usuarioLogado');
+  localStorage.removeItem('token');
+
+  sessionStorage.setItem('storageLimpo', 'true');
+}
+
 export const appConfig: ApplicationConfig = {
   providers: [
     { provide: LOCALE_ID, useValue: 'pt-BR' },

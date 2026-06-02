@@ -109,7 +109,7 @@ export const routes: Routes = [
         component: AdministratorDashboard,
         canActivate: [authGuard],
         data: {
-          role: ['ADMIN']
+          role: ['ADMINISTRADOR']
         }
       },
       { 
@@ -117,7 +117,7 @@ export const routes: Routes = [
         component: Gerentes,
         canActivate: [authGuard],
         data: {
-          role: ['ADMIN']
+          role: ['ADMINISTRADOR']
         }
       },
       { 
@@ -125,7 +125,7 @@ export const routes: Routes = [
         component: RelatorioDeClientes,
         canActivate: [authGuard],
         data: {
-          role: ['ADMIN']
+          role: ['ADMINISTRADOR']
         }
       },
     ]
