@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ClienteService } from '../../../services';
-import { ICliente,SharedModule } from '../../../shared';
+import { ICliente,IClienteCompletoResponse,SharedModule } from '../../../shared';
 import { FormsModule } from '@angular/forms'; 
 import { MoedaBrPipe } from '../../../shared/pipes/moedaBr/moeda-br-pipe';
 
@@ -15,13 +15,30 @@ import { MoedaBrPipe } from '../../../shared/pipes/moedaBr/moeda-br-pipe';
 })
 export class ClientSearch {
   cpf: string = '';
-  cliente: ICliente | null = null;
+  mensagemErro: string = '';
+  cliente?: IClienteCompletoResponse;
   pesquisado: boolean = false; 
 
-  constructor(private clienteService: ClienteService) {}
+  private clienteService = inject(ClienteService)
 
   buscar() {
     this.pesquisado = true;
-    //this.cliente = this.clienteService.getByCPF(this.cpf) || null;
+    this.mensagemErro = '';
+    this.cliente = undefined;
+
+    this.clienteService.buscar(this.cpf).subscribe({
+      next: (cliente) => {
+        this.cliente = cliente;
+      },
+      error: (erro) => {
+        if (erro.status === 404) {
+          this.mensagemErro = erro.error.message;
+        } else if (erro.status === 500) {
+          this.mensagemErro = erro.error.message;
+        } else {
+          this.mensagemErro = erro.error.message;
+        }
+      }
+    });
   }
 }

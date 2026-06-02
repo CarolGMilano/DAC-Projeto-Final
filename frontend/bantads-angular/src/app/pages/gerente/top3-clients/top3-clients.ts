@@ -1,33 +1,38 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ClienteService } from '../../../services';
-import { ICliente, SharedModule } from '../../../shared';
+import { IMelhorClienteResponse, SharedModule } from '../../../shared';
 import { PrimeiroNomePipe } from '../../../shared/pipes/primeiroNome/primeiro-nome-pipe';
 import { MoedaBrPipe } from '../../../shared/pipes/moedaBr/moeda-br-pipe';
 
 @Component({
   selector: 'app-top3-clients',
-  imports: [PrimeiroNomePipe, MoedaBrPipe, SharedModule ],
+  imports: [PrimeiroNomePipe, MoedaBrPipe, SharedModule],
   templateUrl: './top3-clients.html',
   styleUrl: './top3-clients.css',
 })
 
-// R14: Consultar 3 melhores clientes
-// Deve ser apresentada uma tela contendo somente os clientes que possuem os 3 maiores saldos em conta
-// (de qualquer gerente), mostrando CPF, Nome, Cidade, Estado, Saldo da conta,
-// ordenado de forma decrescente por saldo;
-
-
 export class Top3Clients {
-  clientes!: ICliente[]; 
+  clientes: IMelhorClienteResponse[] = []; 
 
-  constructor(
-    private clienteService: ClienteService,
-
-  ) {}
+  private clienteService = inject(ClienteService);
 
   ngOnInit() {
-   //this.clientes = this.clienteService.getTop3BySaldo();
-    console.log(this.clientes);
-        
+    this.listarMelhores();
+  }
+
+  listarMelhores() {
+    this.clienteService.listarMelhoresClientes().subscribe({
+      next: (clientes) => {
+        this.clientes = clientes;
+      },
+      error: (erro) => {
+        if (erro.status === 500) {
+          alert(`Erro interno: ${erro.error}`);
+        } else {
+          alert('Erro inesperado ao listar funcionários.');
+          console.log(erro);
+        }
+      }
+    });
   }
 }
