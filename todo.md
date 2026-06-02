@@ -1,138 +1,32 @@
-## Lista de Tarefas
+## CHECKLIST DE INTEGRAÇÃO
 
-**Legenda:**
+## INICIAIS
 
-🟦 Carolina | 🟩 Cauã | 🟧 Diogo | 🟨 Vinicius | 🟪 Vítor
+[X] Tela de Login (R02)
+[X] Tela de Autocadastro (R01)
 
----
+## CLIENTE
 
-### Sumário 📑
+[X] Dashboard do Cliente (R03) 
+[X] Perfil do Cliente (R04) 
+[X] Saque (R05, R06, R07, R08)
+[X] Depósito (R05, R06, R07, R08)
+[X] Transferência (R05, R06, R07, R08)
+[X] Extrato (R05, R06, R07, R08)
 
-* [Etapa 01: Front-end](#etapa-01-front-end)
+## GERENTE
 
----
+[X] Dashboard do Gerente (R09, R10, R11) 
+[X] Lista de Clientes (R12) 
+[X] Consultar Cliente por CPF (R13) 
+[X] Top 3 Clientes por Saldo (R14) 
 
-### Etapa 01: Front-end 
-   **Total**: 13 telas
+## ADMIN
 
-> 📅 Prazo para finalização da Etapa 01: **31/03**
-
----
-
-<details>
-  <summary><span style="font-size:20px; font-weight:bold;">Telas iniciais</span></summary>
-  <br>
-
-   **Total**: 2 telas
-
-* #### Tela de Login (R02) 🟦
-   * [x] Layout finalizado com campos de usuário e senha simulados
-   * [x] Fluxo de navegação testado com dados mockados
-   * [x] Feedback visual de preenchimento e erro simulado
-   * [x] Botões e links funcionando no protótipo
-
-* #### Tela de Autocadastro (R01) 🟦
-   * [x] Formulário completo com todos os campos simulados
-   * [x] Validações visuais de campos obrigatórios e formatos (mock)
-   * [x] Fluxo de cadastro testado com dados mockados
-   * [x] Feedback visual de sucesso e erro simulado
-</details>
-
----
-
-<details>
-  <summary><span style="font-size:20px; font-weight:bold;">Telas do Cliente</span></summary>
-  <br>
-
-   **Total**: 4 telas
-
-* #### Dashboard do Cliente (R03) 🟨
-   * [x]  
-
-* #### Perfil do Cliente (R04) 🟨
-
-   * [ ]  
-
-* #### Operações Bancárias (R05, R06, R07)
-
-   * #### Estrutura da página
-      * [ ]  
-
-   * #### Depósito
-      * [ ] 
-
-   * #### Saque
-      * [ ] 
-
-   * #### Transferência
-      * [ ] 
-
-* #### Extrato (R08) 🟧
-   * [ ] 
-</details>
-
----
-
-<details>
-  <summary><span style="font-size:20px; font-weight:bold;">Telas do Gerente</span></summary>
-  <br>
-
-   **Total**: 4 telas
-
-* #### Dashboard do Gerente (R09, R10, R11) 🟪
-
-   * [x]  
-
-* #### Lista de Clientes (R12) 🟩
-
-   * [ ] 
-
-* #### Consultar Cliente por CPF (R13) 🟩
-
-   * [ ] 
-
-* #### Top 3 Clientes por Saldo (R14) 🟧
-
-   * [ ] 
-</details>
-
----
-
-<details>
-  <summary><span style="font-size:20px; font-weight:bold;">Telas do Administrador</span></summary>
-  <br>
-
-   **Total**: 3 telas
-
-* #### Dashboard do Administrador (R15) 🟪
-
-   * [x] 
-
-* #### Relatório de Clientes (R16) 🟪
-
-   * [ ] 
-
-* #### CRUD de Gerentes (R17, R18, R19, R20) 🟦
-
-   * #### Listagem de Gerentes 🟦
-      * [x] Criar tabela de gerentes 🟦
-      * [x] Exibir nome, CPF, e-mail e telefone 🟦
-      * [x] Ordenar por nome (crescente) 🟦
-
-   * #### Inserção de Gerente 🟦
-      * [x] Criar formulário de cadastro 🟦
-      * [x] Campos: nome, CPF, e-mail, telefone e senha 🟦
-      * [x] Criar botão de salvar 🟦
-
-   * #### Alteração de Gerente 🟦
-      * [x] Permitir edição de nome 🟦
-      * [x] Permitir edição de e-mail 🟦
-      * [x] Permitir alteração de senha 🟦
-      * [x] Criar botão de salvar alterações 🟦
-
-   * #### Remoção de Gerente 🟦
-      * [x] Criar botão de remover gerente 🟦
-      * [x] Impedir remoção do último gerente 🟦
-</details>
-
----
+[X] Dashboard do Administrador (R15) 
+[X] Relatório de Clientes (R16) 
+[X] CRUD de Gerentes (R17, R18, R19, R20) 
+   [X] Listagem de Gerentes 
+   [X] Inserção de Gerente 
+   [X] Alteração de Gerente 
+   [X] Remoção de Gerente 
