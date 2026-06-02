@@ -24,7 +24,7 @@ public class RabbitMQConfig {
   public static final String GERENTE_QUEUE_SUCESSO = "msgerente.queue.sucesso";
   public static final String GERENTE_QUEUE_FALHA = "msgerente.queue.falha";
   
-  public static final String CONTA_QUEUE_COMANDO = "msconta.queue.comando";
+  public static final String CONTA_QUEUE_COMANDO = "msconta.queue.vinculo";
   public static final String CONTA_QUEUE_SUCESSO = "msconta.queue.sucesso";
   public static final String CONTA_QUEUE_FALHA = "msconta.queue.falha";
 

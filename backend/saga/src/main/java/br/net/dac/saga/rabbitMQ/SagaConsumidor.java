@@ -61,6 +61,9 @@ public class SagaConsumidor {
   //MSGERENTE
   @RabbitListener(queues = RabbitMQConfig.GERENTE_QUEUE_SUCESSO)
   public void gerenteSucesso(Evento evento) {
+
+    System.out.println("CRIAR_GERENTE_SUCESSO:" + evento);
+
     switch(evento.getTipo()) {
       case "CRIAR_GERENTE_SUCESSO":
         System.out.println("CRIAR_GERENTE_SUCESSO:" + evento);
@@ -81,6 +84,8 @@ public class SagaConsumidor {
   //MSCONTA
   @RabbitListener(queues = RabbitMQConfig.CONTA_QUEUE_SUCESSO)
   public void contaSucesso(Evento evento) {
+    System.out.println("VINCULAR_GERENTE_SUCESSO:" + evento);
+
     switch(evento.getTipo()) {
       case "VINCULAR_GERENTE_SUCESSO":
         insercaoGerenteSagaService.finalizar(evento);
