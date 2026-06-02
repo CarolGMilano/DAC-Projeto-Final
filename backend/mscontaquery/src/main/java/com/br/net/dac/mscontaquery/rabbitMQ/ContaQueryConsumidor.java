@@ -8,13 +8,16 @@ import com.br.net.dac.mscontaquery.model.dto.MovimentacaoRequestDTO;
 import com.br.net.dac.mscontaquery.model.dto.MovimentacaoResponseDTO;
 import com.br.net.dac.mscontaquery.model.entity.Conta;
 import com.br.net.dac.mscontaquery.model.entity.Movimentacao;
+import com.br.net.dac.mscontaquery.model.event.ContaRebootEvent;
 import com.br.net.dac.mscontaquery.model.event.Evento;
+import com.br.net.dac.mscontaquery.model.event.RebootContaEvent;
 import com.br.net.dac.mscontaquery.repository.ContaRepository;
 import com.br.net.dac.mscontaquery.repository.MovimentacaoRepository;
 import com.br.net.dac.mscontaquery.service.ContaQueryService;
 
 import tools.jackson.databind.ObjectMapper;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Component
@@ -41,6 +44,8 @@ public class ContaQueryConsumidor {
         System.out.println("ContaQueryConsumidor: evento recebido -> " + evento.getTipo());
 
         switch (evento.getTipo()) {
+            case "INICIAR_REBOOT" -> handleReboot(evento);
+
             case "CONTA_CRIADA"    -> handleContaCriada(evento);
             case "CONTA_ATUALIZADA"-> handleContaAtualizada(evento);
             case "CONTA_DESATIVADA"-> handleContaDesativada(evento);
@@ -91,12 +96,19 @@ public class ContaQueryConsumidor {
             String  numero =        (String)  payload.get("numero");
             Boolean ativo  =        (Boolean) payload.get("ativo");
             String gerenteCpf =     (String) payload.get("gerenteCpf");
+            Double saldo = toDouble(payload.get("saldo"));
+            Double limite =     toDouble(payload.get("limite"));
 
             Conta conta = contaRepository.findById(numero)
                     .orElseThrow(() -> new RuntimeException("Conta não encontrada: " + numero));
 
+            conta.setSaldo(
+                Math.round(saldo * 100.0) / 100.0
+            );
+
             conta.setAtivo(ativo != null ? ativo : conta.getAtivo());
             conta.setGerenteCpf(gerenteCpf);
+            conta.setLimite(limite);
 
             contaRepository.save(conta);
             System.out.println("ContaQueryConsumidor: conta atualizada no BD de leitura -> " + numero);
@@ -127,13 +139,23 @@ public class ContaQueryConsumidor {
         }
     }
 
+    private LocalDateTime toLocalDateTime(Object value) {
+        if (value == null) return LocalDateTime.now();
+
+        if (value instanceof String s) {
+            return LocalDateTime.parse(s);
+        }
+
+        return LocalDateTime.now();
+    }
+
     private void handleMovimentacaoCriada(Evento evento) {
         try {
             Map<String, Object> payload = toMap(evento.getPayload());
             Long id = ((Number) payload.get("id")).longValue();
             String tipo         =   (String) payload.get("tipo");
             Double valor        = toDouble(payload.get("valor"));
-            java.sql.Date data  = toSqlDate(payload.get("data"));
+            LocalDateTime data  = toLocalDateTime(payload.get("data"));
             String origem       = (String) payload.get("origem");
             String destino      = (String) payload.get("destino");
             
@@ -163,8 +185,46 @@ public class ContaQueryConsumidor {
         }
     }
 
+    private RebootContaEvent toReboot(Object payload) {
+        return objectMapper.convertValue(payload, RebootContaEvent.class);
+    }
 
+    private void handleReboot(Evento evento) {
+        System.out.println("ContaQueryConsumidor: INICIANDO EVENTO -> " + evento.getTipo());
+        RebootContaEvent reboot = toReboot(evento.getPayload());
 
+        movimentacaoRepository.deleteAll();
+        contaRepository.deleteAll();
+
+        for (ContaRebootEvent c : reboot.getContas()) {
+            Conta conta = new Conta();
+
+            conta.setNumero(c.getNumero());
+            conta.setGerenteCpf(c.getGerenteCpf());
+            conta.setClienteCpf(c.getClienteCpf());
+            conta.setSaldo(c.getSaldo());
+            conta.setLimite(c.getLimite());
+            conta.setAtivo(true);
+            conta.setData(c.getData());
+
+            contaRepository.save(conta);
+        }
+
+        for (MovimentacaoRequestDTO m : reboot.getMovimentacoes()) {
+            Movimentacao movimentacao = new Movimentacao();
+
+            movimentacao.setId(m.getId());
+            movimentacao.setTipo(m.getTipo());
+            movimentacao.setValor(m.getValor());
+            movimentacao.setData(m.getData());
+            movimentacao.setOrigem(m.getOrigem());
+            movimentacao.setDestino(m.getDestino());
+
+            movimentacaoRepository.save(movimentacao);
+        }
+    }
+    
+    
     // Helpers de conversão 
     @SuppressWarnings("unchecked")
     private Map<String, Object> toMap(Object payload) {

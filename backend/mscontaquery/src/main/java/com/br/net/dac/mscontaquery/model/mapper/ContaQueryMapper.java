@@ -31,8 +31,9 @@ public class ContaQueryMapper {
 
     public static MovimentacaoResponseDTO toMovimentacaoDTO(Movimentacao movimentacao) {
         MovimentacaoResponseDTO DTO = new MovimentacaoResponseDTO();
+            DTO.setId(movimentacao.getId());
             DTO.setData(movimentacao.getData());
-            DTO.setTipo(movimentacao.getTipo());
+            DTO.setTipo(formatarTipo(movimentacao.getTipo()));
             DTO.setOrigem( movimentacao.getOrigem());
             DTO.setDestino(movimentacao.getDestino());
             DTO.setValor(movimentacao.getValor());
@@ -47,4 +48,13 @@ public class ContaQueryMapper {
             DTO.setLimite(conta.getLimite());
         return DTO;
     }
+
+    private static String formatarTipo(String tipo) {
+    return switch (tipo) {
+        case "DEPOSITO" -> "depósito";
+        case "SAQUE" -> "saque";
+        case "TRANSFERENCIA" -> "transferência";
+        default -> tipo;
+    };
+}
 }
