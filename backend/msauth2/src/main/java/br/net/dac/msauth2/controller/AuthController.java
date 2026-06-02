@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import br.net.dac.msauth2.model.dto.LoginDTO;
+import br.net.dac.msauth2.model.dto.RebootResponseDTO;
 import br.net.dac.msauth2.model.dto.RejeicaoDTO;
 import br.net.dac.msauth2.model.dto.RespostaDTO;
 import br.net.dac.msauth2.model.dto.UsuarioAlteracaoDTO;
@@ -21,6 +22,7 @@ import br.net.dac.msauth2.model.exception.EmailDuplicadoException;
 import br.net.dac.msauth2.model.exception.SenhaIncorretaException;
 import br.net.dac.msauth2.model.exception.UsuarioNaoEncontradoException;
 import br.net.dac.msauth2.service.AuthService;
+import br.net.dac.msauth2.service.RebootService;
 
 @CrossOrigin
 @RestController
@@ -30,6 +32,20 @@ public class AuthController {
   @Autowired
   private AuthService authService;
 
+  @Autowired
+  private RebootService rebootService;
+
+  @PostMapping("/reboot")
+  public ResponseEntity<?> rebook() {
+    try {
+      List<RebootResponseDTO> usuariosCriados = rebootService.reboot();
+
+      return ResponseEntity.ok(usuariosCriados);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("erro", "Erro no REBOOT: " + e.getMessage()));
+    }
+  }
+
   @PostMapping("/login")
   public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
     try {
@@ -37,7 +53,7 @@ public class AuthController {
 
       return ResponseEntity.ok(usuario);
     } catch (UsuarioNaoEncontradoException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("erro", e.getMessage()));
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("erro", e.getMessage()));
     } catch (SenhaIncorretaException e) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("erro", e.getMessage()));
     } catch (Exception e) {
@@ -144,7 +160,7 @@ public class AuthController {
   public ResponseEntity<?> listarFuncionarios() {
     try {
       List<RespostaDTO> usuarios =  authService.listarUsuarios(
-        List.of(TipoUsuarioEnum.ADMIN, TipoUsuarioEnum.GERENTE)
+        List.of(TipoUsuarioEnum.ADMINISTRADOR, TipoUsuarioEnum.GERENTE)
       );
 
       return ResponseEntity.ok(usuarios);
