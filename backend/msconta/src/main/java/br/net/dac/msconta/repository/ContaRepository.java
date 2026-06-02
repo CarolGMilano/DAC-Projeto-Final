@@ -4,15 +4,25 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.Param;
 
 import br.net.dac.msconta.model.entity.Conta;
 
 public interface ContaRepository extends JpaRepository<Conta, String>{
     public boolean existsByNumero(String numero);
+    Conta findByNumero(String numero);
     List<Conta> findByGerenteCpf(String gerenteCpf);
     List<Conta> findByGerenteCpfAndAtivoTrue(String gerenteCpf);
-    @Query(value = "SELECT c.gerente_cpf FROM conta c WHERE c.ativo = true GROUP BY c.gerente_cpf ORDER BY COUNT(c) ASC LIMIT 1", nativeQuery = true)
-    Optional<String> findGerenteWithLeastActiveContas();
+    @Query(value = """
+        SELECT c.gerente_cpf 
+        FROM conta c 
+        WHERE c.ativo = true 
+        AND c.gerente_cpf <> :cpfExcluido
+        GROUP BY c.gerente_cpf 
+        ORDER BY COUNT(c) ASC 
+        LIMIT 1
+    """, nativeQuery = true)
+    Optional<String> findGerenteWithLeastActiveContas(@Param("cpfExcluido") String cpfExcluido);
 
     @Query("""
         SELECT c.gerenteCpf

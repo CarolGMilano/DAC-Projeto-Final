@@ -4,6 +4,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import br.net.dac.msconta.model.dto.ClienteAlterarGerenteDTO;
 import br.net.dac.msconta.model.event.ContaCreateFailedEvent;
 import br.net.dac.msconta.model.event.ContaCreatedEvent;
 import br.net.dac.msconta.model.event.ContaDeleteFailedEvent;
@@ -13,6 +14,9 @@ import br.net.dac.msconta.model.event.ContaUpdatedEvent;
 import br.net.dac.msconta.model.event.Evento;
 import br.net.dac.msconta.model.event.MovimentacaoCreatedEvent;
 import br.net.dac.msconta.model.event.MovimentacaoFailedEvent;
+import br.net.dac.msconta.model.event.RebootContaEvent;
+import br.net.dac.msconta.model.event.VinculoFalhaEvent;
+import br.net.dac.msconta.model.event.VinculoSucessoEvent;
 
 @Component
 public class ContaProdutor {
@@ -21,6 +25,7 @@ public class ContaProdutor {
     private RabbitTemplate rabbitTemplate;
 
     public static final String CONTA_QUERY   = "msconta.queue.query";
+    public static final String CLIENTE_QUERY   = "mscliente.queue.comando";
 
     public static final String CONTA_SUCESSO = "msconta.queue.sucesso";
     public static final String CONTA_FALHA   = "msconta.queue.falha";
@@ -70,6 +75,16 @@ public class ContaProdutor {
         publicar(CONTA_FALHA, "CRIAR_MOVIMENTACAO_FALHA", payload);
     }
 
+    public void atualizarGerenteCliente(ClienteAlterarGerenteDTO payload) {
+        System.out.println("PUBLICANDO ALTERAR_GERENTE");
+        publicar(CLIENTE_QUERY, "ALTERAR_GERENTE", payload);
+    };
+
+    public void iniciarReboot(RebootContaEvent payload) {
+        System.out.println("PUBLICANDO INICIAR_REBOOT");
+        publicar(CONTA_QUERY, "INICIAR_REBOOT", payload);
+    };
+
 
     // PUBLICAR
 
@@ -78,5 +93,24 @@ public class ContaProdutor {
         evento.setTipo(tipo);
         evento.setPayload(payload);
         rabbitTemplate.convertAndSend(fila, evento);
+    }
+
+
+    public void vinculacaoSucesso(VinculoSucessoEvent payload) {
+        Evento evento = new Evento();
+
+        evento.setTipo("VINCULAR_GERENTE_SUCESSO");
+        evento.setPayload(payload);
+
+        rabbitTemplate.convertAndSend(CONTA_SUCESSO, evento);
+    }
+
+    public void vinculacaoFalha(VinculoFalhaEvent erro) {
+        Evento evento = new Evento();
+
+        evento.setTipo("VINCULAR_GERENTE_FALHA");
+        evento.setPayload(erro);
+
+        rabbitTemplate.convertAndSend(CONTA_FALHA, evento);
     }
 }

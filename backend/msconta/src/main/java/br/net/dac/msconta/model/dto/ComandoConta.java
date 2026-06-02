@@ -15,5 +15,5 @@ public class ComandoConta {
     public void setTipo(String tipo) { this.tipo = tipo; }
 
     public ContaResponseDTO getPayload() { return payload; }
-    public void setPayload(ContaResponseDTO payload) { this.payload = payload; }   
+    public void setPayload(ContaResponseDTO payload) { this.payload = payload; } 
 }

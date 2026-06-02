@@ -1,6 +1,10 @@
 package br.net.dac.msconta.model.entity;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -18,7 +22,8 @@ public class Movimentacao {
     private Double valor;
 
     @Column(name = "data")
-    private Date data;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime data;
 
     @ManyToOne
     @JoinColumn(name = "origem", referencedColumnName = "numero", nullable = true)
@@ -30,7 +35,7 @@ public class Movimentacao {
 
     public Movimentacao() {}
 
-    public Movimentacao(String tipo, Double valor, Date data, Conta origem, Conta destino) {
+    public Movimentacao(String tipo, Double valor, LocalDateTime data, Conta origem, Conta destino) {
         this.tipo = tipo;
         this.valor = valor;
         this.data = data;
@@ -47,8 +52,8 @@ public class Movimentacao {
     public Double getValor() { return valor; }
     public void setValor(Double valor) { this.valor = valor; }
 
-    public Date getData() { return data; }
-    public void setData(Date data) { this.data = data; }
+    public LocalDateTime getData() { return data; }
+    public void setData(LocalDateTime data) { this.data = data; }
 
     public Conta getOrigem() { return origem; }
     public void setOrigem(Conta origem) { this.origem = origem; }

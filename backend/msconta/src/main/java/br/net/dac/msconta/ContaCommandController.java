@@ -1,5 +1,7 @@
 package br.net.dac.msconta;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.net.dac.msconta.service.ContaCommandService;
+import br.net.dac.msconta.service.RebootService;
 import br.net.dac.msconta.model.dto.ContaResponseDTO;
 import br.net.dac.msconta.model.dto.OperacaoResponseDTO;
 import br.net.dac.msconta.model.dto.TransferenciaRequestDTO;
 import br.net.dac.msconta.model.dto.TransferenciaResponseDTO;
 import br.net.dac.msconta.model.dto.ValorDTO;
+import br.net.dac.msconta.model.dto.VinculoRequestDTO;
 import br.net.dac.msconta.model.dto.GerenteRequestDTO;
 import br.net.dac.msconta.model.dto.ContaRequestDTO;
 
@@ -28,6 +32,20 @@ public class ContaCommandController {
 
     @Autowired
     private ContaCommandService commandService;
+
+    @Autowired
+    private RebootService rebootService;
+
+    @PostMapping("/reboot")
+    public ResponseEntity<?> rebook() {
+        try {
+        rebootService.reboot();
+
+        return ResponseEntity.ok().build();
+        } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("erro", "Erro no REBOOT de CONTAS: " + e.getMessage()));
+        }
+    }
 
 
     @PostMapping()
@@ -45,7 +63,7 @@ public class ContaCommandController {
     public ResponseEntity<ValorDTO> atualizarLimite(@PathVariable String numero, @RequestBody ValorDTO salario) {        
         try
         {
-            ValorDTO response = commandService.atualizarLimite(numero, salario);
+           ValorDTO response = commandService.atualizarLimite(numero, salario);
             return ResponseEntity.ok(response);
         }
         catch (RuntimeException ex)
@@ -98,17 +116,17 @@ public class ContaCommandController {
     }
 
     @PostMapping("/redistribuir-gerente")
-    public ResponseEntity<Void> desativarGerente(@RequestBody GerenteRequestDTO dto) {
+    public ResponseEntity<GerenteRequestDTO> desativarGerente(@RequestBody GerenteRequestDTO dto) {
         try {
-            commandService.redistribuiContasGerenteDeletado(dto);
-            return ResponseEntity.ok().build();
+            GerenteRequestDTO resultado = commandService.redistribuiContasGerenteDeletado(dto);
+            return ResponseEntity.ok(resultado);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @PostMapping("/realocar-cliente")
-    public ResponseEntity<Void> realocarCliente(@RequestBody GerenteRequestDTO dto) {
+    public ResponseEntity<Void> realocarCliente(@RequestBody VinculoRequestDTO dto) {
         try {
             commandService.realocarCliente(dto);
             return ResponseEntity.ok().build();
