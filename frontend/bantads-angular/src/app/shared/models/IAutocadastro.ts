@@ -5,7 +5,7 @@ export interface IAutocadastro {
   telefone: string;
   salario: number | null;
   endereco: String;
-  cep: string;
+  CEP: string;
   cidade: string;
   estado: string;
 }
