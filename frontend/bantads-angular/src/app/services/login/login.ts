@@ -40,6 +40,7 @@ export class LoginService {
       login
     ).pipe(
       map(usuario => {
+        console.log('LOGIN RESPONSE:', usuario);
         this.usuarioLogado = usuario;
         localStorage[LS_TOKEN] = usuario.access_token;
 
