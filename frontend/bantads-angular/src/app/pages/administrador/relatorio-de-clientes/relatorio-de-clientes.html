@@ -17,7 +17,7 @@ nome do cliente.
                         <tr>
                             <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">
                                 <span class="bg-white border-none text-zinc-800 text-xs font-medium pl-2 pr-1 py-0.3 rounded-full mr-1">
-                                    {{this.clientes.length}}
+                                    {{this.clientes?.length}}
                                 </span>
                                 CPF
                             </th>
@@ -27,25 +27,25 @@ nome do cliente.
                             <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">Conta</th>
                             <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">Saldo</th>
                             <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">Limite</th>
-                            <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">CPF Gerente</th>
                             <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">Gerente</th>
+                            <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">CPF Gerente</th>
                         </tr>
                     </thead>
                     
                         <tbody class="divide-y divide-gray-200">
                         <!-- Listagem -->
-                        @for (c of clientes; track c.cpf)
+                        @for (cliente of clientes; track cliente.cpf)
                         {
                             <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="px-4 py-2 text-sm text-gray-300">{{ c.cpf | cpfFormatador }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-300">{{ c.nome }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-300">{{ c.email }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-300">R${{ c.salario | moedaBr }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-300">{{ c.numeroConta }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-300">R${{ c.saldo | moedaBr }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-300">R${{ c.limite | moedaBr }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-300">{{ c.gerenteCpf | cpfFormatador }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-300">{{ c.gerenteNome }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-300">{{ cliente.cpf| cpfFormatador }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-300">{{ cliente.nome }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-300">{{ cliente.email }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-300">R${{ cliente.salario | moedaBr }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-300">{{ cliente.conta }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-300">R${{ cliente.saldo | moedaBr }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-300">R${{ cliente.limite | moedaBr }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-300">{{ cliente.gerente_nome }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-300">{{ cliente.gerente | cpfFormatador }}</td>
                             </tr>
                         }
                     </tbody>

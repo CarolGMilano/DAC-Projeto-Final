@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { GerenteService } from '../../../services';
-import { IGerente } from '../../../shared';
+import { IDashboardAdminResponse, IGerente, TipoUsuario } from '../../../shared';
 import { MoedaBrPipe } from '../../../shared/pipes/moedaBr/moeda-br-pipe';
 
 @Component({
@@ -10,13 +10,30 @@ import { MoedaBrPipe } from '../../../shared/pipes/moedaBr/moeda-br-pipe';
   styleUrl: './administrator-dashboard.css',
 })
 export class AdministratorDashboard {
-gerentes: IGerente[] = [];
-
-constructor(private gerenteService: GerenteService) {}
+  private gerenteService = inject(GerenteService);
+  
+  lista?: IDashboardAdminResponse[];
 
   ngOnInit() {
-    //this.gerentes = this.gerenteService.get();
-    console.log(this.gerentes);
+   this.listarTodos();
+  }
+
+  listarTodos() {
+    this.gerenteService.listarTodosDashboard().subscribe({
+      next: (lista) => {
+        this.lista = (lista ?? [])
+          .filter(item => item?.gerente?.tipo !== TipoUsuario.ADMINISTRADOR)
+          .sort((a, b) => (b.saldo_positivo ?? 0) - (a.saldo_positivo ?? 0));
+      },
+      error: (erro) => {
+        if (erro.status === 500) {
+          alert(`Erro interno: ${erro.error}`);
+        } else {
+          alert('Erro inesperado ao listar funcionários.');
+          console.log(erro);
+        }
+      }
+    });
   }
 
 }

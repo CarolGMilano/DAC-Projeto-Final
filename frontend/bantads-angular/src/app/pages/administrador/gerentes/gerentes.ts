@@ -69,26 +69,6 @@ export class Gerentes implements OnInit{
     this.mostrarPopupExclusao = true;
   }
 
-  //Fica fazendo um loop de requisições pra ver o status final
-  verificarStatusSaga(id: number) {
-    return new Observable<any>((observer) => {
-      const intervalo = setInterval(() => {
-        this.gerenteService.verificarStatus(id).subscribe({
-          next: (res: any) => {
-            observer.next(res);
-
-            clearInterval(intervalo);
-            observer.complete();
-          },
-          error: (err) => {
-            clearInterval(intervalo);
-            observer.error(err.error);
-          }
-        });
-      }, 2000);
-    });
-  }
-
   cancelar() {
     if(this.modoFormulario == 'adicionar' || this.modoFormulario == 'editar'){
       this.mostrarFormulario = false;
@@ -128,30 +108,11 @@ export class Gerentes implements OnInit{
 
     if (this.modoFormulario === 'adicionar') {
       this.gerenteService.inserir(this.gerente).subscribe({
-        next: (res: any) => {
-          const idSaga = res.idSaga;
-
-          this.verificarStatusSaga(idSaga).subscribe({
-            next: () => {
-              this.listarTodos();
-              this.mostrarFormulario = false;
-              this.formGerentes.reset();
-              this.cancelar();
-            },
-            error: (erro: any) => {
-              if (erro.tipo === 'cpf') {
-                this.cpfModel.control.setErrors({ cpfConflito: true });
-                return;
-              }
-
-              if (erro.tipo === 'email') {
-                this.emailModel.control.setErrors({ emailConflito: true });
-                return;
-              }
-
-              alert(`Erro interno: ${erro.error}`);
-            }
-          });
+        next: () => {
+          this.listarTodos();
+          this.mostrarFormulario = false;
+          this.formGerentes.reset();
+          this.cancelar();
         },
         error: (erro) => {
           if (erro.status === 409) {
@@ -166,12 +127,17 @@ export class Gerentes implements OnInit{
             }
           }
 
+          if (erro.status === 404) {
+            alert(`Não encontrado: ${erro.error}`);
+            return;
+          }
+
           if (erro.status === 500) {
             alert(`Erro interno: ${erro.error}`);
             return;
           }
 
-          alert(erro);
+          alert('Erro inesperado ao criar gerente.');
         }
       });
     } else {
@@ -183,18 +149,13 @@ export class Gerentes implements OnInit{
           this.cancelar();
         },
         error: (erro) => {
-          if (erro.error.tipo === 'email') {
+          if (erro.status === 409 && erro.error.tipo === 'email') {
             this.emailModel.control.setErrors({ emailConflito: true });
             return;
           }
 
           if (erro.status === 404) {
             alert(`Não encontrado: ${erro.error}`);
-            return;
-          }
-
-          if (erro.status === 500) {
-            alert(`Erro interno: ${erro.error}`);
             return;
           }
 
