@@ -45,7 +45,7 @@ function redirecionarHome(tipo: string): string {
     case TipoUsuario.GERENTE:
       return '/gerente';
 
-    case TipoUsuario.ADMIN:
+    case TipoUsuario.ADMINISTRADOR:
       return '/admin';
 
     default:
