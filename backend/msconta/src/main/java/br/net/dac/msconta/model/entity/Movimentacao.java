@@ -1,6 +1,5 @@
 package br.net.dac.msconta.model.entity;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;

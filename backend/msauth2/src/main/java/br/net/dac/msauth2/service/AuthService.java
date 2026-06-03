@@ -164,7 +164,7 @@ public class AuthService {
         "BanTADS - Cadastro recebido para análise",
         mensagem,
         //Mudar aqui na defesa
-        "carolinamilano@ufpr.br"
+        usuario.getEmail()
       );
     }
 
@@ -269,7 +269,7 @@ public class AuthService {
         "Bem-vindo ao BanTADS",
         mensagem,
         //Mudar aqui na defesa
-        "carolinamilano@ufpr.br"
+        usuarioEncontrado.getEmail()
       );
     }
 
@@ -312,7 +312,7 @@ public class AuthService {
         "BanTADS - Atualização da sua solicitação de cadastro",
         mensagem,
         //Mudar aqui na defesa
-        "carolinamilano@ufpr.br"
+        usuarioEncontrado.getEmail()
       );
     }
 
