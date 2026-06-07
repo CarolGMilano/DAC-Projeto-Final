@@ -80,7 +80,7 @@ export class BankStatementLookup implements OnInit {
     this.contaService.mostrarExtrato(this.cliente.conta).subscribe({
       next: extrato => {
         this.extrato = extrato;
-                console.log(extrato)
+        console.log(extrato)
 
         this.calcularSaldos();
         this.filtrarPorPeriodo();

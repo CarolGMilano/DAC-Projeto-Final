@@ -17,19 +17,19 @@ public class AuthProdutor {
   public static final String CRIACAO_FALHA = "msauth.queue.falha";
 
   //Criar objeto genérico
-  public void criacaoSucesso(AuthSucessoEvent payload) {
+  public void criacaoSucesso(String tipo, AuthSucessoEvent payload) {
     Evento evento = new Evento();
 
-    evento.setTipo("CRIAR_USUARIO_SUCESSO");
+    evento.setTipo(tipo);
     evento.setPayload(payload);
 
     rabbitTemplate.convertAndSend(CRIACAO_SUCESSO, evento);
   }
 
-  public void criacaoFalha(AuthCriacaoFalhaEvent erro) {
+  public void criacaoFalha(String tipo, AuthCriacaoFalhaEvent erro) {
     Evento evento = new Evento();
 
-    evento.setTipo("CRIAR_USUARIO_FALHA");
+    evento.setTipo(tipo);
     evento.setPayload(erro);
 
     rabbitTemplate.convertAndSend(CRIACAO_FALHA, evento);

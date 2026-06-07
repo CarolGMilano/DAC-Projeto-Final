@@ -4,8 +4,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import br.net.dac.mscliente2.model.event.ClienteAlteracaoFalhaEvent;
-import br.net.dac.mscliente2.model.event.ClienteSucessoEvent;
+import br.net.dac.mscliente2.model.event.ClienteInsercaoFalhaEvent;
+import br.net.dac.mscliente2.model.event.ClienteInsercaoSucessoEvent;
 import br.net.dac.mscliente2.model.event.Evento;
 
 @Component
@@ -17,19 +17,19 @@ public class ClienteProdutor {
   public static final String CRIACAO_FALHA = "mscliente.queue.falha";
 
   //Criar objeto genérico
-  public void criacaoSucesso(ClienteSucessoEvent payload) {
+  public void criacaoSucesso(ClienteInsercaoSucessoEvent payload) {
     Evento evento = new Evento();
 
-    evento.setTipo("ALTERAR_GERENTE_SUCESSO");
+    evento.setTipo("CRIAR_CLIENTE_SUCESSO");
     evento.setPayload(payload);
 
     rabbitTemplate.convertAndSend(CRIACAO_SUCESSO, evento);
   }
 
-  public void criacaoFalha(ClienteAlteracaoFalhaEvent erro) {
+  public void criacaoFalha(ClienteInsercaoFalhaEvent erro) {
     Evento evento = new Evento();
 
-    evento.setTipo("ALTERAR_GERENTE_FALHA");
+    evento.setTipo("CRIAR_CLIENTE_FALHA");
     evento.setPayload(erro);
 
     rabbitTemplate.convertAndSend(CRIACAO_FALHA, evento);
