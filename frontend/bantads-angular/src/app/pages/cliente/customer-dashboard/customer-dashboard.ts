@@ -19,9 +19,6 @@ type DashboardView = 'SALDO' | 'DEPOSITO' | 'SAQUE' | 'TRANSFERENCIA';
 export class CustomerDashboard implements OnInit { 
   cliente!: IClienteCompletoResponse;
   view: DashboardView = 'SALDO';
-
-
-  valorInput: number | null = null;
   contaDestino: string = '';
 
   private loginService = inject(LoginService);
@@ -51,6 +48,17 @@ export class CustomerDashboard implements OnInit {
     return this.cliente.saldo < 0
       ? this.cliente.limite - Math.abs(this.cliente.saldo)
       : this.cliente.limite;
+  }
+
+  get valorValido(): boolean {
+    return this.valorParaNumero(this.valorFormatado) > 0;
+  }
+
+  get transferenciaValida(): boolean {
+    return (
+      this.valorParaNumero(this.valorFormatado) > 0 &&
+      /^\d{4}$/.test(this.contaDestino)
+    );
   }
 
   valorParaNumero(valor: string): number {
@@ -88,9 +96,8 @@ export class CustomerDashboard implements OnInit {
 
   mudarView(novaView: DashboardView) {
     this.view = novaView;
-    this.valorInput = null;
+    this.valorFormatado = '';
     this.contaDestino = '';
-    if (novaView === 'SALDO') this.buscar();
   }
 
   depositar() {
@@ -174,20 +181,5 @@ export class CustomerDashboard implements OnInit {
         console.error('Erro ao depositar:', err);
       }
     });
-  }
-
-  private salvarEAtualizar() {
-    if (this.cliente && this.cliente.cpf) {
-      //this.clienteService.put(this.cliente.cpf, this.cliente);
-      this.mudarView('SALDO');
-    }
-  }
-
-  voltar() {
-    if (this.view !== 'SALDO') {
-      this.mudarView('SALDO');
-    } else {
-      this.router.navigate(['/login']); 
-    }
   }
 }

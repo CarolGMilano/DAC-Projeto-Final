@@ -6,11 +6,11 @@ import { CepStatus, SharedModule, EtapaCadastro, IAutocadastro } from '../../../
 
 import { ClienteService, EnderecoService } from '../../../services';
 import { CommonModule } from '@angular/common';
-import { IndicadorEtapas } from "../../../components";
+import { IndicadorEtapas, Loading } from "../../../components";
 
 @Component({
   selector: 'app-cadastro',
-  imports: [CommonModule, FormsModule, RouterLink, SharedModule, IndicadorEtapas],
+  imports: [CommonModule, FormsModule, RouterLink, SharedModule, IndicadorEtapas, Loading],
   templateUrl: './cadastro.html',
   styleUrl: './cadastro.css',
 })
@@ -48,6 +48,8 @@ export class Cadastro {
   cepStatus: CepStatus = CepStatus.Vazio;
   status = CepStatus;
   cadastroConcluido: boolean = false;
+
+  loading: boolean = false;
 
   validarEtapaAtual(): boolean {
     if (!this.formCadastro) return false;
@@ -135,6 +137,8 @@ export class Cadastro {
   salvar(){
     if (!this.formCadastro.form.valid) return;
 
+    this.loading = true;
+
     const novoCliente: IAutocadastro = {
       cpf: this.cliente.cpf,
       email: this.cliente.email,
@@ -150,15 +154,19 @@ export class Cadastro {
     this.clienteService.inserir(novoCliente).subscribe({
       next: () => {
         this.cadastroConcluido = true;
+        this.loading = false;
         this.mensagemErro = null;
       },
       error: (erro) => {
         this.cadastroConcluido = true;
+        this.loading = false;
+
+        const msg = JSON.parse(erro.error.message);
 
         if (erro.status === 409) {
-          if (erro.error.tipo === 'cpf') {
+          if (msg.tipo === 'cpf') {
             this.mensagemErro = 'cpf';
-          } else if (erro.error.tipo === 'email') {
+          } else if (msg.tipo === 'email') {
             this.mensagemErro = 'email';
           } else {
             this.mensagemErro = 'Conflito de dados.';

@@ -25,3 +25,4 @@ export * from "./EnumTipoUsuario";
 export * from "./EnumCepStatus";
 export * from "./EnumEtapaCadastro";
 export * from "./EnumUsuarioStatus";
+export * from "./IMensagemErro";

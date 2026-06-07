@@ -1,25 +1,47 @@
-<div class="flex flex-col w-full h-full bg-zinc-800 font-mono rounded-lg border border-zinc-700 overflow-hidden shadow-2xl">
+<div class="flex flex-col w-full h-full bg-zinc-800 font-mono rounded-lg border border-zinc-700 overflow-hidden shadow-2xl items-center">
 
-     <div class="flex w-full items-center justify-between border-b border-zinc-700 bg-zinc-900 px-6 py-4 text-sm text-zinc-300">          
-
-     </div>
+    <div class="flex w-full items-center justify-between border-b border-zinc-700 bg-zinc-900 px-6 py-4 text-sm text-zinc-300"></div>
     
-     @if (loading) {
-        <app-loading></app-loading>
-     }
+    @if (loading) {
+        <app-loading cor="#5f98d4"></app-loading>
+    }
     
-        <div class="max-w-6xl mx-auto px-6">
-            <header class="mb-5 mt-8">
-                <h1 class="text-2xl font-bold text-white mb-2">Meu Extrato</h1>
-                <h2 class="text-sm text-white"> Transações até {{ hoje | date:'dd/MM/yyyy' }}</h2>
-            </header>
+    <div class="min-w-5xl my-5">
+        <header class="mb-5 mt-8">
+            <h1 class="text-2xl font-bold text-white mb-2">Meu Extrato</h1>
 
-    <div class="flex-1 flex overflow-hidden"></div>
-        <div class="overflow-x-auto max-h-120 overflow-y-auto">
+            <div class="flex items-center gap-4 flex-wrap mt-2">
+                <div class="flex items-center gap-2 rounded-lg">
+                    <span class="text-sm text-white">Início:</span>
 
+                    <input
+                        type="date"
+                        [(ngModel)]="dataInicio"
+                        (change)="filtrarPorPeriodo()"
+                        class="bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 text-white text-xs"
+                    >
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <span class="text-sm text-white">Fim:</span>
+
+                    <input
+                        type="date"
+                        [(ngModel)]="dataFim"
+                        (change)="filtrarPorPeriodo()"
+                        class="bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 text-white text-xs"
+                    >
+                </div>
+
+            </div>
+        </header>
+    </div>
+
+    <div class="flex-1 flex overflow-hidden">
+        <div class="overflow-x-auto max-h-110 overflow-y-auto  border border-zinc-700 rounded-lg">
 
     <!-- Tabela -->
-            <table class="min-w-5xl border border-zinc-700 text-sm text-zinc-300">
+            <table class="min-w-5xl text-sm text-zinc-300">
 
                 <thead class="bg-zinc-900">
                     <tr>
@@ -32,7 +54,7 @@
                 </thead>
 
                 <tbody>
-                @for(movimentacao of movimentacoesComSaldo; track movimentacao.id) {                        
+                @for (movimentacao of movimentacoesExibicao; track $index) {                        
                     <tr class="hover:bg-zinc-700/30">
                         <td class="px-4 py-2 border-b border-zinc-700">{{movimentacao.data | date:'dd/MM/yyyy HH:mm' }}</td>
                         <td class="px-4 py-2 border-b border-zinc-700">{{movimentacao.tipo}}</td>
@@ -45,45 +67,45 @@
                         <!-- Campo valor -->
                          @switch (movimentacao.tipo) {
                             @case("transferência") {
-                                @if(movimentacao.destino === usuarioLogado?.usuario?.cpf){ <!-- Se clienteDestino === nome do login atual, Azul. Caso contrário, vermelho. -->
-                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-sky-500 font-bold">+ R${{movimentacao.valor | moedaBr}}</td>    
+                                @if(movimentacao.destino === cliente.conta){ <!-- Se clienteDestino === nome do login atual, Azul. Caso contrário, vermelho. -->
+                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-sky-300 font-bold">R$ + {{movimentacao.valor | moedaBr}}</td>    
                                 } @else {
-                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-red-400 font-bold">- R$ {{movimentacao.valor | moedaBr}}</td>
+                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-red-400 font-bold">R$ - {{movimentacao.valor | moedaBr}}</td>
                                 }
                             }
 
                             @case("saque") {
-                                <td class="px-4 py-2 text-lg border-b border-zinc-700 text-red-500 font-bold">- R$ {{movimentacao.valor | moedaBr }}</td>
+                                <td class="px-4 py-2 text-lg border-b border-zinc-700 text-red-400 font-bold">R$ - {{movimentacao.valor | moedaBr }}</td>
                             }
 
                             @case("depósito") {
-                                <td class="px-4 py-2 text-lg border-b border-zinc-700 text-blue-300 font-bold">+ R$ {{movimentacao.valor | moedaBr }}</td>
+                                <td class="px-4 py-2 text-lg border-b border-zinc-700 text-sky-300 font-bold">R$ + {{movimentacao.valor | moedaBr }}</td>
                             }
                             @default {
-                                <td class="px-4 py-2 text-lg border-b border-zinc-700 text-blue-300 font-bold"></td>
+                                <td class="px-4 py-2 border-b border-zinc-700">---</td>
                             }
                          }
                          <!-- Coluna do saldo atual -->
                          @if(movimentacao.tipo == null) {
-                            <td class="px-4 py-2 text-lg border-b border-zinc-700 text-white-300 font-bold">R$ {{movimentacao.saldoCalculado | moedaBr}}</td>
+                            <td class="px-4 py-2 text-lg border-b border-zinc-700 text-white-400 font-bold">R$ {{movimentacao.saldoCalculado | moedaBr}}</td>
                          } @else {
                             @switch (movimentacao.tipo) {
                                 @case("transferência") {
-                                    @if(movimentacao.destino === usuarioLogado?.usuario?.cpf){ <!-- Se clienteDestino === nome do login atual, Azul. Caso contrário, vermelho. -->
-                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-sky-500 font-bold">R$ {{movimentacao.saldoCalculado  | moedaBr}}</td>    
+                                    @if(movimentacao.destino === cliente.conta){ <!-- Se clienteDestino === nome do login atual, Azul. Caso contrário, vermelho. -->
+                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-sky-300 font-bold">R$ {{movimentacao.saldoCalculado  | moedaBr}}</td>    
                                 } @else {
                                     <td class="px-4 py-2 text-lg border-b border-zinc-700 text-red-400 font-bold">R$ {{movimentacao.saldoCalculado  | moedaBr}}</td>
                                 }
 
                                 }
                                 @case("saque"){
-                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-red-500 font-bold">R$ {{movimentacao.saldoCalculado  | moedaBr}}</td>
+                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-red-400 font-bold">R$ {{movimentacao.saldoCalculado  | moedaBr}}</td>
                                 }
                                 @case("depósito"){
-                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-blue-300 font-bold">R$ {{movimentacao.saldoCalculado  | moedaBr}}</td>
+                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-sky-300 font-bold">R$ {{movimentacao.saldoCalculado  | moedaBr}}</td>
                                 }
                                 @default {
-                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-white-300 font-bold">R$ {{movimentacao.saldoCalculado  | moedaBr}}</td>
+                                    <td class="px-4 py-2 text-lg border-b border-zinc-700 text-white-400 font-bold">R$ {{movimentacao.saldoCalculado  | moedaBr}}</td>
                                 }
                             }  
                          }

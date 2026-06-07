@@ -1,66 +1,74 @@
-<!--
-R9: Tela Inicial do Gerente - Deve apresentar todos os pedidos de 
-autocadastro para aprovação, como uma tabela, contendo o CPF, Nome 
-e salário do cliente, junto com dois botões "Aprovar" e "Recusar".
- -->
+<div class="flex flex-col shadow-lg bg-zinc-800 rounded-lg h-full border border-zinc-700 overflow-hidden font-mono">
+    <div class="flex w-full items-center justify-between border-b border-zinc-700 bg-zinc-900 px-6 py-4 text-sm text-zinc-300"></div>
 
-<div class="flex flex-col gap-10 shadow-lg px-10 py-10 bg-zinc-800 rounded-lg h-full">
-    <div class="flex flex-col gap-10">
-        <h2 class="text-gray-200 font-bold text-2xl">Pedidos de autocadastro</h2>
-        <div class="flex min-w-2/3 place-content-between">
-            <div class="overflow-x-auto max-h-100 overflow-y-auto">
-                <table class="w-full table-fixed">
-                  <thead class="border-b border-gray-200">
-                    <tr>
-                      <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">
-                        <span class="bg-white border-none text-zinc-800 text-xs font-medium pl-2 pr-1 py-0.3 rounded-full mr-1">
-                          {{this.clientes.length}}
-                        </span>
-                        CPF
-                      </th>
-                      <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Nome</th>
-                      <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Email</th>
-                      <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Salário</th>
-                      <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Endereço</th>
-                      <th class="w-2/6"></th>
-                    </tr>
-                  </thead>
-
-                  <tbody class="divide-y divide-gray-200">
-                    @for (c of clientes; track c.cpf)
-                    {
-                      <tr class="hover:bg-gray-700 transition-colors">
-                        <td class="px-4 py-2 text-sm text-gray-300">{{ c.cpf | cpfFormatador }}</td>
-                        <td class="px-4 py-2 text-sm text-gray-300">{{ c.nome }}</td>
-                        <td class="px-4 py-2 text-sm text-gray-300">{{ c.email }}</td>
-                        <td class="px-4 py-2 text-sm text-gray-300">{{ c.salario | currency:'BRL':'symbol':'1.2-2' }}</td>
-                        <td class="px-4 py-2 text-sm text-gray-300">{{ c.endereco }}, {{ c.cidade }} - {{ c.estado }}</td>
-                        <td class="px-4 py-2 text-sm text-gray-300">
-                          <div class="flex gap-2">
-                            <button class="bg-green-500 hover:bg-green-500 text-white text-xs font-semibold px-3 py-1 rounded-md transition hover:cursor-pointer" (click)="aprovar(c.cpf)">
-                              Aprovar
-                            </button>
-                            <button class="bg-gray-400 hover:bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-md transition hover:cursor-pointer" (click)="abrirPopup(c.cpf)">
-                              Recusar
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    }
-                  </tbody>
-                </table>
-            </div>
-        </div>
+    @if (loading) {
+      <app-loading cor="#a5f2c2"></app-loading>
+    }
+    
+    <div class="flex flex-col px-10 py-10">
+      <h2 class="text-2xl font-bold text-white mb-8 self-start">Pedidos de autocadastro</h2> 
+  
+      <div class="w-full overflow-x-auto max-h-110 overflow-y-auto border border-zinc-700 rounded-lg">
+        <table class="w-full text-sm text-zinc-300">
+          <thead class="bg-zinc-900">
+                <tr>
+                  <th class="px-4 py-2 text-left border-b border-zinc-700">
+                    <span class="inline-flex items-center justify-center bg-white text-zinc-800 text-xs font-medium px-2 h-3.5 rounded-full mr-1">
+                      {{ clientes.length }}
+                    </span>
+                    CPF
+                  </th>
+                  <th class="px-4 py-2 text-left border-b border-zinc-700">Nome</th>
+                  <th class="px-4 py-2 text-left border-b border-zinc-700">Email</th>
+                  <th class="px-4 py-2 text-left border-b border-zinc-700">Salário</th>
+                  <th class="px-4 py-2 text-left border-b border-zinc-700">Endereço</th>
+                  <th class="px-4 py-2 text-left border-b border-zinc-700"></th>
+                </tr>
+              </thead>
+  
+              <tbody>
+                @for (c of clientes; track c.cpf)
+                {
+                  <tr class="hover:bg-zinc-700/30">
+                    <td class="px-12.5 py-2 border-b border-zinc-700">{{ c.cpf | cpfFormatador }}</td>
+                    <td class="px-4 py-2 border-b border-zinc-700">{{ c.nome }}</td>
+                    <td class="px-4 py-2 border-b border-zinc-700">{{ c.email }}</td>
+                    <td class="px-4 py-2 border-b border-zinc-700">{{ c.salario | currency:'BRL':'symbol':'1.2-2' }}</td>
+                    <td class="px-4 py-2 border-b border-zinc-700">{{ c.endereco }}, {{ c.cidade }} - {{ c.estado }}</td>
+                    <td class="px-4 py-2 border-b border-zinc-700">
+                      <div class="flex gap-2">
+                        <button class="px-3 py-1 rounded hover:bg-zinc-700/50 hover:cursor-pointer" (click)="aprovar(c.cpf)">
+                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#77f2b7"><path d="m382-324.77 352.08-352.08q5.84-5.84 13.77-6.23 7.92-.38 14.53 6.23 6.62 6.62 6.62 14.27 0 7.66-6.62 14.27l-357.76 358q-9.7 9.69-22.62 9.69-12.92 0-22.62-9.69l-162-162q-5.84-5.84-6.11-13.88-.27-8.04 6.35-14.66 6.61-6.61 14.26-6.61 7.66 0 14.27 6.61L382-324.77Z"/></svg>
+                        </button>
+                        <button class="px-3 py-1 rounded hover:bg-zinc-700/50 hover:cursor-pointer" (click)="abrirPopup(c.cpf)">
+                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#f2777d"><path d="M256-227.69 227.69-256l224-224-224-224L256-732.31l224 224 224-224L732.31-704l-224 224 224 224L704-227.69l-224-224-224 224Z"/></svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+      </div>
     </div>
-
+    
     @if (mostrarFormulario) {
       <div class="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
-        <div class="bg-zinc-800 rounded-lg shadow-xl p-6 w-full max-w-md">
+        <div class="bg-zinc-800 rounded-lg shadow-xl p-6 w-full max-w-md border border-zinc-700">
 
           <form #formRejeicao="ngForm" (ngSubmit)="recusar()">
             <div class="flex flex-col gap-2">
-              <label for="motivo" class="block text-sm text-gray-100 mb-1">
-                Motivo da rejeição
+              <label 
+                for="motivo" 
+                class="block text-[12px] mb-2 gap-2 flex items-center justify-between"
+              >
+                  <span class="text-zinc-400 uppercase">Motivo da rejeição</span>
+                  
+                  @if (motivo.errors?.['required'] && (motivo.touched || formRejeicao.submitted)) {
+                    <span class="pl-2 text-red-600 text-xs">
+                      O motivo é obrigatório
+                    </span>
+                  }
               </label>
 
               <textarea
@@ -71,32 +79,26 @@ e salário do cliente, junto com dois botões "Aprovar" e "Recusar".
                 required
                 rows="4"
                 placeholder="Descreva o motivo..."
-                class="block w-full rounded-md bg-zinc-700 px-3 py-2 text-base text-gray-100 placeholder:text-zinc-500 border border-zinc-600 outline-none focus:border-gray-400"
+                class="block w-full rounded-sm bg-zinc-700/30 p-3 text-white outline-none placeholder:text-zinc-500 sm:text-sm/6 border border-1 focus:border-gray-400 border-neutral-700"
                 [ngClass]="{
                   'border-red-500': motivo.errors?.['required'] && (motivo.touched || formRejeicao.submitted),
                   'border-green-500': motivo.valid && motivo.touched
                 }">
               </textarea>
-
-              @if (motivo.errors?.['required'] && (motivo.touched || formRejeicao.submitted)) {
-                <span class="pl-2 text-red-600 text-xs">
-                  O motivo é obrigatório
-                </span>
-              }
             </div>
 
             <div class="mt-6 flex items-center justify-end gap-x-6">
               <button
                 type="button"
                 (click)="cancelar()"
-                class="px-4 py-2 text-sm rounded-lg border border-gray-500 text-gray-300 hover:bg-[#313133] hover:cursor-pointer transition">
+                class="px-4 py-2 text-sm rounded-sm border border-gray-500 text-gray-300 hover:bg-zinc-700 hover:cursor-pointer transition">
                 Cancelar
               </button>
 
               <button
                 type="submit"
                 [disabled]="!formRejeicao.valid"
-                class="px-4 py-2 text-sm rounded-lg bg-red-500 text-white hover:bg-red-400 disabled:bg-gray-400 disabled:cursor-not-allowed">
+                class="px-4 py-2 text-sm rounded-sm bg-red-500 text-white hover:bg-red-400 disabled:bg-gray-400 disabled:cursor-not-allowed">
                 Recusar
               </button>
             </div>

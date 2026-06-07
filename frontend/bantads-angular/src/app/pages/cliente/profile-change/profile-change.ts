@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ClienteService, LoginService } from '../../../services';
-import { ICliente, IClienteCompletoResponse, SharedModule, IClienteAtualizacao } from '../../../shared';
+import { ICliente, IClienteCompletoResponse, SharedModule, IClienteAtualizacao, IMensagemErro } from '../../../shared';
 import { Loading } from '../../../components';
 
 @Component({
@@ -22,13 +22,34 @@ export class ProfileChange implements OnInit {
   clienteAtualizado!: IClienteAtualizacao;
   usuarioLogado = this.loginService.usuarioLogado;
   
-  mensagemErro: string = '';
+  mensagemErro?: IMensagemErro;
 
   valorFormatado: string = '';
   loading: boolean = false;
 
   ngOnInit(): void {
     this.buscar();
+  }
+
+  get formularioValido(): boolean {
+    const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+      this.clienteAtualizado?.email ?? ''
+    );
+
+    return !!(
+      this.clienteAtualizado?.nome &&
+      emailValido &&
+      this.clienteAtualizado?.CEP &&
+      this.clienteAtualizado?.endereco &&
+      this.clienteAtualizado?.cidade &&
+      this.clienteAtualizado?.estado &&
+      this.valorParaNumero(this.valorFormatado) > 0
+    );
+  }
+
+  get salarioValido(): boolean {
+    const valor = this.valorParaNumero(this.valorFormatado);
+    return valor > 0;
   }
 
   valorParaNumero(valor: string): number {
@@ -54,7 +75,11 @@ export class ProfileChange implements OnInit {
     const cpf = this.usuarioLogado?.usuario.cpf;
 
     if (!cpf) {
-      this.mensagemErro = 'Usuário não autenticado.';
+      this.mensagemErro = {
+        tipo: 'autencicação',
+        message: 'Usuário não autenticado.'
+      };
+
       this.loading = false;
       return;
     }
@@ -71,7 +96,7 @@ export class ProfileChange implements OnInit {
           nome: cliente.nome,
           email: cliente.email,
           salario: cliente.salario,
-          cep: cliente.cep,
+          CEP: cliente.cep,
           endereco: cliente.endereco,
           cidade: cliente.cidade,
           estado: cliente.estado
@@ -79,7 +104,7 @@ export class ProfileChange implements OnInit {
         console.log(this.clienteAtualizado)
       },
       error: (erro) => {
-        this.mensagemErro = erro.error?.message ?? 'Erro ao buscar cliente.';
+        this.mensagemErro = erro.error ?? 'Erro ao buscar cliente.';
 
         this.loading = false;
       }
@@ -91,15 +116,10 @@ export class ProfileChange implements OnInit {
 
   this.loading = true;
 
-  console.log("SALARIO ANTES" + this.valorFormatado)
-  console.log("SALARIO DEPOIS" + this.valorParaNumero(this.valorFormatado))
-
   const clienteAtualizado = {
     ...this.clienteAtualizado,
     salario: this.valorParaNumero(this.valorFormatado)
   };
-
-  console.log(clienteAtualizado);
 
   this.clienteService.atualizar(this.cliente.cpf, clienteAtualizado).subscribe({
       next: () => {
@@ -107,11 +127,8 @@ export class ProfileChange implements OnInit {
       },
 
       error: (erro) => {
-        console.log('ERRO COMPLETO:', erro);
-        console.log('STATUS:', erro.status);
-        console.log('BODY:', erro.error);
-
-        this.mensagemErro = JSON.stringify(erro.error);
+        this.mensagemErro = erro.error;
+        console.log(erro.error)
 
         this.loading = false;
       }

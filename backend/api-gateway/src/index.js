@@ -1003,15 +1003,6 @@ app.put('/clientes/:cpf', validacaoToken, async (req, res) => {
 
     const usuarioExistenteResp = await fetch(`http://localhost:5000/auth/usuarios/email/${email}`);
 
-    if (!usuarioExistenteResp.ok) {
-      const erro = await usuarioExistenteResp.text();
-
-      return res.status(usuarioExistenteResp.status).json({
-        origem: 'SERVICO_AUTH',
-        message: erro
-      });
-    }
-
     if (usuarioExistenteResp.ok) {
       const usuarioExistente = await usuarioExistenteResp.json();
 
@@ -1039,9 +1030,9 @@ app.put('/clientes/:cpf', validacaoToken, async (req, res) => {
     );
 
     if (!authResp.ok) {
-      const erro = await clienteResp.text();
+      const erro = await authResp.text();
 
-      return res.status(clienteResp.status).send(erro);
+      return res.status(authResp.status).send(erro);
     }
 
     const authAtualizado = await authResp.json();

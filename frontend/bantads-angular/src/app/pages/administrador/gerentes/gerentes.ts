@@ -5,10 +5,11 @@ import { FormsModule, NgForm, NgModel } from '@angular/forms';
 import { SharedModule, IGerente, TipoUsuario } from '../../../shared';
 import { GerenteService } from '../../../services';
 import { Observable } from 'rxjs';
+import { Loading } from '../../../components';
 
 @Component({
   selector: 'app-gerentes',
-  imports: [CommonModule, FormsModule, SharedModule],
+  imports: [CommonModule, FormsModule, SharedModule, Loading],
   templateUrl: './gerentes.html',
   styleUrl: './gerentes.css',
 })
@@ -26,7 +27,7 @@ export class Gerentes implements OnInit{
     cpf: '',
     email: '',
     senha: '',
-    tipo:''
+    tipo: TipoUsuario.GERENTE
   }
 
   pesquisa: string = '';
@@ -37,6 +38,8 @@ export class Gerentes implements OnInit{
   mostrarNovaSenha: boolean = true;
 
   senhaIncorreta: boolean = false;
+
+  loading: boolean = false;
 
   modoFormulario: 'nenhum' | 'adicionar' | 'editar' = 'nenhum';
 
@@ -50,7 +53,7 @@ export class Gerentes implements OnInit{
       cpf: '',
       email: '',
       senha: '',
-      tipo: ''
+      tipo: TipoUsuario.GERENTE
     }
 
     this.modoFormulario = 'adicionar';
@@ -84,13 +87,17 @@ export class Gerentes implements OnInit{
   }
 
   listarTodos() {
+    this.loading = true;
+
     this.gerenteService.listarTodos().subscribe({
       next: (gerentes) => {
         this.gerentes = (gerentes ?? []).sort((gerente1, gerente2) =>
           (gerente1.nome ?? '').localeCompare(gerente2.nome ?? '')
         );
+        this.loading = false;
       },
       error: (erro) => {
+        this.loading = false;
         if (erro.status === 500) {
           alert(`Erro interno: ${erro.error}`);
         } else {
@@ -103,6 +110,7 @@ export class Gerentes implements OnInit{
 
   salvar(): void {
     this.senhaIncorreta = false;
+    this.loading = true;
 
     if (!this.formGerentes.form.valid) return;
 
@@ -113,8 +121,10 @@ export class Gerentes implements OnInit{
           this.mostrarFormulario = false;
           this.formGerentes.reset();
           this.cancelar();
+          this.loading = false;
         },
         error: (erro) => {
+          this.loading = false;
           if (erro.status === 409) {
             if (erro.error.tipo === 'cpf') {
               this.cpfModel.control.setErrors({ cpfConflito: true });
@@ -147,8 +157,10 @@ export class Gerentes implements OnInit{
           this.mostrarFormulario = false;
           this.formGerentes.reset();
           this.cancelar();
+          this.loading = false;
         },
         error: (erro) => {
+          this.loading = false;
           if (erro.status === 409 && erro.error.tipo === 'email') {
             this.emailModel.control.setErrors({ emailConflito: true });
             return;
@@ -167,14 +179,17 @@ export class Gerentes implements OnInit{
 
   excluir() {
     if (!this.gerente.cpf) return;
+    this.loading = true;
 
     this.gerenteService.remover(this.gerente.cpf).subscribe({
       next: () => {
         this.listarTodos();
         this.mostrarPopupExclusao = false;
+        this.loading = false;
       },
 
       error: (erro) => {
+        this.loading = false;
         if (erro.status === 404) {
           alert(`Não encontrado: ${erro.error}`);
         } else if (erro.status === 500) {
