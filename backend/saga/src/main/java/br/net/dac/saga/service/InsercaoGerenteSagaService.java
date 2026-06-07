@@ -14,6 +14,7 @@ import br.net.dac.saga.model.dto.GerenteDTO;
 import br.net.dac.saga.model.dto.GerenteRollbackDTO;
 import br.net.dac.saga.model.dto.UsuarioCriacaoDTO;
 import br.net.dac.saga.model.dto.UsuarioDesativacaoDTO;
+import br.net.dac.saga.model.enums.TipoUsuarioEnum;
 import br.net.dac.saga.model.event.AuthCriacaoFalhaEvent;
 import br.net.dac.saga.model.event.AuthSucessoEvent;
 import br.net.dac.saga.model.event.Evento;
@@ -56,7 +57,7 @@ public class InsercaoGerenteSagaService {
     contexto.setNome(dto.getNome());
     contexto.setEmail(dto.getEmail());
     contexto.setSenha(dto.getSenha());
-    contexto.setTipo(dto.getTipo());
+    contexto.setTipo(TipoUsuarioEnum.GERENTE.name());
     contexto.setAtivo(true);
     
     UsuarioCriacaoDTO auth = new UsuarioCriacaoDTO();
