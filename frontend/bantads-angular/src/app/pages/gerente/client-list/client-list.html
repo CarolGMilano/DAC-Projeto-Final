@@ -1,44 +1,56 @@
-<div class="flex flex-col gap-10 shadow-lg px-10 py-10 bg-zinc-800 rounded-lg h-full">
-  <div class="flex flex-col gap-10">
-    <h2 class="text-gray-200 font-bold text-2xl">Consultar Clientes</h2>
+<div class="flex flex-col shadow-lg bg-zinc-800 rounded-lg h-full border border-zinc-700 overflow-hidden font-mono">
+    <div class="flex w-full items-center justify-between border-b border-zinc-700 bg-zinc-900 px-6 py-4 text-sm text-zinc-300"></div>
+
+    <div class="flex flex-col px-10 py-10">
+        @if (loading) {
+          <app-loading cor="#a5f2c2"></app-loading>
+        }
+        
+        <h2 class="text-2xl font-bold text-white mb-8 self-start">Meus clientes</h2>
 
     <!-- Barra de pesquisa -->
-    <div class="Buscar flex gap-4">
+    <div class="flex gap-4 mb-5">
       <input name="pesquisar" type="text" placeholder="Pesquisar por Nome ou CPF"
         [(ngModel)]="filtro"
         (input)="filtrar()"
-        class="w-1/3 rounded-md bg-zinc-700 px-4 py-1.5 text-sm font-light text-gray-200 
-               placeholder:text-gray-400 border border-zinc-600 outline-none focus:border-zinc-500" />
+        class="block w-[400px] rounded-sm border-neutral-700 bg-zinc-700/30 px-3 py-1 text-white outline-none placeholder:text-zinc-500 sm:text-sm/6 border border-1 focus:border-gray-400" />
     </div>
 
     <!-- Tabela -->
-    <div class="overflow-x-auto max-h-100 overflow-y-auto">
-      <table class="w-full table-fixed">
-        <thead class="border-b border-gray-200">
+    <div class="w-full overflow-x-auto max-h-110 overflow-y-auto border border-zinc-700 rounded-lg">
+      <table class="w-full text-sm text-zinc-300">
+        <thead class="bg-zinc-900">
           <tr>
-            <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">
-              <span class="bg-white text-zinc-800 text-xs font-medium px-2 py-0.3 rounded-full mr-1">{{ clientes.length }}</span>CPF
+            <th class="px-4 py-2 text-left border-b border-zinc-700">
+              <span class="inline-flex items-center justify-center bg-white text-zinc-800 text-xs font-medium px-2 h-3.5 rounded-full mr-1">
+                {{ clientes.length }}
+              </span>
+              CPF
             </th>
-            <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Nome</th>
-            <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Cidade</th>
-            <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Estado</th>
-            <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Saldo</th>
-            <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Limite</th>
-            <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold w-2/6">Detalhes</th>
+            <th class="px-4 py-2 text-left border-b border-zinc-700">Nome</th>
+            <th class="px-4 py-2 text-left border-b border-zinc-700">Cidade</th>
+            <th class="px-4 py-2 text-left border-b border-zinc-700">Estado</th>
+            <th class="px-4 py-2 text-left border-b border-zinc-700">Saldo</th>
+            <th class="px-4 py-2 text-left border-b border-zinc-700">Limite</th>
+            <th class="px-4 py-2 text-left border-b border-zinc-700"></th>
           </tr>
         </thead>
 
-        <tbody class="divide-y divide-gray-200">
+        <tbody>
           @for (c of clientes; track c.cpf) {
-            <tr class="hover:bg-gray-50 transition-colors">
-              <td class="px-4 py-2 text-sm text-gray-300">{{ c.cpf | cpfFormatador }}</td>
-              <td class="px-4 py-2 text-sm text-gray-300">{{ c.nome }}</td>
-              <td class="px-4 py-2 text-sm text-gray-300">{{ c.cidade }}</td>
-              <td class="px-4 py-2 text-sm text-gray-300">{{ c.estado }}</td>
-              <td class="px-4 py-2 text-sm text-gray-300">R${{ c.saldo | moedaBr }}</td>
-              <td class="px-4 py-2 text-sm text-gray-300">R${{ c.limite | moedaBr }}</td>
-              <td class="px-4 py-2 text-sm text-gray-300 hover:underline cursor-pointer">
-              <a (click)="verDetalhes(c.cpf)">VER</a>
+            <tr class="hover:bg-zinc-700/30">
+              <td class="px-12.5 py-2 border-b border-zinc-700">{{ c.cpf | cpfFormatador }}</td>
+              <td class="px-4 py-2 border-b border-zinc-700">{{ c.nome }}</td>
+              <td class="px-4 py-2 border-b border-zinc-700">{{ c.cidade }}</td>
+              <td class="px-4 py-2 border-b border-zinc-700">{{ c.estado }}</td>
+              <td 
+                class="px-4 py-2 border-b border-zinc-700"
+                [ngClass]="c.saldo >= 0 ? 'text-green-300' : 'text-red-300'">R$ {{ c.saldo | moedaBr }}</td>
+              <td class="px-4 py-2 border-b border-zinc-700 text-sky-300">R$ {{ c.limite | moedaBr }}</td>
+              <td class="px-4 py-2 text-sm text-gray-300 hover:underline cursor-pointer border-b border-zinc-700">
+                <button class="px-3 py-1 rounded hover:bg-zinc-700/50 hover:cursor-pointer" (click)="verDetalhes(c.cpf)">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3"><path d="M607.5-372.5Q660-425 660-500t-52.5-127.5Q555-680 480-680t-127.5 52.5Q300-575 300-500t52.5 127.5Q405-320 480-320t127.5-52.5Zm-204-51Q372-455 372-500t31.5-76.5Q435-608 480-608t76.5 31.5Q588-545 588-500t-31.5 76.5Q525-392 480-392t-76.5-31.5ZM235.5-272Q125-344 61-462q-5-9-7.5-18.5T51-500q0-10 2.5-19.5T61-538q64-118 174.5-190T480-800q134 0 244.5 72T899-538q5 9 7.5 18.5T909-500q0 10-2.5 19.5T899-462q-64 118-174.5 190T480-200q-134 0-244.5-72ZM480-500Zm207.5 160.5Q782-399 832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280q113 0 207.5-59.5Z"/></svg>
+                </button>                     
               </td>
             </tr>
           }
@@ -48,33 +60,119 @@
   </div>
 </div>
 
-      <!-- MODAL -->
 @if (mostrarModal) {
-  <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div class="bg-zinc-800 rounded-lg shadow-lg p-6 w-[28rem]">
+  <div class="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
+    <div class="bg-zinc-900 flex flex-col border border-zinc-700 rounded-lg p-5 font-mono">
+      <button
+        (click)="fecharModal()"
+        class="self-end text-zinc-400 hover:text-white text-xl hover:cursor-pointer"
+      >
+        ✕
+      </button>
 
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-bold text-gray-200">Detalhes do Cliente</h2>
-        <button (click)="fecharModal()" class="text-gray-400 hover:text-gray-200 text-2xl">X</button>
+      <div>
+        <h3 class="text-xs uppercase text-zinc-500 mb-2">
+          Dados Pessoais
+        </h3>
+
+        <div class="flex justify-between items-start gap-8">
+          <div>
+            <p class="text-white font-bold text-lg">
+              {{ clienteSelecionado?.nome }}
+            </p>
+
+            <p class="text-zinc-400 text-sm">
+              {{ clienteSelecionado?.email }}
+            </p>
+
+            <p class="text-zinc-500 text-sm">
+              {{ clienteSelecionado?.telefone | telefoneFormatador }}
+            </p>
+          </div>
+
+          <span class="text-zinc-500 text-xs">
+            {{ clienteSelecionado?.cpf | cpfFormatador }}
+          </span>
+        </div>
       </div>
 
-      <div class="space-y-2 text-sm text-gray-300">
-        <p><strong>CPF:</strong> {{ clienteSelecionado?.cpf | cpfFormatador }}</p>
-        <p><strong>Nome:</strong> {{ clienteSelecionado?.nome }}</p>
-        <p><strong>Email:</strong> {{ clienteSelecionado?.email }}</p>
-        <p><strong>Telefone:</strong> {{ clienteSelecionado?.telefone | telefoneFormatador }}</p>
-        <p><strong>Salário:</strong> R${{ clienteSelecionado?.salario | moedaBr }}</p>
-        <p><strong>Número da Conta:</strong> {{ clienteSelecionado?.conta }}</p>
-        <p><strong>Saldo:</strong> R${{ clienteSelecionado?.saldo | moedaBr }}</p>
-        <p><strong>Limite:</strong> R${{ clienteSelecionado?.limite | moedaBr }}</p>
-        <p><strong>Gerente:</strong> {{ clienteSelecionado?.gerente_nome }} </p>
-        <p><strong>Gerente:</strong> {{ clienteSelecionado?.gerente_email }} </p>
-        <p><strong>CPF:</strong>  {{ clienteSelecionado?.gerente | cpfFormatador }}</p>
-        <p><strong>Endereço:</strong> {{ clienteSelecionado?.endereco }},
+      <div class="mt-5 pt-5 border-t border-zinc-700">
+        <h3 class="text-xs uppercase text-zinc-500 mb-2">
+          Endereço
+        </h3>
+        
+        <p class="text-white text-sm">
+          CEP: {{ clienteSelecionado?.cep | cepFormatador }}
+        </p>
+
+        <p class="text-zinc-400 text-sm">
+          {{ clienteSelecionado?.endereco }}
+        </p>
+
+        <p class="text-zinc-500 text-sm">
           {{ clienteSelecionado?.cidade }} - {{ clienteSelecionado?.estado }}
         </p>
+
       </div>
-      <div class="mt-6 flex justify-end">
+
+      <div class="mt-5 pt-5 border-t border-zinc-700">
+        <h3 class="text-xs uppercase text-zinc-500 mb-3">
+          Conta
+        </h3>
+
+        <div class="grid grid-cols-2 gap-4">
+
+          <div>
+            <p class="text-zinc-500 text-xs">Número</p>
+            <p class="text-white text-sm">{{ clienteSelecionado?.conta }}</p>
+          </div>
+
+          <div>
+            <p class="text-zinc-500 text-xs">Salário</p>
+            <p class="text-sky-300 text-sm">
+              R$ {{ clienteSelecionado?.salario | moedaBr }}
+            </p>
+          </div>
+
+          <div>
+            <p class="text-zinc-500 text-xs">Saldo</p>
+            <p
+              class=" text-sm"
+              [ngClass]="(clienteSelecionado?.saldo ?? 0) >= 0 ? 'text-green-400' : 'text-red-400'"
+            >
+              R$ {{ clienteSelecionado?.saldo | moedaBr }}
+            </p>
+          </div>
+
+          <div>
+            <p class="text-zinc-500 text-xs">Limite</p>
+            <p class="text-sky-300 text-sm">
+              R$ {{ clienteSelecionado?.limite | moedaBr }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-5 pt-5 border-t border-zinc-700">
+        <h3 class="text-xs uppercase text-zinc-500 mb-2">
+          Gerente Responsável
+        </h3>
+
+        <div class="flex justify-between items-start gap-8">
+          <div>
+            <p class="text-white text-sm">
+              {{ clienteSelecionado?.gerente_nome }}
+            </p>
+    
+            <p class="text-zinc-400 text-sm">
+              {{ clienteSelecionado?.gerente_email }}
+            </p>
+          </div>
+
+          <p class="text-zinc-500 text-xs">
+            {{ clienteSelecionado?.gerente | cpfFormatador }}
+          </p>
+        </div>
       </div>
     </div>
   </div>

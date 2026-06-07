@@ -3,7 +3,7 @@ export interface IClienteAtualizacao {
   email: string;
   salario: number;
   endereco: string;
-  cep: string;
+  CEP: string;
   cidade: string;
   estado:string;
 }

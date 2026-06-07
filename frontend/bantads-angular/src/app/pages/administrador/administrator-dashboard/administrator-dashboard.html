@@ -1,35 +1,44 @@
-<div class="flex flex-col gap-10 shadow-lg px-10 py-10 bg-zinc-800 rounded-lg h-full">
-    <div class="flex flex-col gap-10">
-        <h2 class="text-gray-200 font-bold text-2xl">Gerentes</h2>
-            <div class="flex min-w-2/3 place-content-between">
-                <div class="overflow-x-auto max-h-100 overflow-y-auto">
-                    <table class="w-full table-fixed">
-                        <thead class="border-b border-gray-200">
-                                <!-- Colunas -->
-                            <tr>
-                                <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">
-                                  <span class="bg-white border-none text-zinc-800 text-xs font-medium pl-2 pr-1 py-0.3 rounded-full mr-1">{{this.lista?.length}}</span>
-                                  Gerente
-                                </th>
-                                <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">Clientes</th>
-                                <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">Saldos Positivos</th>
-                                <th class="px-4 py-2 text-left text-sm text-gray-200 font-semibold rounded-l-lg w-2/6">Saldos Negativos</th>
+<div class="flex flex-col shadow-lg bg-zinc-800 rounded-lg h-full border border-zinc-700 overflow-hidden font-mono">
+    <div class="flex w-full items-center justify-between border-b border-zinc-700 bg-zinc-900 px-6 py-4 text-sm text-zinc-300"></div>
+
+    <div class="flex flex-col px-10 py-10 items-center">
+        @if (loading) {
+            <app-loading cor="#dec3f7"></app-loading>
+        }
+        
+        <h2 class="text-2xl font-bold text-white mb-8 self-start">Dashboard - Ranking de Gerentes</h2>
+
+        <div class="flex-1 flex overflow-hidden w-full">
+            <div class="w-full overflow-x-auto max-h-110 overflow-y-auto border border-zinc-700 rounded-lg">
+                <table class="w-full text-sm text-zinc-300">
+                    <thead class="bg-zinc-900">
+                            <!-- Colunas -->
+                        <tr>
+                            <th class="px-4 py-2 text-left border-b border-zinc-700">
+                                <span class="inline-flex items-center justify-center bg-white text-zinc-800 text-xs font-medium px-2 h-3.5 rounded-full mr-1">
+                                    {{ lista?.length }}
+                                </span>
+                                Gerente
+                            </th>
+                            <th class="px-4 py-2 text-left border-b border-zinc-700">Nº de clientes</th>
+                            <th class="px-4 py-2 text-left border-b border-zinc-700">Saldos Positivos</th>
+                            <th class="px-4 py-2 text-left border-b border-zinc-700">Saldos Negativos</th>
+                        </tr>
+                    </thead>
+                        <tbody>
+                        <!-- Listagem -->
+                            @for (item of lista; track item; let i = $index)
+                        {
+                            <tr class="hover:bg-zinc-700/30">
+                                <td class="px-12.5 py-2 border-b border-zinc-700">{{ item.gerente.nome }}</td>
+                                <td class="px-4 py-2 border-b border-zinc-700">{{ item.clientes.length }}</td>
+                                <td class="px-4 py-2 text-lg border-b border-zinc-700 text-green-400 font-bold">R$ {{ item.saldo_positivo | moedaBr}}</td>
+                                <td class="px-4 py-2 text-lg border-b border-zinc-700 text-red-400 font-bold">R$ {{ item.saldo_negativo | moedaBr }}</td>
                             </tr>
-                        </thead>
-                            <tbody class="divide-y divide-gray-200">
-                            <!-- Listagem -->
-                                @for (item of lista; track item; let i = $index)
-                            {
-                                <tr class="hover:bg-gray-50 transition-colors">
-                                    <td class="px-12 py-2 text-sm text-gray-300">{{ item.gerente.nome }}</td>
-                                    <td class="px-4 py-2 text-sm text-gray-300">{{ item.clientes.length }}</td>
-                                    <td class="px-4 py-2 text-sm text-green-400">R$ {{ item.saldo_positivo | moedaBr}}</td>
-                                    <td class="px-4 py-2 text-sm text-red-400">R$ {{ item.saldo_negativo | moedaBr }}</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>                                   
-            </div>
+                        }
+                    </tbody>
+                </table>
+            </div>                                   
+        </div>
     </div>
  </div>

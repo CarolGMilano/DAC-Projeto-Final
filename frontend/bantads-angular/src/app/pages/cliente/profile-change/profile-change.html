@@ -4,7 +4,7 @@
   </div>
 
   @if (loading) {
-    <app-loading></app-loading>
+    <app-loading cor="#5f98d4"></app-loading>
   }
 
   @if(cliente){
@@ -20,78 +20,188 @@
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-20 gap-y-10">
             
             <section class="space-y-6">
-              <h2 class="text-blue-500 text-xs font-bold uppercase tracking-widest border-b border-zinc-700 pb-2">Informações de Acesso</h2>
+              <h2 class="text-blue-400 text-xs font-bold uppercase tracking-widest border-b border-zinc-700 pb-2">Informações de Acesso</h2>
               
               <div class="space-y-4">
                 <div class="group">
                   <label class="block text-[12px] uppercase text-zinc-500 mb-2">CPF</label>
                   <input type="text" [value]="cliente.cpf | cpfFormatador" 
                 readonly 
-                    class="w-full bg-zinc-900/50 border border-zinc-700 p-4 text-zinc-600 outline-none cursor-not-allowed">
+                    class="w-full bg-zinc-900/50 border border-zinc-700 rounded-sm p-3 text-zinc-600 outline-none cursor-not-allowed text-[13px]">
                 </div>
   
                 <div class="group">
-                  <label class="block text-[12px] uppercase text-zinc-400 mb-2">Nome</label>
-                  <input type="text" [(ngModel)]="clienteAtualizado.nome" name="nome" class="w-full bg-zinc-700/30 border border-zinc-600 p-4 text-white outline-none focus:border-white transition-all">
+                  <label class="block text-[12px] uppercase mb-2 gap-2 flex items-center justify-between">
+                    <span class="text-zinc-400">Nome</span>
+
+                    @if (!clienteAtualizado.nome) {
+                      <span class="text-red-500 text-[10px] normal-case">
+                        obrigatório
+                      </span>
+                    }
+                  </label>
+
+                  <input
+                    type="text"
+                    [(ngModel)]="clienteAtualizado.nome"
+                    name="nome"
+                    class="w-full bg-zinc-700/30 border rounded-sm p-3 text-white outline-none transition-all text-[13px]"
+                    [ngClass]="{
+                      'border-red-500': !clienteAtualizado.nome,
+                      'border-zinc-600 focus:border-white': clienteAtualizado.nome
+                    }"
+                  />
                 </div>
   
-                <div class="grid grid-cols-2 gap-4">
+                <div class="group">
                   <div>
-                    <label class="block text-[12px] uppercase text-zinc-400 mb-2">E-mail</label>
-                    <input type="email" [(ngModel)]="clienteAtualizado.email" name="email" class="w-full bg-zinc-700/30 border border-zinc-600 p-4 text-white outline-none focus:border-white">
+                    <label class="block text-[12px] mb-2 gap-2 flex items-center justify-between">
+                      <span class="text-zinc-400 uppercase ">E-mail</span>
+
+                      @if (!clienteAtualizado.email) {
+                        <span class="text-red-500 text-[10px] normal-case">
+                          obrigatório
+                        </span>
+                      } @else if (mensagemErro) {
+                        <span class="text-red-500 text-[10px] normal-case">
+                          {{ mensagemErro.message }}
+                        </span>
+                      } @else if (email.errors?.['email']) {
+                      <span class="text-yellow-600 text-[10px]">O e-mail não é válido</span>
+                    }
+                    </label>
+                    <input type="email" email #email="ngModel" [(ngModel)]="clienteAtualizado.email" name="email" class="w-full bg-zinc-700/30 border border-zinc-600 rounded-sm p-3 text-white outline-none focus:border-white text-[13px]"
+                    [ngClass]="{
+                      'border-red-500': !clienteAtualizado.email || mensagemErro,
+                      'border-yellow-500': email.errors?.['email'] && !mensagemErro,
+                      'border-zinc-600 focus:border-white':
+                        clienteAtualizado.email &&
+                        !mensagemErro &&
+                        !email.errors?.['email']
+                    }">
                   </div>
                 </div>
               </div>
             </section>
   
-            <section class="space-y-10">
-              <h2 class="text-blue-500 text-xs font-bold uppercase tracking-widest border-b border-zinc-700 pb-2">Endereço e Localização</h2>
+            <section class="space-y-6">
+              <h2 class="text-blue-400 text-xs font-bold uppercase tracking-widest border-b border-zinc-700 pb-2">Endereço e Localização</h2>
               
               <div class="space-y-4">
                 <div class="grid grid-cols-3 gap-4">
-                  <div class="col-span-2">
-                    <label class="block text-[12px] uppercase text-zinc-400 mb-2">CEP</label>
-                    <input type="text" maxlength="9"  [(ngModel)]="clienteAtualizado.cep" [numericos]="'cep'" name="cep" class="w-full bg-zinc-700/30 border border-zinc-600 p-4 text-white outline-none focus:border-white">
+                  <div class="col-span-3">
+                    <label class="block text-[12px] uppercase mb-2 gap-2 flex items-center justify-between">
+                      <span class="text-zinc-400">CEP</span>
+
+                      @if (!clienteAtualizado.CEP) {
+                        <span class="text-red-500 text-[10px] normal-case">
+                          obrigatório
+                        </span>
+                      }
+                    </label>
+                    <input type="text" maxlength="9"  [(ngModel)]="clienteAtualizado.CEP" [numericos]="'cep'" name="cep" class="w-full bg-zinc-700/30 border border-zinc-600 p-3 rounded-sm text-[13px] text-white outline-none focus:border-white"
+                    [ngClass]="{
+                      'border-red-500': !clienteAtualizado.CEP,
+                      'border-zinc-600 focus:border-white': clienteAtualizado.CEP
+                    }">
                   </div>
                 </div>
 
                 <div class="grid grid-cols-3 gap-4">
-                  <div class="col-span-2">
-                    <label class="block text-[12px] uppercase text-zinc-400 mb-2">Endereço</label>
-                    <input type="text" [(ngModel)]="clienteAtualizado.endereco" name="endereco" class="w-full bg-zinc-700/30 border border-zinc-600 p-4 text-white outline-none focus:border-white">
+                  <div class="col-span-3">
+                    <label class="block text-[12px] uppercase mb-2 gap-2 flex items-center justify-between">
+                      <span class="text-zinc-400">Endereço</span>
+
+                      @if (!clienteAtualizado.endereco) {
+                        <span class="text-red-500 text-[10px] normal-case">
+                          obrigatório
+                        </span>
+                      }
+                    </label>
+                    <input type="text" [(ngModel)]="clienteAtualizado.endereco" name="endereco" class="w-full bg-zinc-700/30 border border-zinc-600 p-3 rounded-sm text-[13px] text-white outline-none focus:border-white"
+                    [ngClass]="{
+                      'border-red-500': !clienteAtualizado.endereco,
+                      'border-zinc-600 focus:border-white': clienteAtualizado.endereco
+                    }">
                   </div>
                 </div>
                 <div class="grid grid-cols-3 gap-4">
                   <div class="col-span-2">
-                    <label class="block text-[12px] uppercase text-zinc-400 mb-2">Cidade</label>
-                    <input type="text" [(ngModel)]="clienteAtualizado.cidade" name="numero" class="w-full bg-zinc-700/30 border border-zinc-600 p-4 text-white outline-none focus:border-white">
+                    <label class="block text-[12px] uppercase mb-2 gap-2 flex items-center justify-between">
+                      <span class="text-zinc-400">Cidade</span>
+
+                      @if (!clienteAtualizado.cidade) {
+                        <span class="text-red-500 text-[10px] normal-case">
+                          obrigatório
+                        </span>
+                      }
+                    </label>
+                    <input type="text" [(ngModel)]="clienteAtualizado.cidade" name="numero" class="w-full bg-zinc-700/30 border border-zinc-600 p-3 rounded-sm text-[13px] text-white outline-none focus:border-white"
+                    [ngClass]="{
+                      'border-red-500': !clienteAtualizado.cidade,
+                      'border-zinc-600 focus:border-white': clienteAtualizado.cidade
+                    }">
                   </div>
                   <div class="col-span-1">
-                    <label class="block text-[12px] uppercase text-zinc-400 mb-2">Estado</label>
-                    <input type="text" [(ngModel)]="clienteAtualizado.estado" name="cidade" class="w-full bg-zinc-700/30 border border-zinc-600 p-4 text-white outline-none focus:border-white">
+                    <label class="block text-[12px] uppercase mb-2 gap-2 flex items-center justify-between">
+                      <span class="text-zinc-400">Estado</span>
+
+                      @if (!clienteAtualizado.estado) {
+                        <span class="text-red-500 text-[10px] normal-case">
+                          obrigatório
+                        </span>
+                      }
+                    </label>
+                    <input type="text" [(ngModel)]="clienteAtualizado.estado" name="cidade" class="w-full bg-zinc-700/30 border border-zinc-600 p-3 rounded-sm text-[13px] text-white outline-none focus:border-white"
+                    [ngClass]="{
+                      'border-red-500': !clienteAtualizado.estado,
+                      'border-zinc-600 focus:border-white': clienteAtualizado.estado
+                    }">
                   </div>
                 </div>
               </div>
             </section>
           </div>
-          <div>{{ mensagemErro }}</div>
-  
-          <div class="mt-16 bg-zinc-900 border border-blue-900/30 p-8 flex flex-col md:flex-row justify-between items-center gap-8">
-            <div class="flex-1">
-              <label class="block text-[10px] uppercase text-blue-400 font-bold mb-3 tracking-widest">Rendimento Mensal (Salário)</label>
-              <div class="flex items-center gap-4">
-                <input 
-                  type="text"
-                  [(ngModel)]="valorFormatado"
-                  [numericos]="'salario'"
-                  placeholder="R$ 0,00"
-                  maxlength="15"
-                  name="salario"
-                  class="bg-transparent text-4xl text-white font-bold outline-none w-full"/>
+          
+          <div class="mt-16 flex justify-between">
+            <div class="bg-zinc-900 border rounded-sm p-8 flex flex-col md:flex-row justify-between items-center gap-8 w-[700px]"
+            [ngClass]="{
+              'border-red-500': !salarioValido,
+              'border-blue-900/30 focus:border-white': salarioValido
+            }">
+              <div class="flex-1">
+                <label class="block text-[10px] uppercase  font-bold mb-3 tracking-widest flex items-center justify-between">
+                  <span class="text-blue-400">Rendimento Mensal (Salário)</span>
+
+                      @if (!salarioValido) {
+                        <span class="text-red-500 text-[10px] normal-case">
+                          obrigatório
+                        </span>
+                      }
+                    </label>
+                <div class="flex items-center gap-4">
+                  <input 
+                    type="text"
+                    [(ngModel)]="valorFormatado"
+                    [numericos]="'salario'"
+                    placeholder="R$ 0,00"
+                    maxlength="15"
+                    name="salario"
+                    class="bg-transparent text-4xl text-white font-bold outline-none w-full"/>
+                </div>
               </div>
             </div>
-            
-            <button type="button" (click)="atualizar()" class="w-full md:w-80 bg-blue-600 hover:bg-blue-500 text-white py-5 px-10 font-bold text-sm uppercase tracking-[0.3em] transition-all active:scale-95 shadow-2xl">
+  
+            <button
+              type="button"
+              (click)="atualizar()"
+              [disabled]="!formularioValido"
+              class="my-8 w-full md:w-80 py-3 px-5 font-bold text-sm uppercase tracking-[0.3em] transition-all active:scale-95 shadow-2xl rounded-sm"
+              [ngClass]="{
+                'bg-blue-600 hover:bg-blue-500 text-white': formularioValido,
+                'bg-zinc-700 text-zinc-400 cursor-not-allowed opacity-60': !formularioValido
+              }"
+            >
               Atualizar
             </button>
           </div>

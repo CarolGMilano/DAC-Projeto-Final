@@ -1,8 +1,8 @@
 import { TipoMovimentacao } from "./EnumTipoMovimentacao";
 
 export interface IMovimentacao {
-  id: BigInteger;
-  tipo: String;
+  id: bigint;
+  tipo: string;
   valor: number;
   data: Date;
   origem: string;
