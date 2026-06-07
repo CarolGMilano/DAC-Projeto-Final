@@ -64,12 +64,19 @@
   
             <div class="bg-zinc-900 border p-3 rounded-sm"
                 [ngClass]="{
+                  'border-red-500': mensagemErro,
                   'border-zinc-700': !valorFormatado,
                   'border-yellow-500': valorFormatado && !valorValido,
                   'border-blue-500': valorValido
                 }">
-              <label class="text-[9px] text-zinc-500 uppercase mb-2 block">
-                Valor da Transação
+              <label class=" flex justify-between text-[9px] mb-2 block">
+                <span class="text-zinc-500 uppercase">Valor da transação</span>
+
+                      @if (mensagemErro) {
+                        <span class="text-red-500 text-[10px] normal-case">
+                          {{ mensagemErro }}
+                        </span>
+                      }
               </label>
 
               <div class="flex items-center gap-4">
@@ -86,7 +93,7 @@
                   autofocus
                   class="bg-transparent text-1xl text-white outline-none w-full font-bold placeholder:text-zinc-600"
                   [ngClass]="{
-                    'text-red-400': valor.errors?.['required'] && valor.touched,
+                    'text-red-400': (valor.errors?.['required'] && valor.touched),
                     'text-white': valor.valid || valor.pristine
                   }"
                 >
@@ -120,11 +127,20 @@
             <div class="flex gap-3 w-full">
               <div class="flex-1 bg-zinc-900 border p-3 rounded-sm"
                   [ngClass]="{
+                    'border-red-500': mensagemErro !== 'Saldo insuficiente' && mensagemErro,
                     'border-zinc-700': contaDestino.length === 0,
                     'border-yellow-500': contaDestino.length > 0 && contaDestino.length < 4,
                     'border-green-500': contaDestino.length === 4
                   }">
-                <label class="text-[9px] text-zinc-500 uppercase mb-2 block">Conta de Destino</label>
+                <label class=" flex justify-between text-[9px] mb-2 block">
+                  <span class="text-zinc-500 uppercase">Conta de destino</span>
+
+                        @if (mensagemErro !== 'Saldo insuficiente' && mensagemErro) {
+                          <span class="text-red-500 text-[10px] normal-case">
+                            {{ mensagemErro }}
+                          </span>
+                        }
+                </label>
                 <input type="text" [(ngModel)]="contaDestino" name="destinatario" placeholder="1234" 
                 [numericos]="''"
                 minlength="4"
@@ -133,11 +149,20 @@
               </div>
               <div class="flex-1 bg-zinc-900 border p-3 rounded-sm"
                 [ngClass]="{
+                  'border-red-500': mensagemErro === 'Saldo insuficiente',
                   'border-zinc-700': !valorFormatado,
                   'border-yellow-500': valorFormatado && !valorValido,
                   'border-blue-500': valorValido
                 }">
-                <label class="text-[9px] text-zinc-500 uppercase mb-2 block">Valor a enviar</label>
+                <label class=" flex justify-between text-[9px] mb-2 block">
+                  <span class="text-zinc-500 uppercase">Valor a enviar</span>
+
+                        @if (mensagemErro === 'Saldo insuficiente') {
+                          <span class="text-red-500 text-[10px] normal-case">
+                            {{ mensagemErro }}
+                          </span>
+                        }
+                </label>
                 <input type="text"
                   id="valorInput"
                   name="valorInput"

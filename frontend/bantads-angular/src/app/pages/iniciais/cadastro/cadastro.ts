@@ -161,12 +161,10 @@ export class Cadastro {
         this.cadastroConcluido = true;
         this.loading = false;
 
-        const msg = JSON.parse(erro.error.message);
-
         if (erro.status === 409) {
-          if (msg.tipo === 'cpf') {
+          if (erro.error.tipo === 'cpf') {
             this.mensagemErro = 'cpf';
-          } else if (msg.tipo === 'email') {
+          } else if (erro.error.tipo === 'email') {
             this.mensagemErro = 'email';
           } else {
             this.mensagemErro = 'Conflito de dados.';

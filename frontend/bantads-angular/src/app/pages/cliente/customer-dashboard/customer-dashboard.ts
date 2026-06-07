@@ -1,13 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { ClienteService, ContaService, LoginService } from "../../../services";
-import { ICliente, IClienteCompletoResponse, IExtrato, IUsuarioLogado, SharedModule } from '../../../shared';
+import { IClienteCompletoResponse, SharedModule } from '../../../shared';
 import { MoedaBrPipe } from '../../../shared/pipes/moedaBr/moeda-br-pipe';
 import { Loading } from '../../../components/loading/loading';
-
-type DashboardView = 'SALDO' | 'DEPOSITO' | 'SAQUE' | 'TRANSFERENCIA';
 
 @Component({
   selector: 'app-customer-dashboard',
@@ -17,16 +14,14 @@ type DashboardView = 'SALDO' | 'DEPOSITO' | 'SAQUE' | 'TRANSFERENCIA';
   styleUrl: './customer-dashboard.css',
 })
 export class CustomerDashboard implements OnInit { 
-  cliente!: IClienteCompletoResponse;
-  view: DashboardView = 'SALDO';
+  cliente?: IClienteCompletoResponse;  
+  view: String = '';
   contaDestino: string = '';
 
   private loginService = inject(LoginService);
   private contaService = inject(ContaService);
   private clienteService = inject(ClienteService);
-  
-  private router = inject(Router);
-  
+    
   usuarioLogado = this.loginService.usuarioLogado;
   
   mensagemErro: string = '';
@@ -39,12 +34,16 @@ export class CustomerDashboard implements OnInit {
   }
 
   get limiteUtilizado(): number {
+    if (!this.cliente) return 0;
+
     return this.cliente.saldo < 0
       ? Math.abs(this.cliente.saldo)
       : 0;
   }
 
   get limiteDisponivel(): number {
+    if (!this.cliente) return 0;
+
     return this.cliente.saldo < 0
       ? this.cliente.limite - Math.abs(this.cliente.saldo)
       : this.cliente.limite;
@@ -94,10 +93,11 @@ export class CustomerDashboard implements OnInit {
     });
   }
 
-  mudarView(novaView: DashboardView) {
+  mudarView(novaView: string) {
     this.view = novaView;
     this.valorFormatado = '';
     this.contaDestino = '';
+    this.mensagemErro = '';
   }
 
   depositar() {
@@ -116,14 +116,14 @@ export class CustomerDashboard implements OnInit {
     this.contaService.depositar(this.cliente.conta, valor).subscribe({
       next: () => {
         this.valorFormatado = '';
+        this.contaDestino = '';
+        this.mensagemErro = '';
         this.buscar();
         this.loading = false;
       },
       error: (err) => {
-        this.mensagemErro = err.error?.message ?? 'Erro ao realizar depósito.';
+        this.mensagemErro = err.error ?? 'Erro ao realizar depósito.';
         this.loading = false;
-
-        console.error('Erro ao depositar:', err);
       }
     });
   }
@@ -144,14 +144,14 @@ export class CustomerDashboard implements OnInit {
     this.contaService.sacar(this.cliente.conta, valor).subscribe({
       next: () => {
         this.valorFormatado = '';
+        this.contaDestino = '';
+        this.mensagemErro = '';
         this.buscar();
         this.loading = false;
       },
       error: (err) => {
-        this.mensagemErro = err.error?.message ?? 'Erro ao realizar saque.';
+        this.mensagemErro = err.error ?? 'Erro ao realizar saque.';
         this.loading = false;
-
-        console.error('Erro ao depositar:', err);
       }
     });
   }
@@ -172,13 +172,14 @@ export class CustomerDashboard implements OnInit {
     this.contaService.transferir(this.cliente.conta, this.contaDestino, valor).subscribe({
       next: () => {
         this.valorFormatado = '';
+        this.contaDestino = '';
+        this.mensagemErro = '';
         this.buscar();
         this.loading = false;
       },
       error: (err) => {
-        this.mensagemErro = err.error?.message ?? 'Erro ao realizar saque.';
+        this.mensagemErro = err.error ?? 'Erro ao realizar saque.';
         this.loading = false;
-        console.error('Erro ao depositar:', err);
       }
     });
   }
