@@ -81,33 +81,6 @@ function validacaoToken(req, res, next) {
   }
 }
 
-/*
-  Esses são endpoints que precisam ser implementadas, todas as outras serão usadas dentro dessas para lógicas.
-
-  get/reboot
-
-  post/login
-  post/logout
-
-  get/clientes
-  post/clientes
-  get/clientes/{cpf}
-  put/clientes/{cpf}
-  post/clientes/{cpf}/aprovar
-  post/clientes/{cpf}/rejeitar
-
-  get/contas/{numero}/saldo
-  post/contas/{numero}/depositar
-  post/contas/{numero}/sacar
-  post/contas/{numero}/transferir
-  get/contas/{numero}/extrato
-
-  get/gerentes
-  post/gerentes
-  get/gerentes/{cpf}
-  delete/gerentes/{cpf}
-  put/gerentes/{cpf}
-*/
 //Set é um tipo que guarda valores distinct. 
 const blacklist = new Set();
  
@@ -192,9 +165,7 @@ app.get("/reboot", async(req,res)=>{
     }
 });
 
-
 //Auth
-//VALIDADO
 app.post('/login', async (req, res) => {
   try {
     const { login, senha } = req.body;
@@ -263,7 +234,6 @@ app.post('/login', async (req, res) => {
     });
   }
 });
-//VALIDADO
 app.post("/logout", validacaoToken, async (req, res) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
@@ -323,7 +293,6 @@ app.post("/logout", validacaoToken, async (req, res) => {
     });
   }
 });
-
 
 //Cliente
 app.get('/clientes', validacaoToken, async (req,res)=>{
@@ -608,7 +577,7 @@ app.post('/clientes', async (req, res) => {
     } = req.body;
 
     //Essa rota precisa existir no MSContas e vai devolver apenas o CPF do gerente com menos contas atreladas
-    const contasResp = await fetch("http://localhost:8081/contas");
+    const contasResp = await fetch("http://localhost:8081/contas/disponivel");
 
     if (!contasResp.ok) {
       const erroTexto = await contasResp.text();
@@ -618,114 +587,44 @@ app.post('/clientes', async (req, res) => {
       });
     }
 
-    const contas = await contasResp.json();
+    const cpfGerente = await contasResp.text();
 
-    const usuariosFuncionariosResp = await fetch("http://localhost:5000/auth/usuarios/funcionarios");
-
-    if (!usuariosFuncionariosResp.ok) {
-      const erro = await usuariosFuncionariosResp.text();
-
-      return res.status(usuariosFuncionariosResp.status).json({ 
-        message: erro 
-      });
-    }
-
-    const usuariosFuncionarios = await usuariosFuncionariosResp.json();
-
-    const gerentesResp = await fetch("http://localhost:8083/gerentes");
-
-    if (!gerentesResp.ok) {
-      const erro = await gerentesResp.text();
-
-      return res.status(gerentesResp.status).json({
-        message: erro 
-      });
-    }
-
-    const gerentes = await gerentesResp.json();
-
-    const gerentesResultado = gerentes.map((gerente) => {
-      const usuarioFuncionario = usuariosFuncionarios.find(
-        (usuario) => String(usuario.id) === String(gerente.idUsuario)
-      );
-
-      return {
-        nome: gerente.nome,
-        cpf: gerente.cpf,
-        email: usuarioFuncionario?.email,
-        tipo: usuarioFuncionario?.tipo,
-      };
-    });
-
-    let cpfGerente = '';
-
-    cpfGerente = escolherGerente(gerentesResultado, contas);
-    
-    const authResp = await fetch(
-      "http://localhost:5000/auth/usuarios",
+    const inicio = await fetch(
+      "http://localhost:8084/clientes",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email,
-          tipo: "CLIENTE",
-          ativo: "PENDENTE"
-        })
-      }
-    );
-
-    if (!authResp.ok) {
-      const erroTexto = await authResp.text();
-
-      return res.status(authResp.status).json({
-        message: erroTexto
-      });
-    }
-
-    const usuarioCriado = await authResp.json();
-
-    const clienteResp = await fetch(
-      "http://localhost:8082/clientes",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          idUsuario: usuarioCriado.id,
           cpf,
+          cpfGerente: cpfGerente,
+          email,
           nome,
           telefone,
           salario,
           endereco,
           cep: CEP,
           cidade,
-          estado,
-          cpfGerente: cpfGerente
+          estado
         })
       }
     );
 
-    if (!clienteResp.ok) {
-      await fetch(
-        `http://localhost:5000/auth/usuarios/${usuarioCriado.id}`,
-        { method: "DELETE" }
-      );
+    const bodyInicio = await inicio.json();
 
-      const erroTexto = await clienteResp.text();
+    const sagaId = bodyInicio.idSaga;
 
-      return res.status(clienteResp.status).json({
-        message: erroTexto
-      });
-    }
+    const resultado = await verificarStatusSaga("clientes", sagaId);
 
-    return res.status(201).json({
-      cpf: cpf,
-      email: email
-    });
+    return res
+      .status(resultado.statusCode)
+      .json(resultado.body);
 
-  } catch (err) {
+  } catch (e) {
+    console.log(e);
+
     return res.status(500).json({
-      message: "Erro no autocadastro.",
-      error: err.message
+      erro: e.message,
+      stack: e.stack
     });
   }
 });
@@ -1109,7 +1008,6 @@ app.put('/clientes/:cpf', validacaoToken, async (req, res) => {
     });
   }
 });
-// VALIDADO
 app.post('/clientes/:cpf/aprovar', validacaoToken, async (req, res) => {
   try{
     if (req.usuario.tipo !== "GERENTE") {
@@ -1181,7 +1079,6 @@ app.post('/clientes/:cpf/aprovar', validacaoToken, async (req, res) => {
     });
   }
 });
-// VALIDADO
 app.post('/clientes/:cpf/rejeitar', validacaoToken, async (req, res) => {
   try{
     if (req.usuario.tipo !== "GERENTE") {
@@ -1375,13 +1272,13 @@ app.get("/gerentes", validacaoToken, async (req, res) => {
 });
 
 //Todas as alterações realizadas que usam SAGA precisam esperar a resposta, por isso usa-se o get pra todas elas.
-async function verificarStatusSaga(id){
+async function verificarStatusSaga(tipo, id){
   while(true){
     await new Promise(r =>
       setTimeout(r,500)
     );
 
-    const resposta = await fetch(`http://localhost:8084/gerentes/status/${id}`);
+    const resposta = await fetch(`http://localhost:8084/${tipo}/status/${id}`);
 
     const body = await resposta.json();
 
@@ -1412,7 +1309,7 @@ app.post('/gerentes', validacaoToken, async(req,res)=>{
 
     const sagaId = bodyInicio.idSaga;
 
-    const resultado = await verificarStatusSaga(sagaId);
+    const resultado = await verificarStatusSaga("gerentes", sagaId);
 
     return res
       .status(resultado.statusCode)
@@ -1426,7 +1323,6 @@ app.post('/gerentes', validacaoToken, async(req,res)=>{
     });
   }
 });
-//app.get('/gerentes/status/:id', validacaoToken, sagaServiceProxy);
 app.put('/gerentes/:cpf', validacaoToken, async (req, res) => {
   try {
     if (req.usuario.tipo !== "ADMINISTRADOR") {
@@ -1691,42 +1587,12 @@ app.get('/gerentes/:cpf', validacaoToken, async (req, res) => {
   }
 });
 
-
 //Conta
 app.get('/contas/:numero/saldo', validacaoToken, contaQueryServiceProxy);
 app.post('/contas/:numero/depositar', validacaoToken, contaCommandServiceProxy);
 app.post('/contas/:numero/sacar', validacaoToken, contaCommandServiceProxy);
 app.post('/contas/:numero/transferir', validacaoToken, contaCommandServiceProxy);
 app.get('/contas/:numero/extrato', validacaoToken, contaQueryServiceProxy);
-
-function escolherGerente(gerentes, contas) {
-  const contagem = {};
-
-  for (const g of gerentes) {
-    if(g.tipo === 'GERENTE'){
-      contagem[g.cpf] = 0;
-    }
-  }
-
-  for (const c of contas) {
-    if (contagem[c.gerenteCpf] !== undefined) {
-      contagem[c.gerenteCpf]++;
-    }
-  }
-
-  let menor = null;
-  //Isso é usado para, no começo, todo valor ser menor que Infinity
-  let menorQtd = Infinity;
-
-  for (const cpf of Object.keys(contagem)) {
-    if (contagem[cpf] < menorQtd) {
-      menorQtd = contagem[cpf];
-      menor = cpf;
-    }
-  }
-
-  return menor;
-}
 
 var server = http.createServer(app);
 

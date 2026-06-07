@@ -25,6 +25,7 @@ import br.net.dac.msconta.model.event.ContaUpdatedEvent;
 import br.net.dac.msconta.model.event.MovimentacaoCreatedEvent;
 import br.net.dac.msconta.model.exception.ContaInativaException;
 import br.net.dac.msconta.model.exception.ContaNaoEncontradaException;
+import br.net.dac.msconta.model.exception.SaldoInsuficienteException;
 import br.net.dac.msconta.rabbitMQ.ContaProdutor;
 import br.net.dac.msconta.repository.ContaRepository;
 import br.net.dac.msconta.repository.MovimentacaoRepository;
@@ -119,7 +120,7 @@ public class ContaCommandService {
         validaConta(requestDTO);
         
         Conta contaEncontrada = contaRepository.findById(numero)
-            .orElseThrow(() -> new ContaNaoEncontradaException());
+            .orElseThrow(() -> new ContaNaoEncontradaException(numero));
 
         Double limite = contaEncontrada.getLimite();
         if(requestDTO.getSalario() != null) {
@@ -158,7 +159,7 @@ public class ContaCommandService {
     public ValorDTO atualizarLimite(String numero, ValorDTO salario) {
         
         Conta contaEncontrada = contaRepository.findById(numero)
-            .orElseThrow(() -> new ContaNaoEncontradaException());
+            .orElseThrow(() -> new ContaNaoEncontradaException(numero));
 
         Double limite = salario.getValor() / 2;
         if(contaEncontrada.getSaldo() < 0 && limite < Math.abs(contaEncontrada.getSaldo())) { 
@@ -196,7 +197,7 @@ public class ContaCommandService {
         // VALIDAÇÃO
             // BUSCA CONTA SE EXISTE
                 Conta contaEncontrada = contaRepository.findById(numero)
-                    .orElseThrow(() -> new ContaNaoEncontradaException());
+                    .orElseThrow(() -> new ContaNaoEncontradaException(numero));
                 // CHECK SE ENCONTRADO
 
 
@@ -224,12 +225,12 @@ public class ContaCommandService {
 
     public TransferenciaResponseDTO transferir(String numero, TransferenciaRequestDTO dto) {
         Conta origem = contaRepository.findById(numero)
-            .orElseThrow(() -> new RuntimeException("Conta não encontrada: " + numero));
+            .orElseThrow(() -> new ContaNaoEncontradaException(numero));
         Conta destino = contaRepository.findById(dto.getDestino())
-            .orElseThrow(() -> new RuntimeException("Conta não encontrada: " + dto.getDestino()));
+            .orElseThrow(() -> new ContaNaoEncontradaException(dto.getDestino()));
 
         if (origem.getSaldo() + origem.getLimite() < dto.getValor()) {
-            throw new RuntimeException("Saldo insuficiente");
+            throw new SaldoInsuficienteException();
         }
 
         origem.setSaldo(
@@ -292,7 +293,7 @@ public class ContaCommandService {
 
     public OperacaoResponseDTO depositar(String numero, Double valor) {
         Conta conta = contaRepository.findById(numero)
-            .orElseThrow(() -> new RuntimeException("Conta não encontrada: " + numero));
+            .orElseThrow(() -> new ContaNaoEncontradaException(numero));
 
         conta.setSaldo(
             Math.round((conta.getSaldo() + valor) * 100.0) / 100.0
@@ -336,10 +337,10 @@ public class ContaCommandService {
 
     public OperacaoResponseDTO sacar(String numero, Double valor) {
         Conta conta = contaRepository.findById(numero)
-            .orElseThrow(() -> new RuntimeException("Conta não encontrada: " + numero));
+            .orElseThrow(() -> new ContaNaoEncontradaException(numero));
 
         if (conta.getSaldo() + conta.getLimite() < valor) {
-            throw new RuntimeException("Saldo insuficiente");
+            throw new SaldoInsuficienteException();
         }
 
         conta.setSaldo(

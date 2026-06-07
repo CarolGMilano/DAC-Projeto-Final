@@ -22,6 +22,8 @@ import br.net.dac.msconta.model.dto.TransferenciaRequestDTO;
 import br.net.dac.msconta.model.dto.TransferenciaResponseDTO;
 import br.net.dac.msconta.model.dto.ValorDTO;
 import br.net.dac.msconta.model.dto.VinculoRequestDTO;
+import br.net.dac.msconta.model.exception.ContaNaoEncontradaException;
+import br.net.dac.msconta.model.exception.SaldoInsuficienteException;
 import br.net.dac.msconta.model.dto.GerenteRequestDTO;
 import br.net.dac.msconta.model.dto.ContaRequestDTO;
 
@@ -84,34 +86,43 @@ public class ContaCommandController {
 
 
     @PostMapping("/{numero}/depositar")
-    public ResponseEntity<OperacaoResponseDTO> depositar(@PathVariable String numero, @RequestBody ValorDTO valorDTO) {
+    public ResponseEntity<?> depositar(@PathVariable String numero, @RequestBody ValorDTO valorDTO) {
         try {
             OperacaoResponseDTO response = commandService.depositar(numero, valorDTO.getValor());
             System.out.println("PostMapping /contas/{numero}/depositar: OperacaoResponseDTO Retornado:" + response.conta + ", " + response.data + ", " + response.saldo);
             return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            System.out.println("EXCEÇÃO:" + e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (ContaNaoEncontradaException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao depositar: " + e.getMessage());
         }
     }
 
     @PostMapping("/{numero}/transferir")
-    public ResponseEntity<TransferenciaResponseDTO> transferir(@PathVariable String numero, @RequestBody TransferenciaRequestDTO dto) {
+    public ResponseEntity<?> transferir(@PathVariable String numero, @RequestBody TransferenciaRequestDTO dto) {
         try {
             TransferenciaResponseDTO response = commandService.transferir(numero, dto);
             return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (ContaNaoEncontradaException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (SaldoInsuficienteException e){
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao transferência: " + e.getMessage());
         }
     }
 
     @PostMapping("/{numero}/sacar")
-    public ResponseEntity<OperacaoResponseDTO> sacar(@PathVariable String numero, @RequestBody ValorDTO valorDTO) {
+    public ResponseEntity<?> sacar(@PathVariable String numero, @RequestBody ValorDTO valorDTO) {
         try {
             OperacaoResponseDTO response = commandService.sacar(numero, valorDTO.getValor());
             return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (ContaNaoEncontradaException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (SaldoInsuficienteException e){
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao sacar: " + e.getMessage());
         }
     }
 
