@@ -58,6 +58,7 @@ public class ContaQueryService {
         Conta conta = contaRepository.findById(numero)
                 .orElseThrow(() -> new RuntimeException("Conta não encontrada: " + numero));
 
+        // Busca movimentações onde a conta aparece como origem OU destino, ordenadas por data crescente
         List<Movimentacao> movimentacoes = movimentacaoRepository.findByOrigemOrDestinoOrderByDataAsc(conta.getNumero(), conta.getNumero());
 
         ExtratoResponseDTO extrato = new ExtratoResponseDTO();
