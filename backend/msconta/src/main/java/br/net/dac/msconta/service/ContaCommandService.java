@@ -45,8 +45,8 @@ public class ContaCommandService {
     // 1. MÉTODOS
     // 1.1 VALIDAR SE CONTA É VALIDA
     private void validaConta(ContaRequestDTO conta) {
-    if (conta.getClienteCpf() == null) throw new IllegalArgumentException("MsConta: Id do cliente == null");
-    if (conta.getClienteCpf() == null) throw new IllegalArgumentException("MsConta: Id do gerente == null");
+    if (conta.getGerenteCpf() == null) throw new IllegalArgumentException("MsConta: Cpf do gerente == null");
+    if (conta.getClienteCpf() == null) throw new IllegalArgumentException("MsConta: Cpf do cliente == null");
     if (conta.getSalario() == null) throw new IllegalArgumentException("Salario vazio");        
     }
 
@@ -67,13 +67,7 @@ public class ContaCommandService {
     public ContaResponseDTO criarConta(ContaRequestDTO requestDTO) {
         validaConta(requestDTO);
 
-        // VALIDAÇÃO DE EXISTÊNCIA DE CONTA
-        // NÃO SEI SE VAMOS USAR PRA VERIFICAR SE CONTA É ATIVA OU NÃO, ENTÃO DEIXAMOS COMENTADO CASO PRECISE
-        // Conta contaEncontrado = contaRepository.findById(contaDTO.getId()).orElseThrow(ContaNaoEncontradaException::new);
-
-        // if (!contaEncontrado.getAtivo()) {
-        //     throw new ContaNaoEncontradaException();
-        // }
+        // Limite é concedido apenas para salários acima de 2000, equivalente à metade do salário
         Double limite = 0.0;
         if(requestDTO.getSalario() > 2000) {
             limite = requestDTO.getSalario() / 2;
@@ -122,6 +116,7 @@ public class ContaCommandService {
         Conta contaEncontrada = contaRepository.findById(numero)
             .orElseThrow(() -> new ContaNaoEncontradaException(numero));
 
+        // Garante que o novo limite nunca seja menor que a dívida atual
         Double limite = contaEncontrada.getLimite();
         if(requestDTO.getSalario() != null) {
             limite = requestDTO.getSalario() / 2;
@@ -154,8 +149,6 @@ public class ContaCommandService {
     }
 
 
-    // 1.4 ATUALIZAR CONTA (UPDATE/PUT)
-    // BOTAR 
     public ValorDTO atualizarLimite(String numero, ValorDTO salario) {
         
         Conta contaEncontrada = contaRepository.findById(numero)
@@ -199,8 +192,6 @@ public class ContaCommandService {
                 Conta contaEncontrada = contaRepository.findById(numero)
                     .orElseThrow(() -> new ContaNaoEncontradaException(numero));
                 // CHECK SE ENCONTRADO
-
-
             
             // CHECK SE INATIVO
                 if(!contaEncontrada.getAtivo()) throw new ContaInativaException();
@@ -218,7 +209,7 @@ public class ContaCommandService {
                 contaDesativada.getGerenteCpf()                
             )
         );
-}
+    }
 
 
 
@@ -387,6 +378,8 @@ public class ContaCommandService {
     public GerenteRequestDTO redistribuiContasGerenteDeletado(GerenteRequestDTO gerenteCpf) {
         String cpf = gerenteCpf.getGerenteCpf();
         List<Conta> contas = contaRepository.findByGerenteCpf(cpf);
+
+        // Busca o gerente com menos contas ativas
         String novoGerente = contaRepository.findGerenteWithLeastActiveContas(gerenteCpf.getGerenteCpf())
             .orElseThrow(() -> new RuntimeException("Nenhum gerente disponível"));
 
@@ -419,7 +412,8 @@ public class ContaCommandService {
         List<Conta> contasDoGerente = contaRepository.findByGerenteCpfAndAtivoTrue(gerenteCpf);
 
         if (contasDoGerente.isEmpty()) return false;
-
+        
+        // Seleciona uma conta aleatória do gerente mais sobrecarregado para transferir ao novo gerente
         Conta contaSelecionada = contasDoGerente.get(new Random().nextInt(contasDoGerente.size()));
 
         contaSelecionada.setGerenteCpf(vinculoDTO.getCpf());
