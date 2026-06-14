@@ -426,10 +426,37 @@ public class AuthService {
   }
 
   public void rollback(UsuarioDesativacaoDTO usuarioDTO) throws Exception {
+    Usuario usuario = usuarioRepository.findById(usuarioDTO.getId()).orElseThrow(() -> new UsuarioNaoEncontradoException());
+
     if (!usuarioRepository.existsById(usuarioDTO.getId())) {
       throw new UsuarioNaoEncontradoException();
     }
 
+    if(usuario.getTipo().equals(TipoUsuarioEnum.CLIENTE.name())){
+      enviarEmailFalha(usuario.getEmail());
+    }
+
     usuarioRepository.deleteById(usuarioDTO.getId());
+  }
+
+  public void enviarEmailFalha(String email) throws Exception{
+    String mensagem = """
+      Olá, %s!
+
+      Sentimos muito, porém um erro foi encontrado ao realizar seu cadastro.
+
+      Tente novamente mais tarde ou entre em contato como nosso atendimento.
+
+      Atenciosamente,
+      Equipe BanTADS
+      """.formatted(
+        email
+      );
+
+      emailService.enviarEmail(
+        "BanTADS - Ocorreu um erro com seu cadastro",
+        mensagem,
+        email
+      );
   }
 }
