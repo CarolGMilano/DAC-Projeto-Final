@@ -114,11 +114,14 @@ export class CustomerDashboard implements OnInit {
     }
 
     this.contaService.depositar(this.cliente.conta, valor).subscribe({
-      next: () => {
+      next: (operacao) => {
         this.valorFormatado = '';
         this.contaDestino = '';
         this.mensagemErro = '';
-        this.buscar();
+        this.cliente = {
+          ...this.cliente!,
+          saldo: operacao.saldo
+        };   
         this.loading = false;
       },
       error: (err) => {
@@ -142,12 +145,15 @@ export class CustomerDashboard implements OnInit {
     }
 
     this.contaService.sacar(this.cliente.conta, valor).subscribe({
-      next: () => {
+      next: (operacao) => {
         this.valorFormatado = '';
         this.contaDestino = '';
         this.mensagemErro = '';
-        this.buscar();
-        this.loading = false;
+        this.cliente = {
+          ...this.cliente!,
+          saldo: operacao.saldo
+        };
+        this.loading = false;   
       },
       error: (err) => {
         this.mensagemErro = err.error ?? 'Erro ao realizar saque.';
@@ -170,12 +176,15 @@ export class CustomerDashboard implements OnInit {
     }
 
     this.contaService.transferir(this.cliente.conta, this.contaDestino, valor).subscribe({
-      next: () => {
+      next: (operacao) => {
         this.valorFormatado = '';
         this.contaDestino = '';
         this.mensagemErro = '';
-        this.buscar();
-        this.loading = false;
+        this.cliente = {
+          ...this.cliente!,
+          saldo: operacao.saldo
+        };
+        this.loading = false;             
       },
       error: (err) => {
         this.mensagemErro = err.error ?? 'Erro ao realizar saque.';

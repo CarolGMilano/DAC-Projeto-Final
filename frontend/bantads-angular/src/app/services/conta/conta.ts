@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
-import { IExtrato } from '../../shared';
+import { IExtrato, IOperacaoResponse } from '../../shared';
 
 @Injectable({
   providedIn: 'root',
@@ -18,8 +18,8 @@ export class ContaService {
     })
   }
 
-  depositar(conta: string, valor: number): Observable<any> {
-    return this._httpClient.post(
+  depositar(conta: string, valor: number): Observable<IOperacaoResponse> {
+    return this._httpClient.post<IOperacaoResponse>(
       `${this.BASE_URL}/${conta}/depositar`,
       { valor }
     ).pipe(
@@ -27,8 +27,8 @@ export class ContaService {
     );
   }
 
-  sacar(conta: string, valor: number): Observable<any> {
-    return this._httpClient.post(
+  sacar(conta: string, valor: number): Observable<IOperacaoResponse> {
+    return this._httpClient.post<IOperacaoResponse>(
       `${this.BASE_URL}/${conta}/sacar`,
       { valor }
     ).pipe(
@@ -36,8 +36,8 @@ export class ContaService {
     );
   }
   
-  transferir(conta: string, destino: string, valor: number): Observable<any> {
-    return this._httpClient.post(
+  transferir(conta: string, destino: string, valor: number): Observable<IOperacaoResponse> {
+    return this._httpClient.post<IOperacaoResponse>(
       `${this.BASE_URL}/${conta}/transferir`,
       { destino, valor }
     ).pipe(

@@ -15,7 +15,6 @@ import { FormsModule } from '@angular/forms';
 })
 
 export class BankStatementLookup implements OnInit {
-
   cliente!: IClienteCompletoResponse;
   extrato?: IExtrato;
 
@@ -26,7 +25,7 @@ export class BankStatementLookup implements OnInit {
   dataInicio = this.getDataHoje();
   dataFim = this.getDataHoje();
 
-  mensagemErro = '';
+  mensagemErro: string = '';
 
   private loginService = inject(LoginService);
   private contaService = inject(ContaService);
@@ -35,10 +34,33 @@ export class BankStatementLookup implements OnInit {
   usuarioLogado = this.loginService.usuarioLogado;
   loading: boolean = false;
 
-  hoje = new Date();
+  hoje: Date = new Date();
+
+  dataMinima: string = '';
 
   ngOnInit() {
     this.buscar();
+  }
+
+  obterDataPrimeiraMovimentacao(): string {
+    if (!this.extrato?.movimentacoes.length) {
+      return this.getDataHoje();
+    }
+
+    const primeiraMovimentacao =
+      [...this.extrato.movimentacoes]
+        .sort((a, b) =>
+          new Date(a.data).getTime() -
+          new Date(b.data).getTime()
+        )[0];
+
+    const data = new Date(primeiraMovimentacao.data);
+
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const dia = String(data.getDate()).padStart(2, '0');
+
+    return `${ano}-${mes}-${dia}`;
   }
 
   getDataHoje(): string {
@@ -80,7 +102,8 @@ export class BankStatementLookup implements OnInit {
     this.contaService.mostrarExtrato(this.cliente.conta).subscribe({
       next: extrato => {
         this.extrato = extrato;
-        console.log(extrato)
+
+        this.dataMinima = this.obterDataPrimeiraMovimentacao();
 
         this.calcularSaldos();
         this.filtrarPorPeriodo();
@@ -103,7 +126,33 @@ export class BankStatementLookup implements OnInit {
     const inicio = new Date(anoInicio, mesInicio - 1, diaInicio);
     const fim = new Date(anoFim, mesFim - 1, diaFim);
 
-    let saldoAnterior = 0;
+    const dataMinima = new Date(this.dataMinima);
+
+    if (inicio < dataMinima) {
+      this.mensagemErro = 'A data inicial não pode ser anterior à primeira movimentação.';
+      return;
+    }
+
+    if (fim > new Date()) {
+      this.mensagemErro = 'A data final não pode ser futura.';
+      return;
+    }
+
+    if (inicio > fim) {
+      this.mensagemErro = 'A data inicial não pode ser maior que a data final.';
+      return;
+    }
+
+    this.mensagemErro = '';
+
+    const ultimaMovimentacaoAnterior =
+      this.movimentacoesComSaldo
+        .filter(mov => new Date(mov.data) < inicio)
+        //Pega o último item da lista
+        .at(-1);
+
+    let saldoAnterior =
+      ultimaMovimentacaoAnterior?.saldoCalculado ?? 0;
 
     for (
       let dia = new Date(inicio);
@@ -155,26 +204,36 @@ export class BankStatementLookup implements OnInit {
 
     this.movimentacoesComSaldo = [];
 
-    let saldoAtual = this.extrato.saldo;
-
-    for (let i = this.extrato.movimentacoes.length - 1; i >= 0; i--) {
-      const mov = this.extrato.movimentacoes[i];
-
-      this.movimentacoesComSaldo.unshift({
-        ...mov,
-        saldoCalculado: saldoAtual
-      });
-
-      const entrada =
-        mov.tipo === 'depósito' ||
-        (
-          mov.tipo === 'transferência' &&
-          mov.destino === this.usuarioLogado?.usuario?.cpf
+    const movimentacoesOrdenadas =
+      [...this.extrato.movimentacoes]
+        .sort((a, b) =>
+          new Date(a.data).getTime() -
+          new Date(b.data).getTime()
         );
 
-      saldoAtual += entrada
-        ? -mov.valor
-        : mov.valor;
+    let saldo = 0;
+
+    for (const mov of movimentacoesOrdenadas) {
+      if (mov.tipo === 'depósito') {
+        saldo += mov.valor;
+      }
+
+      else if (mov.tipo === 'saque') {
+        saldo -= mov.valor;
+      }
+
+      else if (mov.tipo === 'transferência') {
+        if (mov.destino === this.cliente.conta) {
+          saldo += mov.valor;
+        } else {
+          saldo -= mov.valor;
+        }
+      }
+
+      this.movimentacoesComSaldo.push({
+        ...mov,
+        saldoCalculado: saldo
+      });
     }
   }
 }
