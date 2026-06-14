@@ -25,8 +25,14 @@
           <span class="text-[10px] uppercase tracking-[0.3em] text-zinc-500 mb-4">Saldo Disponível</span>
           <div class="flex items-baseline gap-4">
             <span class="text-xl text-zinc-600 font-bold">R$</span>
-            <h1 class="text-7xl font-bold text-white tracking-tighter">
-              {{cliente.saldo | moedaBr}}
+            <h1
+              class="text-7xl font-bold tracking-tighter"
+              [ngClass]="{
+                'text-red-500': cliente.saldo < 0,
+                'text-white': cliente.saldo >= 0
+              }"
+            >
+              {{ cliente.saldo | moedaBr }}
             </h1>
           </div>
           <div class="mt-4 px-3 py-1 bg-zinc-900/80 border border-zinc-700 rounded-sm text-[9px] text-zinc-500 uppercase tracking-widest">

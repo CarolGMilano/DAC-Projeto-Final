@@ -10,29 +10,48 @@
         <header class="mb-5 mt-8">
             <h1 class="text-2xl font-bold text-white mb-2">Meu Extrato</h1>
 
-            <div class="flex items-center gap-4 flex-wrap mt-2">
-                <div class="flex items-center gap-2 rounded-lg">
-                    <span class="text-sm text-white">Início:</span>
+            <div class="flex flex-col gap-4 mt-1">
+                <div class="flex items-center gap-4 flex-wrap mt-2">
+                    <div class="flex items-center gap-2 rounded-lg">
+                        <span class="text-sm text-white">Início:</span>
 
-                    <input
-                        type="date"
-                        [(ngModel)]="dataInicio"
-                        (change)="filtrarPorPeriodo()"
-                        class="bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 text-white text-xs"
-                    >
+                        <input
+                            type="date"
+                            [(ngModel)]="dataInicio"
+                            (change)="filtrarPorPeriodo()"
+                            [max]="getDataHoje()"
+                            [min]="dataMinima"
+                            class="bg-zinc-900 border rounded-md px-3 py-2 text-white text-xs"
+                            [ngClass]="{
+                                'border-red-500': mensagemErro,
+                                'border-zinc-700': !mensagemErro
+                            }"
+                        >
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-white">Fim:</span>
+
+                        <input
+                            type="date"
+                            [(ngModel)]="dataFim"
+                            (change)="filtrarPorPeriodo()"
+                            [max]="getDataHoje()"
+                            [min]="dataInicio"
+                            class="bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 text-white text-xs"
+                            [ngClass]="{
+                                'border-red-500': mensagemErro,
+                                'border-zinc-700': !mensagemErro
+                            }"
+                        >
+                    </div>
                 </div>
 
-                <div class="flex items-center gap-2">
-                    <span class="text-sm text-white">Fim:</span>
-
-                    <input
-                        type="date"
-                        [(ngModel)]="dataFim"
-                        (change)="filtrarPorPeriodo()"
-                        class="bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 text-white text-xs"
-                    >
-                </div>
-
+                @if (mensagemErro) {
+                    <span class="text-red-500 text-[10px] normal-case">
+                        {{ mensagemErro }}
+                    </span>
+                }
             </div>
         </header>
     </div>

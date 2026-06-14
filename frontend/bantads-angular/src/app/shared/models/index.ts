@@ -12,6 +12,7 @@ export * from "./IClienteAtualizacao";
 export * from "./IDashboardAdminResponse";
 export * from "./IDadoConta";
 export * from "./IMelhorClienteResponse";
+export * from "./IOperacaoResponse";
 
 export * from "./IMovimentacao";
 export * from "./IMovimentacaoComSaldo";

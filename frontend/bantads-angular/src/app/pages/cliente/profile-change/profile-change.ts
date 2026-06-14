@@ -111,25 +111,31 @@ export class ProfileChange implements OnInit {
     });
   }
 
- atualizar() {
-  if (!this.clienteAtualizado) return;
+  atualizar() {
+    if (!this.clienteAtualizado) return;
 
-  this.loading = true;
+    this.loading = true;
 
-  const clienteAtualizado = {
-    ...this.clienteAtualizado,
-    salario: this.valorParaNumero(this.valorFormatado)
-  };
+    const emailAlterado = this.cliente.email !== this.clienteAtualizado.email;
 
-  this.clienteService.atualizar(this.cliente.cpf, clienteAtualizado).subscribe({
+    const clienteAtualizado = {
+      ...this.clienteAtualizado,
+      salario: this.valorParaNumero(this.valorFormatado)
+    };
+
+    this.clienteService.atualizar(this.cliente.cpf, clienteAtualizado).subscribe({
       next: () => {
         this.loading = false;
+
+        if (emailAlterado) {
+          localStorage.removeItem('token');
+          this.router.navigate(['/login']);
+        }
       },
 
       error: (erro) => {
         this.mensagemErro = erro.error;
-        console.log(erro.error)
-
+        
         this.loading = false;
       }
     });

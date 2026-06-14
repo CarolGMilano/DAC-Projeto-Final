@@ -20,9 +20,30 @@
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-20 gap-y-10">
             
             <section class="space-y-6">
-              <h2 class="text-blue-400 text-xs font-bold uppercase tracking-widest border-b border-zinc-700 pb-2">Informações de Acesso</h2>
+              <h2 class="text-blue-400 text-xs font-bold uppercase tracking-widest border-b border-zinc-700 pb-2">Informações pessoais</h2>
               
               <div class="space-y-4">
+                <div class="flex justify-between">
+                  <div class="group">
+                    <label class="block text-[12px] uppercase text-zinc-500 mb-2">Conta</label>
+                    <input type="text" [value]="cliente.conta" 
+                  readonly 
+                      class="w-full bg-zinc-900/50 border border-zinc-700 rounded-sm p-3 text-zinc-600 outline-none cursor-not-allowed text-[13px]">
+                  </div>
+                  <div class="group">
+                    <label class="block text-[12px] uppercase text-zinc-500 mb-2">Gerente</label>
+                    <div class="flex gap-2">
+                      <input type="text" [value]="cliente.gerente_nome" 
+                    readonly 
+                        class="w-full bg-zinc-900/50 border border-zinc-700 rounded-sm p-3 text-zinc-600 outline-none cursor-not-allowed text-[13px]">
+
+                      <input type="text" [value]="cliente.gerente_email" 
+                    readonly 
+                        class="w-full bg-zinc-900/50 border border-zinc-700 rounded-sm p-3 text-zinc-600 outline-none cursor-not-allowed text-[13px]">
+                    </div>
+                  </div>
+                </div>
+
                 <div class="group">
                   <label class="block text-[12px] uppercase text-zinc-500 mb-2">CPF</label>
                   <input type="text" [value]="cliente.cpf | cpfFormatador" 
@@ -163,8 +184,8 @@
             </section>
           </div>
           
-          <div class="mt-16 flex justify-between">
-            <div class="bg-zinc-900 border rounded-sm p-8 flex flex-col md:flex-row justify-between items-center gap-8 w-[700px]"
+          <div class="mt-10 flex justify-between">
+            <div class="bg-zinc-900 border rounded-sm p-6 flex flex-col md:flex-row justify-between items-center gap-8 w-[700px]"
             [ngClass]="{
               'border-red-500': !salarioValido,
               'border-blue-900/30 focus:border-white': salarioValido
@@ -174,7 +195,7 @@
                   <span class="text-blue-400">Rendimento Mensal (Salário)</span>
 
                       @if (!salarioValido) {
-                        <span class="text-red-500 text-[10px] normal-case">
+                        <span class="text-red-500 text-[8px] normal-case">
                           obrigatório
                         </span>
                       }
